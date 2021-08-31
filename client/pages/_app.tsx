@@ -4,6 +4,8 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import theme from '@styles/theme';
+import { Footer } from 'components/Footer';
+import '../styles/globals.css'
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
@@ -24,7 +26,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <Component {...pageProps} />
-        <div>Footer</div>
+        <Footer />
       </ThemeProvider>
     </>
   );

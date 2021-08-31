@@ -1,14 +1,13 @@
 import { Typography } from '@material-ui/core';
-import BlockIcon from '@material-ui/icons/Block';
-import useStylesUserCard from '@styles/userCard.style';
-import { IUser } from './Lobby';
+import useStylesUserChat from '@styles/userChat.style';
+import { IUser } from 'components/Lobby';
 
-interface UserCardProps {
+interface ChatUserProps {
   user: IUser;
 }
 
-export const UserCard = ({ user}: UserCardProps) => {
-  const classes = useStylesUserCard();
+export const ChatUser = ({ user}: ChatUserProps) => {
+  const classes = useStylesUserChat();
 
   return (
     <div className={classes.container}>
@@ -26,8 +25,7 @@ export const UserCard = ({ user}: UserCardProps) => {
             </div>
           ))}
       </div>
-      <Typography variant='h5'>{user.username}</Typography>
-      <BlockIcon fontSize="large" />
+      <Typography variant='subtitle2'>{user.username}</Typography>
     </div>
   );
 };

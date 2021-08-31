@@ -4,27 +4,38 @@ import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'components/userCard';
 import Link from 'next/link';
 
+const roles = new Map([ [ 'dealer', 'dealer' ], [ 'member', 'member' ] ]);
+
 export const LobbyPart = () => {
+  const role = 'dealer';
   const classes = useStylesLobbyPart();
   return (
-    <div className={classes.container}>
+    <>
       <Grid item>
         <Typography variant="h4" align="center" gutterBottom>
           Lobby Title
         </Typography>
       </Grid>
-      <Grid item  className={classes.mBottom}>
+      <Grid item className={classes.mBottom}>
         <Typography variant="subtitle2">Dealer:</Typography>
         <UserCard user={{ username: 'Koza Nostra', avatar: '' }} />
       </Grid>
-      <Grid item className={classes.mBottom}>
-        <Link href="/lobby/game">
-          <Button color="primary" variant="contained">
-            Start Game
-          </Button>
-        </Link>
-      </Grid>
-      <Grid item container justifyContent='flex-end' className={classes.mBottom}>
+      {role === roles.get('dealer') && (
+        <Grid item className={classes.mBottom}>
+          <Link href="/lobby/game">
+            <Button color="primary" variant="contained">
+              Start Game
+            </Button>
+          </Link>
+        </Grid>
+      )}
+
+      <Grid
+        item
+        container
+        justifyContent="flex-end"
+        className={classes.mBottom}
+      >
         <Link href="/">
           <Button variant="outlined" className={classes.btn}>
             Exit
@@ -34,6 +45,6 @@ export const LobbyPart = () => {
       <Grid item container>
         <MemberList />
       </Grid>
-    </div>
+    </>
   );
 };
