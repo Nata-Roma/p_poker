@@ -1,4 +1,5 @@
-import { Button,  makeStyles, Typography } from '@material-ui/core';
+import { Button, makeStyles, Typography } from '@material-ui/core';
+import Link from 'next/link';
 
 const useStyles = makeStyles({
   container: {
@@ -22,25 +23,39 @@ const useStyles = makeStyles({
   redBtn: {
     backgroundColor: 'red',
     color: '#fff',
-  }
+  },
 });
 
 interface MakeChoiceProps {
   choice: (color: string) => void;
-  message: string
+  message: string;
 }
 
-export const MakeChoice = ({choice, message}: MakeChoiceProps) => {
+export const MakeChoice = ({ choice, message }: MakeChoiceProps) => {
   const classes = useStyles();
 
   return (
     <div className={classes.container}>
-      <Typography variant="h3" color="primary" align='center'>
+      <Typography variant="h3" color="primary" align="center">
         {message}
       </Typography>
       <div className={classes.buttons_wrapper}>
-        <Button variant='contained' color='primary' onClick={() => choice('blue')}>Blue Peel</Button>
-        <Button variant='contained' className={classes.redBtn}  onClick={() => choice('red')}>Red Peel</Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => choice('blue')}
+        >
+          Blue Peel
+        </Button>
+        <Link href="/lobby">
+          <Button
+            variant="contained"
+            className={classes.redBtn}
+            onClick={() => choice('red')}
+          >
+            Red Peel
+          </Button>
+        </Link>
       </div>
     </div>
   );
