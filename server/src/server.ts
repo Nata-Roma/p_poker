@@ -73,6 +73,15 @@ app.get('/rooms', (req, res) => {
   res.json(rooms);
 });
 
+app.get('/chat', (req, res) => {
+  const { data } = req.body;
+  // const chat = getRoomIdsOnly();
+  // console.log('ROOMS', rooms);
+  // res.json(rooms);
+  console.log('request for chat');
+  
+});
+
 app.post('/rooms', (req, res) => {
   const { data } = req.body;
   createRoom(data);

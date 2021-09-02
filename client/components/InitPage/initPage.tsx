@@ -9,8 +9,9 @@ import { BASE_URL } from 'utils/apiConfig';
 import { UserDialog } from './userDialog';
 import React from 'react';
 import { RoomSelect } from './roomSelect';
-import { setRoomId, setUserId } from 'store/reducer';
+import { setRoomId, setUserId, setUserRole } from 'store/reducer';
 import AppContext from 'store/store';
+import { roles } from 'utils/configs';
 
 interface MakeChoiceProps {
   message: string;
@@ -26,10 +27,9 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   const [ username, setUsername ] = useState('');
   const [ userSurname, setUserSurname ] = useState('');
   const [ room, setRoom ] = useState('');
-  const  {state, dispatch} = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
 
-  state.socket.on('connect', () => {
-  });
+  state.socket.on('connect', () => {});
 
   state.socket.on('roomList', (message) => {
     setRoomList(message);
@@ -49,7 +49,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
 
   const goToLobby = (id: string) => {
     const message = createMessage(id);
-    dispatch(setUserId(message.user.id))
+    dispatch(setUserId(message.user.id));
     state.socket.emit('joinRoom', message);
     // state.socket.join(id);
     router.push({
@@ -93,6 +93,15 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   const onConnectCancel = () => {
     setOpenConnect(false);
     clearUserData();
+    dispatch(setUserRole(roles.member));
+  };
+
+  const onRoleChange = (observer: boolean) => {
+    if (!observer) {
+      dispatch(setUserRole(roles.observer));
+    } else {
+      dispatch(setUserRole(roles.member));
+    }
   };
 
   return (
@@ -119,6 +128,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
               changeName={(name) => setUsername(name)}
               changeSurname={(name) => setUserSurname(name)}
               confirm={onCreateRoom}
+              onRoleChange={onRoleChange}
             />
           </Grid>
           <Grid container item alignItems="center" spacing={2}>
@@ -144,6 +154,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
                 changeName={(name) => setUsername(name)}
                 changeSurname={(name) => setUserSurname(name)}
                 confirm={onEnterRoom}
+                onRoleChange={onRoleChange}
               />
             </Grid>
           </Grid>

@@ -13,20 +13,16 @@ export interface AppStore {
   socket: Socket;
   userId: string;
   roomId: string;
+  userRole: string;
 }
 
 export const appStore = {
   socket: socketIo,
   userId: '',
   roomId: '',
+  userRole: 'member',
 };
 
-const AppContext = createContext(null)
-//   socket: socketIo,
-//   userId: '',
-//   roomId: '',
-// });
+const AppContext = createContext(null);
 
-// export const AppContextConsumer = AppContext.Consumer;
-// export const AppContextProvider = AppContext.Provider;
 export default AppContext;
