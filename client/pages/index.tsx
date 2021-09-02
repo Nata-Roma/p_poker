@@ -1,10 +1,5 @@
 import axios from 'axios';
 import { InitPage } from 'components/InitPage/initPage';
-import { useReducer } from 'react';
-import { useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { reducer } from 'store/reducer';
-import { appStore } from 'store/store';
 import { BASE_URL } from 'utils/apiConfig';
 
 interface HomePageProps {
@@ -38,26 +33,8 @@ interface HomePageProps {
 // }
 
 const HomePage = ({ message, rooms }: HomePageProps) => {
-  const [ socket, setSocket ] = useState<Socket>();
-  const [state, dispatch] = useReducer(reducer, appStore);
   console.log(rooms);
   
-
-  const socketConnect = () => {
-    const socketIo = io(BASE_URL, {
-      withCredentials: true,
-      extraHeaders: {
-        'my-custom-header': 'abcd',
-      },
-    });
-    dispatch({type:'SOCKET_CONNECT', payload: socket})
-    setSocket(socketIo);
-  };
-
-  // useEffect(() => {
-  //   socketConnect();
-  // }, []);
-
   return (
     <div>
       <InitPage message={message} rooms={rooms} />

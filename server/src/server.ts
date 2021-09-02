@@ -1,8 +1,17 @@
-import { getRoomIdsOnly, getRooms, createRoom, joinUser, leaveUser } from './models/rooms';
+import {
+  getRoomIdsOnly,
+  getRooms,
+  createRoom,
+  joinUser,
+  leaveUser,
+  getUser,
+  getRoom,
+} from './models/rooms';
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import { addChatMessage, getChatAllMessages } from './models/chat';
 
 const app = express();
 const httpServer = createServer(app);
@@ -23,14 +32,24 @@ app.use(express.json());
 io.on('connection', (socket) => {
   console.log(`Connected to socket: ${socket.id}`);
   socket.on('joinRoom', (message) => {
+    socket.join(message.roomId);
     console.log('SOCKET JOIN', message);
     joinUser(message.roomId, message.user);
 
     const rooms = getRoomIdsOnly();
     socket.broadcast.emit('roomList', rooms);
+    socket.to(message.roomId).emit('userJoined', {user: message.user, room: getRoom(message.roomId)})
+  });
+  socket.on('sendMessage', (message) => {
+    console.log(message);
+    const user = getUser(message.roomId, message.userId);
+    addChatMessage(user, message.message, message.roomId);
+    const chatMessages = getChatAllMessages(message.roomId);
+    io.in(message.roomId).emit('chatMessage', chatMessages.chatMessages);
   });
   socket.on('leaveRoom', (message) => {
     console.log('SOCKET LEAVE', message);
+    socket.leave(message.roomId);
     leaveUser(message.roomId, message.userId);
 
     const rooms = getRoomIdsOnly();

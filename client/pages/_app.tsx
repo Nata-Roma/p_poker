@@ -8,29 +8,14 @@ import { Footer } from 'components/Footer';
 import '../styles/globals.css'
 import { io } from 'socket.io-client';
 import { BASE_URL } from 'utils/apiConfig';
-import { AppContext, appStore } from 'store/store';
-
-
-// export const AppContext = createContext(null);
+import AppContext, { appStore } from 'store/store';
+import { useReducer } from 'react';
+import { appReducer } from 'store/reducer';
 
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
-  // const [ socket, setSocket ] = useState(null);
+  const [state, dispatch] = useReducer(appReducer, appStore)
   
-  // const socketConnect = () => {
-  //   const socketIo = io(BASE_URL, {
-  //     withCredentials: true,
-  //     extraHeaders: {
-  //       'my-custom-header': 'abcd',
-  //     },
-  //   });
-  //   setSocket(socketIo);
-  // };
-
-  // useEffect(() => {
-  //   socketConnect();
-  // }, []);
-
   useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
@@ -46,7 +31,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={theme}>
-        <AppContext.Provider value={appStore}>
+        <AppContext.Provider value={{state, dispatch}}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <Component {...pageProps} />

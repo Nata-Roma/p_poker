@@ -9,8 +9,24 @@ const socketIo = io(BASE_URL, {
   },
 });
 
+export interface AppStore {
+  socket: Socket;
+  userId: string;
+  roomId: string;
+}
+
 export const appStore = {
   socket: socketIo,
+  userId: '',
+  roomId: '',
 };
 
-export const AppContext = createContext(appStore);
+const AppContext = createContext(null)
+//   socket: socketIo,
+//   userId: '',
+//   roomId: '',
+// });
+
+// export const AppContextConsumer = AppContext.Consumer;
+// export const AppContextProvider = AppContext.Provider;
+export default AppContext;

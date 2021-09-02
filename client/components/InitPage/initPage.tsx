@@ -3,14 +3,14 @@ import { Button, Grid, Typography } from '@material-ui/core';
 import { useStyleHomePage } from '@styles/initPage.style';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, useState } from 'react';
-import { AppContext } from 'store/store';
 import { BASE_URL } from 'utils/apiConfig';
 import { UserDialog } from './userDialog';
 import React from 'react';
 import { RoomSelect } from './roomSelect';
+import { setRoomId, setUserId } from 'store/reducer';
+import AppContext from 'store/store';
 
 interface MakeChoiceProps {
   message: string;
@@ -20,22 +20,20 @@ interface MakeChoiceProps {
 export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   const classes = useStyleHomePage();
   const router = useRouter();
-  const [roomList, setRoomList] = useState<Array<string>>(rooms)
+  const [ roomList, setRoomList ] = useState<Array<string>>(rooms);
   const [ openCreate, setOpenCreate ] = useState(false);
   const [ openConnect, setOpenConnect ] = useState(false);
   const [ username, setUsername ] = useState('');
   const [ userSurname, setUserSurname ] = useState('');
   const [ room, setRoom ] = useState('');
-  const { socket } = useContext(AppContext);
+  const  {state, dispatch} = useContext(AppContext);
 
-  socket.on('connect', () => {
-    console.log('connected to socket', socket);
+  state.socket.on('connect', () => {
   });
 
-  socket.on('roomList', (message) => {
-    console.log(message);
+  state.socket.on('roomList', (message) => {
     setRoomList(message);
-  })
+  });
 
   const createMessage = (id: string) => {
     return {
@@ -43,14 +41,17 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
       user: {
         username,
         userSurname,
-        id: socket.id,
+        avatar: '',
+        id: state.socket.id,
       },
     };
   };
 
   const goToLobby = (id: string) => {
     const message = createMessage(id);
-    socket.emit('joinRoom', message);
+    dispatch(setUserId(message.user.id))
+    state.socket.emit('joinRoom', message);
+    // state.socket.join(id);
     router.push({
       pathname: '/[lobby]',
       query: { lobby: id },
@@ -67,13 +68,14 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
       };
       setOpenCreate(false);
       const created = await axios.post(`${BASE_URL}/rooms`, config);
-      console.log(created);
+      dispatch(setRoomId(id));
       goToLobby(id);
     }
   };
 
   const onEnterRoom = () => {
     if (username && userSurname && room) {
+      dispatch(setRoomId(room));
       setOpenConnect(false);
       goToLobby(room);
     }

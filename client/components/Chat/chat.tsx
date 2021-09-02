@@ -1,5 +1,8 @@
 import { Button, Grid, Input } from '@material-ui/core';
 import useStylesChat from '@styles/chat.style';
+import { useContext, useState } from 'react';
+import { Socket } from 'socket.io-client';
+import AppContext from 'store/store';
 import { ChatMessages } from './chatMessages';
 
 const chatMessages = [
@@ -24,21 +27,6 @@ const chatMessages = [
     avatar: '',
     message: 'I hate poker',
   },
-  {
-    username: 'Jane Dow',
-    avatar: '',
-    message: 'Nice to see you',
-  },
-  {
-    username: 'Ivan Pupkin',
-    avatar: '',
-    message: 'I am boring',
-  },
-  {
-    username: 'Maraskeva Mupkina',
-    avatar: '',
-    message: 'I hate poker',
-  },
 ];
 
 export interface IChatUser {
@@ -47,18 +35,53 @@ export interface IChatUser {
   message: string;
 }
 
+export interface UserData {
+  id: string;
+  username: string;
+  userSurname: string;
+  avatar: string;
+}
+
+export interface IChatMessages {
+  id: string;
+  username: string;
+  userSurname: string;
+  avatar: string;
+  message: string;
+}
+
 export const Chat = () => {
   const classes = useStylesChat();
+  const { state } = useContext(AppContext);
+  const [ message, setMessage ] = useState('');
+  const [ messages, setMessages ] = useState<Array<IChatMessages>>([]);
+
+  const onSendMessage = () => {
+    if (message) {
+      state.socket.emit('sendMessage', { roomId: state.roomId, userId: state.userId, message });
+    }
+  };
+
+  state.socket.on('chatMessage', (message) => {
+    console.log(message);
+    setMessages(message)
+    
+  })
+  
 
   return (
     <div className={classes.container}>
-      <ChatMessages messages={chatMessages} />
+      <ChatMessages messages={messages} />
       <Grid container wrap="nowrap">
         <div className={classes.inputField}>
-          <Input placeholder="Your message..." fullWidth />
+          <Input
+            placeholder="Your message..."
+            fullWidth
+            onChange={(e) => setMessage(e.target.value)}
+          />
         </div>
         <div className={classes.noShrink}>
-          <Button>Send</Button>
+          <Button onClick={onSendMessage}>Send</Button>
         </div>
       </Grid>
     </div>

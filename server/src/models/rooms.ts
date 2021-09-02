@@ -2,7 +2,7 @@ export interface UserData {
   id: string;
   username: string;
   userSurname: string;
-  avatar?: string;
+  avatar: string;
 }
 
 export interface RoomData {
@@ -76,4 +76,16 @@ export const leaveUser = (roomId: string, userId: string) => {
     roomsData = [ ...rooms ];
   }
   console.log('Rooms after user left: ', JSON.stringify(roomsData));
+};
+
+export const getUser = (roomId: string, userId: string): UserData => {
+  const roomIndex = roomsData.findIndex((item) => item.roomId === roomId);
+  if (roomIndex >= 0) {
+    const users = roomsData[roomIndex].users;
+    const user = users.find((item) => item.id === userId);
+    console.log(user);
+
+    if (user) return user;
+    return null;
+  }
 };

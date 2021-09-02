@@ -1,15 +1,15 @@
 import { Grid, Typography } from '@material-ui/core';
-import { IChatUser } from './chat';
+import { IChatMessages, IChatUser } from './chat';
 import { ChatUser } from './chatUser';
 
 interface ChatMessageProps {
-  message: IChatUser;
+  message: IChatMessages;
 }
 
 export const ChatMessage = ({ message }: ChatMessageProps) => {
   return (
-    <Grid item key={message.username + message.username}>
-      <ChatUser user={{ username: message.username, avatar: message.avatar }} />
+    <Grid item key={message.id}>
+      <ChatUser message={message} />
       <Typography>{message.message}</Typography>
     </Grid>
   );

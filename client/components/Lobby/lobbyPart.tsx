@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link';
 import { useContext } from 'react';
-import { AppContext } from 'store/store';
 import { Button, Typography, Grid } from '@material-ui/core';
 
 import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'components/userCard';
+import AppContext, { appStore } from 'store/store';
 
 
 
@@ -15,19 +15,22 @@ const roles = new Map([ [ 'dealer', 'dealer' ], [ 'member', 'member' ] ]);
 export const LobbyPart = () => {
   const role = 'dealer';
   const classes = useStylesLobbyPart();
-  const { socket } = useContext(AppContext);
+  const {state} = useContext(AppContext);
   const router = useRouter();
   const { lobby } = router.query;
 
   const onRoomLeave = () => {
-    socket.emit('leaveRoom', {
+    state.socket.emit('leaveRoom', {
       roomId: lobby,
-      userId: socket.id
+      userId: state.userId
     });
     router.push('/')
   }
-  
 
+  state.socket.on('userJoined', (message) => {
+    console.log(message);
+  })
+  
   return (
     <>
       <Grid item>
