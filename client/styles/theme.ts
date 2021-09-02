@@ -8,14 +8,12 @@ const theme = createTheme({
       white: '#ffffff',
     },
     primary: {
-      light: '#B3E5FC',
-      main: '#03A9F4',
-      dark: '#0288D1',
-      contrastText: '#212121',
+      main: '#3fb5a3',
+      contrastText: 'rgba(255,255,255,0.87)',
     },
     secondary: {
-      main: '#607D8B', // omitting light and dark will calculate from main
-      contrastText: '#757575',
+        main: '#9333f7',
+        dark: '#5a2290',
     },
     grey: {
       '500': '#bcbcbc',

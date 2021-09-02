@@ -1,27 +1,82 @@
-import { MakeChoice } from 'components/makeChoice';
-import { useState } from 'react';
+import axios from 'axios';
+import { InitPage } from 'components/InitPage/initPage';
+import { useReducer } from 'react';
+import { useEffect, useState } from 'react';
+import { io, Socket } from 'socket.io-client';
+import { reducer } from 'store/reducer';
+import { appStore } from 'store/store';
+import { BASE_URL } from 'utils/apiConfig';
 
-interface TestPage {
+interface HomePageProps {
   message: string;
+  rooms: Array<{name: string; value: string}>
 }
 
+// function useSocket(url) {
+//   const [ socket, setSocket ] = useState(null);
 
-const TestPage = ({ message }: TestPage) => {
-  const [ choice, setChoice ] = useState('');
+//   useEffect(() => {
+//     const socketIo = io(url, {
+//       withCredentials: true,
+//       extraHeaders: {
+//         'my-custom-header': 'abcd',
+//       },
+//     });
+
+//     setSocket(socketIo);
+
+//     function cleanup() {
+//       socketIo.disconnect();
+//     }
+//     return cleanup;
+
+//     // should only run once and not on every re-render,
+//     // so pass an empty array
+//   }, []);
+
+//   return socket;
+// }
+
+const HomePage = ({ message, rooms }: HomePageProps) => {
+  const [ socket, setSocket ] = useState<Socket>();
+  const [state, dispatch] = useReducer(reducer, appStore);
+  console.log(rooms);
+  
+
+  const socketConnect = () => {
+    const socketIo = io(BASE_URL, {
+      withCredentials: true,
+      extraHeaders: {
+        'my-custom-header': 'abcd',
+      },
+    });
+    dispatch({type:'SOCKET_CONNECT', payload: socket})
+    setSocket(socketIo);
+  };
+
+  // useEffect(() => {
+  //   socketConnect();
+  // }, []);
 
   return (
-    <div style={{backgroundColor: choice}}>
-      <MakeChoice choice={setChoice} message={message} />
+    <div>
+      <InitPage message={message} rooms={rooms} />
     </div>
   );
 };
 
-export const getServerSideProps = () => {
+export const getServerSideProps = async () => {
+  const rooms = await axios({
+    method: 'GET',
+    url: `${BASE_URL}/rooms`
+  });
+
   return {
     props: {
-      message: 'Make Your choice wisely',
+      message: 'Poker Planning',
+      rooms: rooms.data
     },
   };
 };
 
-export default TestPage;
+export default HomePage;
