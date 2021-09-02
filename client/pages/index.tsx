@@ -9,7 +9,7 @@ import { BASE_URL } from 'utils/apiConfig';
 
 interface HomePageProps {
   message: string;
-  rooms: Array<{name: string; value: string}>
+  rooms: Array<string>
 }
 
 // function useSocket(url) {

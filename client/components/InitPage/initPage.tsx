@@ -14,7 +14,7 @@ import { RoomSelect } from './roomSelect';
 
 interface MakeChoiceProps {
   message: string;
-  rooms: Array<{ name: string; value: string }>;
+  rooms: Array<string>;
 }
 
 export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
@@ -25,7 +25,10 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   const [ userSurname, setUserSurname ] = useState('');
   const [ room, setRoom ] = useState('');
   const { socket } = useContext(AppContext);
-  console.log(socket);
+
+  socket.on('connect', () => {
+    console.log('connected to socket', socket);
+  });
 
   const goToLobby = (id: string) => {
     router.push({
@@ -98,7 +101,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
           <Grid container item alignItems="center" spacing={2}>
             <Grid item sm={6} xs={12}>
               <RoomSelect
-                rooms={rooms.map((item) => item.name)}
+                rooms={rooms.map((item) => item)}
                 onRoomSelect={setRoom}
               />
             </Grid>
