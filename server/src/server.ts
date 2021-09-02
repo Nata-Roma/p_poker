@@ -1,4 +1,4 @@
-import { getRoomIdsOnly, getRooms, setRoom } from './models/rooms';
+import { getRoomIdsOnly, getRooms, createRoom, joinUser, leaveUser } from './models/rooms';
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
@@ -10,21 +10,32 @@ app.use(cors());
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["my-custom-header"],
-    credentials: true
-  }
+    origin: 'http://localhost:3000',
+    methods: [ 'GET', 'POST' ],
+    allowedHeaders: [ 'my-custom-header' ],
+    credentials: true,
+  },
 });
 const PORT = 4000;
-
-const roomsData = new Map();
-const users = new Map();
 
 app.use(express.json());
 
 io.on('connection', (socket) => {
   console.log(`Connected to socket: ${socket.id}`);
+  socket.on('joinRoom', (message) => {
+    console.log('SOCKET JOIN', message);
+    joinUser(message.roomId, message.user);
+
+    const rooms = getRoomIdsOnly();
+    socket.broadcast.emit('roomList', rooms);
+  });
+  socket.on('leaveRoom', (message) => {
+    console.log('SOCKET LEAVE', message);
+    leaveUser(message.roomId, message.userId);
+
+    const rooms = getRoomIdsOnly();
+    socket.broadcast.emit('roomList', rooms);
+  });
 });
 
 app.get('/', (req, res) => {
@@ -40,20 +51,13 @@ app.post('/', (req, res) => {
 app.get('/rooms', (req, res) => {
   const rooms = getRoomIdsOnly();
   console.log('ROOMS', rooms);
-  res.json(rooms)
-})
+  res.json(rooms);
+});
 
 app.post('/rooms', (req, res) => {
-  const {room, user} = req.body.data
-  console.log(req.body.data);
-  users.set(user.id, user);
-  roomsData.set(room, room);
-  const data = {
-    users: users.get(user.id),
-    roomsData: roomsData.get(room),
-  }
-  setRoom(room, user);
-  res.status(201).json(data);
+  const { data } = req.body;
+  createRoom(data);
+  res.status(201).json('created');
 });
 
 // app.post('/users', (req, res) => {
@@ -63,4 +67,4 @@ app.post('/rooms', (req, res) => {
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`);
-})
+});

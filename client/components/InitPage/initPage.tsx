@@ -20,7 +20,9 @@ interface MakeChoiceProps {
 export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   const classes = useStyleHomePage();
   const router = useRouter();
-  const [ open, setOpen ] = useState(false);
+  const [roomList, setRoomList] = useState<Array<string>>(rooms)
+  const [ openCreate, setOpenCreate ] = useState(false);
+  const [ openConnect, setOpenConnect ] = useState(false);
   const [ username, setUsername ] = useState('');
   const [ userSurname, setUserSurname ] = useState('');
   const [ room, setRoom ] = useState('');
@@ -30,46 +32,65 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
     console.log('connected to socket', socket);
   });
 
+  socket.on('roomList', (message) => {
+    console.log(message);
+    setRoomList(message);
+  })
+
+  const createMessage = (id: string) => {
+    return {
+      roomId: id,
+      user: {
+        username,
+        userSurname,
+        id: socket.id,
+      },
+    };
+  };
+
   const goToLobby = (id: string) => {
+    const message = createMessage(id);
+    socket.emit('joinRoom', message);
     router.push({
       pathname: '/[lobby]',
       query: { lobby: id },
     });
   };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const onDialogClose = () => {
-    setOpen(false);
-  };
 
   const onCreateRoom = async () => {
+    console.log(username, userSurname);
+
     if (username && userSurname) {
       const id = nanoid();
       const config = {
-        data: {
-          room: id,
-          user: {
-            username,
-            userSurname,
-            id: socket.id,
-          },
-        },
+        data: id,
       };
-      onDialogClose();
+      setOpenCreate(false);
       const created = await axios.post(`${BASE_URL}/rooms`, config);
       console.log(created);
       goToLobby(id);
     }
   };
 
-  const onChangeUsername = (username: string) => {
-    setUsername(username);
+  const onEnterRoom = () => {
+    if (username && userSurname && room) {
+      setOpenConnect(false);
+      goToLobby(room);
+    }
   };
 
-  const onChangeUserSurname = (userSurname: string) => {
-    setUserSurname(userSurname);
+  const clearUserData = () => {
+    setUsername('');
+    setUserSurname('');
+  };
+
+  const onCreateCancel = () => {
+    setOpenCreate(false);
+    clearUserData();
+  };
+  const onConnectCancel = () => {
+    setOpenConnect(false);
+    clearUserData();
   };
 
   return (
@@ -86,22 +107,22 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
             <Button
               variant="contained"
               color="primary"
-              onClick={handleClickOpen}
+              onClick={() => setOpenCreate(true)}
             >
               Start New game
             </Button>
             <UserDialog
-              onDialogClose={onDialogClose}
-              open={open}
-              changeName={onChangeUsername}
-              changeSurname={onChangeUserSurname}
+              onDialogClose={onCreateCancel}
+              open={openCreate}
+              changeName={(name) => setUsername(name)}
+              changeSurname={(name) => setUserSurname(name)}
               confirm={onCreateRoom}
             />
           </Grid>
           <Grid container item alignItems="center" spacing={2}>
             <Grid item sm={6} xs={12}>
               <RoomSelect
-                rooms={rooms.map((item) => item)}
+                rooms={roomList.map((item) => item)}
                 onRoomSelect={setRoom}
               />
             </Grid>
@@ -110,11 +131,18 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
                 variant="contained"
                 color="primary"
                 onClick={() => {
-                  goToLobby(room);
+                  setOpenConnect(true);
                 }}
               >
                 Connect to Room
               </Button>
+              <UserDialog
+                onDialogClose={onConnectCancel}
+                open={openConnect}
+                changeName={(name) => setUsername(name)}
+                changeSurname={(name) => setUserSurname(name)}
+                confirm={onEnterRoom}
+              />
             </Grid>
           </Grid>
         </Grid>

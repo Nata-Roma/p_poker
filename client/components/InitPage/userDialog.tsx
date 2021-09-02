@@ -27,9 +27,8 @@ export const UserDialog: FC<UserDialogProps> = ({
       <Dialog
         open={open}
         onClose={onDialogClose}
-        aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+        <DialogTitle>Subscribe</DialogTitle>
         <DialogContent>
           <DialogContentText>
             To subscribe to this website, please enter your email address here.
@@ -38,7 +37,6 @@ export const UserDialog: FC<UserDialogProps> = ({
           <TextField
             autoFocus
             margin="dense"
-            id="name"
             label="Name"
             type="text"
             fullWidth
@@ -46,7 +44,6 @@ export const UserDialog: FC<UserDialogProps> = ({
           />
           <TextField
             margin="dense"
-            id="surname"
             label="Surname"
             type="text"
             fullWidth

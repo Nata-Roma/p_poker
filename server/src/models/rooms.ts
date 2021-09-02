@@ -34,30 +34,46 @@ export const getRoomIdsOnly = (): Array<string> => {
   return roomIds;
 };
 
-export const setRoom = (roomId: string, user: UserData) => {
+export const createRoom = (roomId: string) => {
   const room = roomsData.find((item) => item.roomId === roomId);
   if (!room) {
-    roomsData.push({ roomId, users: [ user ] });
+    roomsData.push({ roomId, users: [] });
   }
+  console.log('Room CREATED', roomsData);
 };
 
 export const joinUser = (roomId: string, user: UserData) => {
   const roomIndex = roomsData.findIndex((item) => item.roomId === roomId);
 
-  if (roomIndex) {
-    const room = { ...roomsData[roomIndex] };
-    room.users.push(user);
-    roomsData = [ ...roomsData, (roomsData[roomIndex] = room) ];
+  console.log(roomId, user);
+
+  if (roomIndex >= 0) {
+    console.log('room found', roomIndex);
+
+    const rooms = [ ...roomsData ];
+    const users = rooms[roomIndex].users;
+    users.push(user);
+    rooms[roomIndex] = {
+      roomId,
+      users,
+    };
+    roomsData = [ ...rooms ];
   }
+  console.log('Rooms after user joined: ', JSON.stringify(roomsData));
 };
 
-export const leaveUser = (roomId: string, user: UserData) => {
+export const leaveUser = (roomId: string, userId: string) => {
   const roomIndex = roomsData.findIndex((item) => item.roomId === roomId);
 
-  if (roomIndex) {
-    const room = { ...roomsData[roomIndex] };
-    const newUsers = room.users.filter((item) => item.id !== user.id);
-    room.users = newUsers;
-    roomsData = [ ...roomsData, (roomsData[roomIndex] = room) ];
+  if (roomIndex >= 0) {
+    const rooms = [ ...roomsData ];
+    let users = rooms[roomIndex].users;
+    users = users.filter((item) => item.id !== userId);
+    rooms[roomIndex] = {
+      roomId,
+      users,
+    };
+    roomsData = [ ...rooms ];
   }
+  console.log('Rooms after user left: ', JSON.stringify(roomsData));
 };
