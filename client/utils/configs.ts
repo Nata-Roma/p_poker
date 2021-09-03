@@ -28,5 +28,5 @@ export const userInitData = {
     nameData: '',
     statusData: false,
   },
-  avatar: defaultAvatar
+  avatar: ''
 };

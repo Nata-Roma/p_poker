@@ -1,6 +1,10 @@
 import { Grid } from '@material-ui/core';
 import useStylesLobby from '@styles/lobby.style';
 import { Chat } from 'components/Chat/chat';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { apiGetLobbyInfo } from 'services/apiServices';
+import { IChat, IRoomData } from 'utils/interfaces';
 import { LobbyPart } from './lobbyPart';
 
 export interface IUser {
@@ -8,14 +12,44 @@ export interface IUser {
   avatar: string;
 }
 
+interface LobbyProps {
+  lobbyInfo: {
+    chats: IChat;
+    users: IRoomData;
+  };
+}
+
 const Lobby = () => {
   const classes = useStylesLobby();
+  const [ chatMessages, setChatMessages ] = useState<IChat>();
+  const [ users, setUsers ] = useState();
+  const router = useRouter();
+  // console.log(lobbyInfo);
+
+  const initData = async () => {
+    const data = await apiGetLobbyInfo(router.query.lobby);
+    setChatMessages(data.chat);
+    setUsers(data.users);
+    console.log(data);
+  };
+
+  useEffect(() => {
+    initData();
+  }, []);
 
   return (
     <div className={classes.container}>
-      <Grid container style={{height: '100%'}}>
-        <Grid container direction="column" item xs={12} md={9} sm={7}  className={classes.lobbyPartContainer}>
-          <LobbyPart />
+      <Grid container style={{ height: '100%' }}>
+        <Grid
+          container
+          direction="column"
+          item
+          xs={12}
+          md={9}
+          sm={7}
+          className={classes.lobbyPartContainer}
+        >
+          {users && <LobbyPart users={users} />}
         </Grid>
         <Grid item xs={12} md={3} sm={5} className={classes.chatPartContainer}>
           <Chat />
@@ -24,5 +58,17 @@ const Lobby = () => {
     </div>
   );
 };
+
+// export const getServerSideProps = async (context) => {
+//   const { lobby } = context.params;
+
+//   const lobbyInfo = await apiGetLobbyInfo(lobby);
+
+//   return {
+//     props: {
+//       lobbyInfo: lobbyInfo,
+//     },
+//   };
+// };
 
 export default Lobby;

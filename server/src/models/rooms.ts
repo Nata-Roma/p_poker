@@ -25,7 +25,7 @@ export const getRooms = (): Array<RoomData> => {
   return roomsData;
 };
 
-export const getRoomIdsOnly = (): Array<string> => {
+export const getRoomIds = (): Array<string> => {
   const roomIds = roomsData.reduce((acc: Array<string>, room) => {
     const roomId = room.roomId;
     acc.push(roomId);
@@ -39,17 +39,12 @@ export const createRoom = (roomId: string) => {
   if (!room) {
     roomsData.push({ roomId, users: [] });
   }
-  console.log('Room CREATED', roomsData);
 };
 
 export const joinUser = (roomId: string, user: UserData) => {
   const roomIndex = roomsData.findIndex((item) => item.roomId === roomId);
 
-  console.log(roomId, user);
-
   if (roomIndex >= 0) {
-    console.log('room found', roomIndex);
-
     const rooms = [ ...roomsData ];
     const users = rooms[roomIndex].users;
     users.push(user);
@@ -59,7 +54,6 @@ export const joinUser = (roomId: string, user: UserData) => {
     };
     roomsData = [ ...rooms ];
   }
-  console.log('Rooms after user joined: ', JSON.stringify(roomsData));
 };
 
 export const leaveUser = (roomId: string, userId: string) => {
@@ -75,7 +69,6 @@ export const leaveUser = (roomId: string, userId: string) => {
     };
     roomsData = [ ...rooms ];
   }
-  console.log('Rooms after user left: ', JSON.stringify(roomsData));
 };
 
 export const getUser = (roomId: string, userId: string): UserData => {
@@ -83,7 +76,6 @@ export const getUser = (roomId: string, userId: string): UserData => {
   if (roomIndex >= 0) {
     const users = roomsData[roomIndex].users;
     const user = users.find((item) => item.id === userId);
-    console.log(user);
 
     if (user) return user;
     return null;

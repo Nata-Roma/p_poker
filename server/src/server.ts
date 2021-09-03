@@ -1,5 +1,5 @@
 import {
-  getRoomIdsOnly,
+  getRoomIds,
   getRooms,
   createRoom,
   joinUser,
@@ -33,10 +33,10 @@ io.on('connection', (socket) => {
   console.log(`Connected to socket: ${socket.id}`);
   socket.on('joinRoom', (message) => {
     socket.join(message.roomId);
-    console.log('SOCKET JOIN', message);
+    console.log('SOCKET JOIN');
     joinUser(message.roomId, message.user);
 
-    const rooms = getRoomIdsOnly();
+    const rooms = getRoomIds();
     socket.broadcast.emit('roomList', rooms);
     socket.to(message.roomId).emit('userJoined', {user: message.user, room: getRoom(message.roomId)})
   });
@@ -52,7 +52,7 @@ io.on('connection', (socket) => {
     socket.leave(message.roomId);
     leaveUser(message.roomId, message.userId);
 
-    const rooms = getRoomIdsOnly();
+    const rooms = getRoomIds();
     socket.broadcast.emit('roomList', rooms);
   });
 });
@@ -68,18 +68,29 @@ app.post('/', (req, res) => {
 });
 
 app.get('/rooms', (req, res) => {
-  const rooms = getRoomIdsOnly();
+  const rooms = getRoomIds();
   console.log('ROOMS', rooms);
   res.json(rooms);
 });
 
-app.get('/chat', (req, res) => {
-  const { data } = req.body;
+app.get('/chats/:room', (req, res) => {
+  const room = req.params.room;
+  
+  const chat = getChatAllMessages(room);
+  // console.log('ROOMS', rooms);
+  // res.json(rooms);
+  console.log('request for chat', room);
+  res.json(chat)
+});
+
+app.get('/users/:room', (req, res) => {
+  const room = req.params.room;
+  const users = getRoom(room);
   // const chat = getRoomIdsOnly();
   // console.log('ROOMS', rooms);
   // res.json(rooms);
-  console.log('request for chat');
-  
+  console.log('request for users', room);
+  res.json(users)
 });
 
 app.post('/rooms', (req, res) => {

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { InitPage } from 'components/InitPage/initPage';
+import { apiGetRooms } from 'services/apiServices';
 import { BASE_URL } from 'utils/apiConfig';
 
 interface HomePageProps {
@@ -42,14 +43,11 @@ const HomePage = ({ rooms }: HomePageProps) => {
 };
 
 export const getServerSideProps = async () => {
-  const rooms = await axios({
-    method: 'GET',
-    url: `${BASE_URL}/rooms`
-  });
+  const rooms = await apiGetRooms()
 
   return {
     props: {
-      rooms: rooms.data
+      rooms: rooms
     },
   };
 };

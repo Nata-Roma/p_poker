@@ -1,23 +1,29 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link';
-import { useContext } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { Button, Typography, Grid } from '@material-ui/core';
 
 import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'components/userCard';
 import AppContext, { appStore } from 'store/store';
+import { IRoomData, IUser } from 'utils/interfaces';
+import { ObserverList } from './observerList';
 
 
 
 const roles = new Map([ [ 'dealer', 'dealer' ], [ 'member', 'member' ] ]);
 
-export const LobbyPart = () => {
-  const role = 'dealer';
+interface LobbyPartProps {
+  users: IRoomData;
+}
+
+export const LobbyPart:FC<LobbyPartProps> = ({users}) => {
   const classes = useStylesLobbyPart();
   const {state} = useContext(AppContext);
   const router = useRouter();
   const { lobby } = router.query;
+  const [dealer, setDealer] = useState<IUser>();
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -31,6 +37,11 @@ export const LobbyPart = () => {
     console.log(message);
   })
   
+useEffect(() => {
+  const dealer = users.users.find(user => user.dealer)
+  setDealer(dealer)
+}, [])
+
   return (
     <>
       <Grid item>
@@ -40,9 +51,9 @@ export const LobbyPart = () => {
       </Grid>
       <Grid item className={classes.mBottom}>
         <Typography variant="subtitle2">Dealer:</Typography>
-        <UserCard user={{ username: 'Koza Nostra', avatar: '' }} />
+        {dealer && <UserCard user={dealer} />}
       </Grid>
-      {role === roles.get('dealer') && (
+      {state.dealer && (
         <Grid item className={classes.mBottom}>
           <Link href="/lobby/game">
             <Button color="primary" variant="contained">
@@ -63,7 +74,10 @@ export const LobbyPart = () => {
           </Button>
       </Grid>
       <Grid item container>
-        <MemberList />
+        <MemberList users={users} />
+      </Grid>
+      <Grid item container>
+        <ObserverList users={users} />
       </Grid>
     </>
   );
