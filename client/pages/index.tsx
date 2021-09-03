@@ -1,27 +1,57 @@
-import { MakeChoice } from 'components/makeChoice';
-import { useState } from 'react';
+import axios from 'axios';
+import { InitPage } from 'components/InitPage/initPage';
+import { BASE_URL } from 'utils/apiConfig';
 
-interface TestPage {
-  message: string;
+interface HomePageProps {
+  rooms: Array<string>
 }
 
+// function useSocket(url) {
+//   const [ socket, setSocket ] = useState(null);
 
-const TestPage = ({ message }: TestPage) => {
-  const [ choice, setChoice ] = useState('');
+//   useEffect(() => {
+//     const socketIo = io(url, {
+//       withCredentials: true,
+//       extraHeaders: {
+//         'my-custom-header': 'abcd',
+//       },
+//     });
 
+//     setSocket(socketIo);
+
+//     function cleanup() {
+//       socketIo.disconnect();
+//     }
+//     return cleanup;
+
+//     // should only run once and not on every re-render,
+//     // so pass an empty array
+//   }, []);
+
+//   return socket;
+// }
+
+const HomePage = ({ rooms }: HomePageProps) => {
+  console.log(rooms);
+  
   return (
-    <div style={{backgroundColor: choice}}>
-      <MakeChoice choice={setChoice} message={message} />
+    <div>
+      <InitPage rooms={rooms} />
     </div>
   );
 };
 
-export const getServerSideProps = () => {
+export const getServerSideProps = async () => {
+  const rooms = await axios({
+    method: 'GET',
+    url: `${BASE_URL}/rooms`
+  });
+
   return {
     props: {
-      message: 'Make Your choice wisely',
+      rooms: rooms.data
     },
   };
 };
 
-export default TestPage;
+export default HomePage;

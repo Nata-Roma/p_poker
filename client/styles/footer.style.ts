@@ -10,6 +10,7 @@ const useStylesFooter = makeStyles((theme: Theme) =>
     },
     container: {
       padding: '10px',
+      cursor: 'pointer',
     },
   }),
 );

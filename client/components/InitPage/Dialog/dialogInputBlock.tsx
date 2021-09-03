@@ -1,0 +1,89 @@
+import { DialogContent, TextField } from '@material-ui/core';
+import { FC, useEffect, useState } from 'react';
+import { errorInfo, userInitData } from 'utils/configs';
+import { IDialogUsers } from 'utils/interfaces';
+
+interface DialogInputBlockProps {
+  changeUserData: (value: IDialogUsers) => void;
+  userInfo: IDialogUsers
+}
+
+export const DialogInputBlock: FC<DialogInputBlockProps> = ({
+  changeUserData,
+  userInfo
+}) => {
+  const [ nameErrorInfo, setNameErrorInfo ] = useState(errorInfo.nameError.bad);
+  const [ surnameErrorInfo, setSurnameErrorInfo ] = useState(
+    errorInfo.surnameError.bad,
+  );
+  const [ nameError, setNameError ] = useState(true);
+  const [ surnameError, setSurnameError ] = useState(true);
+
+  const onChangeInput = (e) => {
+    const targetName = e.target.name;
+    const targetValue = e.target.value;
+    const newUserInfo = {
+      ...userInfo,
+      username: {
+        ...userInfo.username
+      },
+      userSurname: {
+        ...userInfo.userSurname
+      },
+    };
+
+    if (targetName === 'username') {
+      newUserInfo.username.nameData = targetValue;
+      if (targetValue.length >= errorInfo.nameError.validator) {
+        setNameErrorInfo(errorInfo.nameError.ok);
+        setNameError(false);
+        newUserInfo.username.statusData = true;
+      } else {
+        setNameErrorInfo(errorInfo.nameError.bad);
+        setNameError(true);
+        newUserInfo.username.statusData = false;
+      }
+    }
+    if (targetName === 'userSurname') {
+      newUserInfo.userSurname.nameData = targetValue;
+      if (targetValue.length >= errorInfo.surnameError.validator) {
+        setSurnameErrorInfo(errorInfo.surnameError.ok);
+        setSurnameError(false);
+        newUserInfo.userSurname.statusData = true;
+      } else {
+        setSurnameErrorInfo(errorInfo.surnameError.bad);
+        setSurnameError(true);
+        newUserInfo.userSurname.statusData = false;
+      }
+    }
+    changeUserData(newUserInfo);
+  };
+
+  return (
+    <>
+      <DialogContent>
+        <TextField
+          autoFocus
+          margin="dense"
+          label="Name"
+          type="text"
+          fullWidth
+          name="username"
+          onChange={(e) => onChangeInput(e)}
+          error={nameError}
+          helperText={nameErrorInfo}
+        />
+        <TextField
+          margin="dense"
+          label="Surname"
+          type="text"
+          fullWidth
+          name="userSurname"
+          onChange={(e) => onChangeInput(e)}
+          error={surnameError}
+          helperText={surnameErrorInfo}
+        />
+      </DialogContent>
+    </>
+  );
+};

@@ -1,10 +1,10 @@
 import { Grid } from '@material-ui/core';
 import useStylesChat from '@styles/chat.style';
-import { IChatUser } from './chat';
+import { IChatMessages } from './chat';
 import { ChatMessage } from './chatMessage';
 
 interface ChatMessagesProps {
-  messages: Array<IChatUser>;
+  messages: Array<IChatMessages>;
 }
 
 export const ChatMessages = ({ messages }: ChatMessagesProps) => {
@@ -14,7 +14,7 @@ export const ChatMessages = ({ messages }: ChatMessagesProps) => {
     <Grid container direction="column" wrap='nowrap' className={classes.chatMessages}>
       {messages &&
         messages.map((message) => (
-          <Grid item key={message.username + message.username}>
+          <Grid item key={message.id}>
             <ChatMessage message={message} />
           </Grid>
         ))}

@@ -1,31 +1,34 @@
 import { Typography } from '@material-ui/core';
 import useStylesUserChat from '@styles/userChat.style';
-import { IUser } from 'components/Lobby';
+import { IChatMessages, UserData } from './chat';
 
 interface ChatUserProps {
-  user: IUser;
+  message: IChatMessages;
 }
 
-export const ChatUser = ({ user}: ChatUserProps) => {
+export const ChatUser = ({ message}: ChatUserProps) => {
   const classes = useStylesUserChat();
 
   return (
     <div className={classes.container}>
       <div className={classes.avatar}>
-        {user.avatar && (
+        {message.avatar && (
           <div
             className={classes.avatarImg}
-            style={{ backgroundImage: `url(${user.avatar})` }}
+            style={{ backgroundImage: `url(${message.avatar})` }}
           />
         )}
-        {!user.avatar &&
-          user.username.split(' ').map((letter, i) => (
-            <div className={classes.avatarText} key={letter + i}>
-              {letter[0]}
+        {!message.avatar && <>
+          <div className={classes.avatarText}>
+              {message.username[0]}
             </div>
-          ))}
+            <div className={classes.avatarText}>
+              {message.userSurname[0]}
+            </div>
+        </>
+          }
       </div>
-      <Typography variant='subtitle2'>{user.username}</Typography>
+      <Typography variant='subtitle2'>{message.username}</Typography>
     </div>
   );
 };
