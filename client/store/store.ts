@@ -14,6 +14,7 @@ export interface AppStore {
   userId: string;
   roomId: string;
   userRole: string;
+  dealer: boolean
 }
 
 export const appStore = {
@@ -21,6 +22,7 @@ export const appStore = {
   userId: '',
   roomId: '',
   userRole: 'member',
+  dealer: false
 };
 
 const AppContext = createContext(null);

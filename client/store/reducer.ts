@@ -1,31 +1,11 @@
-import { appStore, AppStore } from './store';
+import { appStore } from './store';
 
 export const actionTypes = {
   SOCKET_CONNECT: 'SOCKET_CONNECT',
   SET_USER_ID: 'SET_USER_ID',
   SET_ROOM_ID: 'SET_ROOM_ID',
   SET_USER_ROLE: 'SET_USER_ROLE',
-};
-
-export const setRoomId = (id: string) => {
-  return {
-    type: actionTypes.SET_ROOM_ID,
-    payload: id,
-  };
-};
-
-export const setUserId = (id: string) => {
-  return {
-    type: actionTypes.SET_USER_ID,
-    payload: id,
-  };
-};
-
-export const setUserRole = (role: string) => {
-  return {
-    type: actionTypes.SET_USER_ROLE,
-    payload: role,
-  };
+  SET_DEALER: 'SET_DEALER'
 };
 
 export const appReducer = (state = appStore, action) => {
@@ -41,6 +21,9 @@ export const appReducer = (state = appStore, action) => {
 
       case actionTypes.SET_USER_ROLE:
         return { ...state, userRole: action.payload };
+
+        case actionTypes.SET_DEALER:
+        return { ...state, dealer: action.payload };
   
     default:
       return state;

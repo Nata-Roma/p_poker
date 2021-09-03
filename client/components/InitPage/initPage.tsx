@@ -9,7 +9,7 @@ import { BASE_URL } from 'utils/apiConfig';
 import { UserDialog } from './userDialog';
 import React from 'react';
 import { RoomSelect } from './roomSelect';
-import { setRoomId, setUserId, setUserRole } from 'store/reducer';
+import { setDealer, setRoomId, setUserId, setUserRole } from 'store/actionCreators';
 import AppContext from 'store/store';
 import { roles } from 'utils/configs';
 import { userCreate } from 'utils/userCreate';
@@ -57,6 +57,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
       setOpenCreate(false);
       const created = await axios.post(`${BASE_URL}/rooms`, config);
       dispatch(setRoomId(id));
+      dispatch(setDealer(true));
       goToLobby(id);
     }
   };
