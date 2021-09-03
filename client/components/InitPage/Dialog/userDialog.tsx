@@ -67,7 +67,7 @@ export const UserDialog: FC<UserDialogProps> = ({
                   checked={role === roles.observer ? true : false}
                   onChange={onRoleChange}
                   name="checkedB"
-                  color="primary"
+                  color="secondary"
                 />
               }
               labelPlacement="start"

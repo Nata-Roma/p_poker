@@ -45,7 +45,7 @@ export const RoomSelect: FC<RoomSelectProps> = ({ rooms, onRoomSelect }) => {
   return (
     <div>
       <FormControl className={classes.formControl} fullWidth>
-        <InputLabel id="demo-controlled-open-select-label">Connect to Room</InputLabel>
+        <InputLabel id="demo-controlled-open-select-label">Select Room</InputLabel>
         <Select
           labelId="demo-controlled-open-select-label"
           id="demo-controlled-open-select"
@@ -54,6 +54,7 @@ export const RoomSelect: FC<RoomSelectProps> = ({ rooms, onRoomSelect }) => {
           onOpen={handleOpen}
           value={room}
           onChange={handleChange}
+          color='secondary'
         >
           <MenuItem value="">
             <em>None</em>

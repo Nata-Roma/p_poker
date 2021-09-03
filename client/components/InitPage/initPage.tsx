@@ -1,13 +1,11 @@
-import { useContext, useEffect } from 'react';
-import { Button, Grid, Typography } from '@material-ui/core';
-import { useStyleHomePage } from '@styles/initPage.style';
+import React, { useContext, useEffect, FC, useState } from 'react';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
-import { useRouter } from 'next/router';
-import { FC, useState } from 'react';
+import { Button, Grid, Typography } from '@material-ui/core';
+import { useStyleHomePage } from '@styles/initPage.style';
 import { BASE_URL } from 'utils/apiConfig';
-import { UserDialog } from './Dialog/userDialog';
-import React from 'react';
 import { RoomSelect } from './roomSelect';
 import {
   setDealer,
@@ -19,14 +17,14 @@ import AppContext from 'store/store';
 import { roles, userInitData } from 'utils/configs';
 import { userCreate } from 'utils/userCreate';
 import { IDialogUsers } from 'utils/interfaces';
-import getFormattedImgDataLink from 'utils/imgToDatalink';
+import { UserDialog } from './Dialog/userDialog';
+import pokerImage from '../../public/poker-cards_green.png';
 
 interface MakeChoiceProps {
-  message: string;
   rooms: Array<string>;
 }
 
-export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
+export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   const classes = useStyleHomePage();
   const router = useRouter();
   const [ roomList, setRoomList ] = useState<Array<string>>(rooms);
@@ -128,51 +126,69 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   return (
     <div className={classes.wrapper}>
       <div className={classes.container}>
-        <Typography variant="h3" align="center">
-          {message}
-        </Typography>
-        <Typography variant="h4" color="primary" align="center">
+        <Grid
+          container
+          justifyContent="center"
+          alignItems="center"
+          className={classes.titleWrapper}
+        >
+          <Grid item>
+            <Image src={pokerImage} />
+          </Grid>
+          <Grid item>
+            <Typography variant="h3" align="center">
+              Poker Planning
+            </Typography>
+          </Grid>
+        </Grid>
+
+        <Typography variant="h4" align="center" className={classes.title}>
           Start your planning:
         </Typography>
-        <Grid container>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setOpenCreate(true)}
-            >
-              Start New game
-            </Button>
-            <UserDialog
-              onDialogClose={onCreateCancel}
-              open={openCreate}
-              confirm={onCreateRoom}
-              onRoleChange={() =>
-                setRole(
-                  (prev) =>
-                    prev === roles.observer ? roles.member : roles.observer,
-                )}
-              role={role}
-              loading={(status) => setLoading(status)}
-              changeUserData={changeUserData}
-              addAvatar={addAvatar}
-              userInfo={userData}
-            />
+        <Grid container justifyContent='center'>
+          <Grid container item alignItems="center" justifyContent='center' spacing={2} className={classes.choiceWrapper}>
+            <Grid item className={classes.choiceContainer} />
+            <Grid item >
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setOpenCreate(true)}
+                className={classes.btn}
+              >
+                Start New game
+              </Button>
+              <UserDialog
+                onDialogClose={onCreateCancel}
+                open={openCreate}
+                confirm={onCreateRoom}
+                onRoleChange={() =>
+                  setRole(
+                    (prev) =>
+                      prev === roles.observer ? roles.member : roles.observer,
+                  )}
+                role={role}
+                loading={(status) => setLoading(status)}
+                changeUserData={changeUserData}
+                addAvatar={addAvatar}
+                userInfo={userData}
+              />
+            </Grid>
           </Grid>
-          <Grid container item alignItems="center" spacing={2}>
-            <Grid item sm={6} xs={12}>
+          <Grid container item alignItems="center" justifyContent='center' spacing={2} className={classes.choiceWrapper}>
+            <Grid item className={classes.choiceContainer}>
               <RoomSelect
                 rooms={roomList.map((item) => item)}
                 onRoomSelect={setRoom}
               />
             </Grid>
-            <Grid item sm={6} xs={12}>
+            <Grid item>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={() => {
                   setOpenConnect(true);
                 }}
+                className={classes.btn}
               >
                 Connect to Room
               </Button>

@@ -3,7 +3,6 @@ import { InitPage } from 'components/InitPage/initPage';
 import { BASE_URL } from 'utils/apiConfig';
 
 interface HomePageProps {
-  message: string;
   rooms: Array<string>
 }
 
@@ -32,12 +31,12 @@ interface HomePageProps {
 //   return socket;
 // }
 
-const HomePage = ({ message, rooms }: HomePageProps) => {
+const HomePage = ({ rooms }: HomePageProps) => {
   console.log(rooms);
   
   return (
     <div>
-      <InitPage message={message} rooms={rooms} />
+      <InitPage rooms={rooms} />
     </div>
   );
 };
@@ -50,7 +49,6 @@ export const getServerSideProps = async () => {
 
   return {
     props: {
-      message: 'Poker Planning',
       rooms: rooms.data
     },
   };

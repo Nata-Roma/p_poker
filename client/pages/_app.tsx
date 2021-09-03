@@ -4,7 +4,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import theme from '@styles/theme';
-import { Footer } from 'components/Footer';
+import { Footer } from 'components/Footer/footer';
 import '../styles/globals.css'
 import { io } from 'socket.io-client';
 import { BASE_URL } from 'utils/apiConfig';
