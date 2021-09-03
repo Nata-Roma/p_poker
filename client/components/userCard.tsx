@@ -5,14 +5,15 @@ import { IUser } from 'utils/interfaces';
 
 interface UserCardProps {
   user: IUser;
+  observer: boolean
 }
 
-export const UserCard = ({ user }: UserCardProps) => {
+export const UserCard = ({ user, observer }: UserCardProps) => {
   const classes = useStylesUserCard();
 
   return (
     <div className={classes.container}>
-      <div className={classes.avatar}>
+      <div className={observer ? `${classes.avatar} ${classes.avatarObserver}` : `${classes.avatar}`}>
         {user.avatar && (
           <div
             className={classes.avatarImg}

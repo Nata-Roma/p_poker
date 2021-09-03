@@ -44,7 +44,7 @@ export const MemberList: FC<MemberListProps> = ({ users }) => {
               !user.dealer &&
               user.userRole === roles.member && (
                 <Grid item key={user.username}>
-                  <UserCard user={user} />
+                  <UserCard user={user} observer={false} />
                 </Grid>
               ),
           )}

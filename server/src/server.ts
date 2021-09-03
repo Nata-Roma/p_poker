@@ -75,10 +75,7 @@ app.get('/rooms', (req, res) => {
 
 app.get('/chats/:room', (req, res) => {
   const room = req.params.room;
-  
   const chat = getChatAllMessages(room);
-  // console.log('ROOMS', rooms);
-  // res.json(rooms);
   console.log('request for chat', room);
   res.json(chat)
 });
@@ -86,9 +83,6 @@ app.get('/chats/:room', (req, res) => {
 app.get('/users/:room', (req, res) => {
   const room = req.params.room;
   const users = getRoom(room);
-  // const chat = getRoomIdsOnly();
-  // console.log('ROOMS', rooms);
-  // res.json(rooms);
   console.log('request for users', room);
   res.json(users)
 });

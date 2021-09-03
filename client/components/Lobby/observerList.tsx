@@ -24,7 +24,7 @@ export const ObserverList: FC<ObserverListProps> = ({ users }) => {
               !user.dealer &&
               user.userRole === roles.observer && (
                 <Grid item key={user.username}>
-                  <UserCard user={user} />
+                  <UserCard user={user} observer={true} />
                 </Grid>
               ),
           )}
