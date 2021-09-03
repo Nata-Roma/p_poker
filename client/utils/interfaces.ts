@@ -7,5 +7,16 @@ export interface IUser {
 
 export interface IUserCreate {
   roomId: string;
-  user: IUser
-  };
+  user: IUser;
+}
+
+export interface IDialogUser {
+  nameData: string;
+  statusData: boolean;
+}
+
+export interface IDialogUsers {
+  username: IDialogUser;
+  userSurname: IDialogUser;
+  avatar: string;
+}

@@ -4,41 +4,59 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { FC } from 'react';
-import { FormControlLabel, Grid, makeStyles, Switch, Theme, createStyles } from '@material-ui/core';
+import { FC, useState } from 'react';
+import {
+  FormControlLabel,
+  Grid,
+  makeStyles,
+  Switch,
+  Theme,
+  createStyles,
+} from '@material-ui/core';
 import { roles } from 'utils/configs';
+import { CreateAvatar } from './avatar';
+import { DialogInputBlock } from './dialogInputBlock';
+import { IDialogUsers } from 'utils/interfaces';
 
+const useStyleDialog = makeStyles((theme: Theme) =>
+  createStyles({
+    rightPad: {
+      padding: theme.spacing(1, 2),
+    },
+  }),
+);
 
-const useStyleDialog = makeStyles((theme: Theme) => 
-createStyles({
-  rightPad: {
-    padding: theme.spacing(1, 2),
-  }
-}))
 interface UserDialogProps {
   onDialogClose: () => void;
   confirm: () => void;
-  changeName: (username: string) => void;
-  changeSurname: (userSurname: string) => void;
+  changeUserData: (value: IDialogUsers) => void;
   open: boolean;
-  onRoleChange: () => void
-  role: string
+  onRoleChange: () => void;
+  role: string;
+  loading: (status: boolean) => void;
+  addAvatar: (data: string) => void;
+  userInfo: IDialogUsers;
 }
 
 export const UserDialog: FC<UserDialogProps> = ({
   onDialogClose,
   open,
-  changeName,
-  changeSurname,
+  changeUserData,
   confirm,
   onRoleChange,
   role,
+  loading,
+  addAvatar,
+  userInfo
 }) => {
   const classes = useStyleDialog();
+
+  const [] = useState();
+
   return (
     <div>
       <Dialog open={open} onClose={onDialogClose}>
-        <Grid container justifyContent="space-between" alignItems='center'>
+        <Grid container justifyContent="space-between" alignItems="center">
           <Grid item xl={9}>
             <DialogTitle>Connect to lobby</DialogTitle>
           </Grid>
@@ -46,7 +64,7 @@ export const UserDialog: FC<UserDialogProps> = ({
             <FormControlLabel
               control={
                 <Switch
-                  checked={role === roles.observer? true : false}
+                  checked={role === roles.observer ? true : false}
                   onChange={onRoleChange}
                   name="checkedB"
                   color="primary"
@@ -57,23 +75,9 @@ export const UserDialog: FC<UserDialogProps> = ({
             />
           </Grid>
         </Grid>
-
+        <DialogInputBlock changeUserData={changeUserData} userInfo={userInfo} />
         <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Name"
-            type="text"
-            fullWidth
-            onChange={(e) => changeName(e.target.value)}
-          />
-          <TextField
-            margin="dense"
-            label="Surname"
-            type="text"
-            fullWidth
-            onChange={(e) => changeSurname(e.target.value)}
-          />
+          <CreateAvatar loading={loading} addAvatar={addAvatar} />
         </DialogContent>
         <DialogActions>
           <Button onClick={onDialogClose} color="primary">

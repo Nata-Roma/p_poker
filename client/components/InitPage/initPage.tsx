@@ -6,13 +6,20 @@ import { nanoid } from 'nanoid';
 import { useRouter } from 'next/router';
 import { FC, useState } from 'react';
 import { BASE_URL } from 'utils/apiConfig';
-import { UserDialog } from './userDialog';
+import { UserDialog } from './Dialog/userDialog';
 import React from 'react';
 import { RoomSelect } from './roomSelect';
-import { setDealer, setRoomId, setUserId, setUserRole } from 'store/actionCreators';
+import {
+  setDealer,
+  setRoomId,
+  setUserId,
+  setUserRole,
+} from 'store/actionCreators';
 import AppContext from 'store/store';
-import { roles } from 'utils/configs';
+import { roles, userInitData } from 'utils/configs';
 import { userCreate } from 'utils/userCreate';
+import { IDialogUsers } from 'utils/interfaces';
+import getFormattedImgDataLink from 'utils/imgToDatalink';
 
 interface MakeChoiceProps {
   message: string;
@@ -25,10 +32,10 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   const [ roomList, setRoomList ] = useState<Array<string>>(rooms);
   const [ openCreate, setOpenCreate ] = useState(false);
   const [ openConnect, setOpenConnect ] = useState(false);
-  const [ username, setUsername ] = useState('');
-  const [ userSurname, setUserSurname ] = useState('');
+  const [ userData, setUserData ] = useState({ ...userInitData });
   const [ role, setRole ] = useState(roles.member);
   const [ room, setRoom ] = useState('');
+  const [ loading, setLoading ] = useState(false);
   const { state, dispatch } = useContext(AppContext);
 
   state.socket.on('connect', () => {});
@@ -39,7 +46,13 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
 
   const goToLobby = (id: string) => {
     const userId = state.socket.id;
-    const message = userCreate(id, username, userSurname, userId);
+    const message = userCreate(
+      id,
+      userData.username.nameData,
+      userData.userSurname.nameData,
+      userData.avatar,
+      userId,
+    );
     dispatch(setUserId(message.user.id));
     state.socket.emit('joinRoom', message);
     router.push({
@@ -49,7 +62,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   };
 
   const onCreateRoom = async () => {
-    if (username && userSurname) {
+    if (userData.username.statusData && userData.userSurname.statusData) {
       const id = nanoid();
       const config = {
         data: id,
@@ -63,7 +76,11 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   };
 
   const onEnterRoom = () => {
-    if (username && userSurname && room) {
+    if (
+      userData.username.statusData &&
+      userData.userSurname.statusData &&
+      room
+    ) {
       dispatch(setRoomId(room));
       setOpenConnect(false);
       goToLobby(room);
@@ -71,19 +88,30 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   };
 
   const clearUserData = () => {
-    setUsername('');
-    setUserSurname('');
-    setUserRole(roles.member);
+    setUserData({ ...userInitData });
+    setRole(roles.member);
   };
 
   const onCreateCancel = () => {
-    setOpenCreate(false);
-    clearUserData();
+    if (!loading) {
+      setOpenCreate(false);
+      clearUserData();
+    }
   };
   const onConnectCancel = () => {
-    setOpenConnect(false);
-    clearUserData();
-    dispatch(setUserRole(roles.member));
+    if (!loading) {
+      setOpenConnect(false);
+      clearUserData();
+      dispatch(setUserRole(roles.member));
+    }
+  };
+
+  const changeUserData = (userData: IDialogUsers) => {
+    setUserData(userData);
+  };
+
+  const addAvatar = (data: string) => {
+    setUserData((prev) => ({ ...prev, avatar: data }));
   };
 
   useEffect(
@@ -118,8 +146,6 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
             <UserDialog
               onDialogClose={onCreateCancel}
               open={openCreate}
-              changeName={(name) => setUsername(name)}
-              changeSurname={(name) => setUserSurname(name)}
               confirm={onCreateRoom}
               onRoleChange={() =>
                 setRole(
@@ -127,6 +153,10 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
                     prev === roles.observer ? roles.member : roles.observer,
                 )}
               role={role}
+              loading={(status) => setLoading(status)}
+              changeUserData={changeUserData}
+              addAvatar={addAvatar}
+              userInfo={userData}
             />
           </Grid>
           <Grid container item alignItems="center" spacing={2}>
@@ -149,8 +179,6 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
               <UserDialog
                 onDialogClose={onConnectCancel}
                 open={openConnect}
-                changeName={(name) => setUsername(name)}
-                changeSurname={(name) => setUserSurname(name)}
                 confirm={onEnterRoom}
                 onRoleChange={() =>
                   setRole(
@@ -158,6 +186,10 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
                       prev === roles.observer ? roles.member : roles.observer,
                   )}
                 role={role}
+                loading={(status) => setLoading(status)}
+                changeUserData={changeUserData}
+                addAvatar={addAvatar}
+                userInfo={userData}
               />
             </Grid>
           </Grid>

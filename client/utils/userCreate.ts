@@ -4,6 +4,7 @@ export const userCreate = (
   id: string,
   username: string,
   userSurname: string,
+  avatar: string,
   userId: string,
 ): IUserCreate => {
   return {
@@ -11,7 +12,7 @@ export const userCreate = (
     user: {
       username,
       userSurname,
-      avatar: '',
+      avatar: avatar,
       id: userId,
     },
   };
