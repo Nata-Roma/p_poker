@@ -3,10 +3,10 @@ import useStylesMemberList from '@styles/memberList.style';
 import { UserCard } from 'components/userCard';
 import { FC } from 'react';
 import { roles } from 'utils/configs';
-import { IRoomData } from 'utils/interfaces';
+import { IUser } from 'utils/interfaces';
 
 interface ObserverListProps {
-  users: IRoomData;
+  users: Array<IUser>;
 }
 
 export const ObserverList: FC<ObserverListProps> = ({ users }) => {
@@ -19,7 +19,7 @@ export const ObserverList: FC<ObserverListProps> = ({ users }) => {
       </Typography>
       <Grid container spacing={2} className={classes.root}>
         {users &&
-          users.users.map(
+          users.map(
             (user) =>
               !user.dealer &&
               user.userRole === roles.observer && (

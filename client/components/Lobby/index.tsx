@@ -2,15 +2,11 @@ import { Grid } from '@material-ui/core';
 import useStylesLobby from '@styles/lobby.style';
 import { Chat } from 'components/Chat/chat';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { apiGetLobbyInfo } from 'services/apiServices';
-import { IChat, IRoomData } from 'utils/interfaces';
+import AppContext from 'store/store';
+import { IChat, IRoomData, IUser } from 'utils/interfaces';
 import { LobbyPart } from './lobbyPart';
-
-export interface IUser {
-  username: string;
-  avatar: string;
-}
 
 interface LobbyProps {
   lobbyInfo: {
@@ -22,14 +18,15 @@ interface LobbyProps {
 const Lobby = () => {
   const classes = useStylesLobby();
   const [ chatMessages, setChatMessages ] = useState<IChat>();
-  const [ users, setUsers ] = useState();
+  const [ users, setUsers ] = useState<Array<IUser>>();
   const router = useRouter();
+  const { state } = useContext(AppContext);
   // console.log(lobbyInfo);
 
   const initData = async () => {
     const data = await apiGetLobbyInfo(router.query.lobby);
     setChatMessages(data.chat);
-    setUsers(data.users);
+    setUsers(data.users.users);
     console.log(data);
   };
 
@@ -49,7 +46,7 @@ const Lobby = () => {
           sm={7}
           className={classes.lobbyPartContainer}
         >
-          {users && <LobbyPart users={users} />}
+          {users && users && <LobbyPart users={users} />}
         </Grid>
         <Grid item xs={12} md={3} sm={5} className={classes.chatPartContainer}>
           <Chat />

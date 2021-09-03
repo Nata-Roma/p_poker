@@ -12,7 +12,7 @@ import { ObserverList } from './observerList';
 import { roles } from 'utils/configs';
 
 interface LobbyPartProps {
-  users: IRoomData;
+  users: Array<IUser>;
 }
 
 export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
@@ -21,6 +21,7 @@ export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
   const router = useRouter();
   const { lobby } = router.query;
   const [ dealer, setDealer ] = useState<IUser>();
+  const [userArr, setUserArr] = useState<Array<IUser>>(users)
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -31,11 +32,14 @@ export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
   };
 
   state.socket.on('userJoined', (message) => {
-    console.log(message);
+    setUserArr(message.users);
+    console.log(message.users);
   });
 
+
+
   useEffect(() => {
-    const dealer = users.users.find((user) => user.dealer);
+    const dealer = userArr.find((user) => user.dealer);
     setDealer(dealer);
   }, []);
 
@@ -80,10 +84,10 @@ export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
         </Button>
       </Grid>
       <Grid item container>
-        <MemberList users={users} />
+        <MemberList users={userArr} />
       </Grid>
       <Grid item container>
-        <ObserverList users={users} />
+        <ObserverList users={userArr} />
       </Grid>
     </>
   );
