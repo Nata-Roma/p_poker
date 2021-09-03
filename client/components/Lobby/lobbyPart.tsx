@@ -6,6 +6,7 @@ import { Button, Typography, Grid } from '@material-ui/core';
 import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'components/userCard';
+import NameGame from './nameGame';
 import AppContext, { appStore } from 'store/store';
 
 
@@ -32,32 +33,34 @@ export const LobbyPart = () => {
   })
   
   return (
-    <>
+    <Grid container spacing={2}>
       <Grid item>
         <Typography variant="h4" align="center" gutterBottom>
           Lobby Title
         </Typography>
       </Grid>
+      <Grid item xs={12} justifyContent="center">
+      <NameGame/>
+      </Grid>
       <Grid item className={classes.mBottom}>
         <Typography variant="subtitle2">Dealer:</Typography>
         <UserCard user={{ username: 'Koza Nostra', avatar: '' }} />
       </Grid>
+      <Grid
+        item
+        container
+        justifyContent="space-between"
+        className={classes.mBottom}
+      >
       {role === roles.get('dealer') && (
-        <Grid item className={classes.mBottom}>
+        <Grid item >
           <Link href="/lobby/game">
-            <Button color="primary" variant="contained">
+            <Button color="primary" variant="contained" className={classes.btn}>
               Start Game
             </Button>
           </Link>
         </Grid>
       )}
-
-      <Grid
-        item
-        container
-        justifyContent="flex-end"
-        className={classes.mBottom}
-      >
           <Button variant="outlined" className={classes.btn} onClick={onRoomLeave}>
             Exit
           </Button>
@@ -65,6 +68,6 @@ export const LobbyPart = () => {
       <Grid item container>
         <MemberList />
       </Grid>
-    </>
+    </Grid>
   );
 };
