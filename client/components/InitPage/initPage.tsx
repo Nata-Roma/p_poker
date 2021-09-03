@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Button, Grid, Typography } from '@material-ui/core';
 import { useStyleHomePage } from '@styles/initPage.style';
 import axios from 'axios';
@@ -12,6 +12,7 @@ import { RoomSelect } from './roomSelect';
 import { setRoomId, setUserId, setUserRole } from 'store/reducer';
 import AppContext from 'store/store';
 import { roles } from 'utils/configs';
+import { userCreate } from 'utils/userCreate';
 
 interface MakeChoiceProps {
   message: string;
@@ -26,6 +27,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   const [ openConnect, setOpenConnect ] = useState(false);
   const [ username, setUsername ] = useState('');
   const [ userSurname, setUserSurname ] = useState('');
+  const [ role, setRole ] = useState(roles.member);
   const [ room, setRoom ] = useState('');
   const { state, dispatch } = useContext(AppContext);
 
@@ -35,23 +37,11 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
     setRoomList(message);
   });
 
-  const createMessage = (id: string) => {
-    return {
-      roomId: id,
-      user: {
-        username,
-        userSurname,
-        avatar: '',
-        id: state.socket.id,
-      },
-    };
-  };
-
   const goToLobby = (id: string) => {
-    const message = createMessage(id);
+    const userId = state.socket.id;
+    const message = userCreate(id, username, userSurname, userId);
     dispatch(setUserId(message.user.id));
     state.socket.emit('joinRoom', message);
-    // state.socket.join(id);
     router.push({
       pathname: '/[lobby]',
       query: { lobby: id },
@@ -59,8 +49,6 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   };
 
   const onCreateRoom = async () => {
-    console.log(username, userSurname);
-
     if (username && userSurname) {
       const id = nanoid();
       const config = {
@@ -84,6 +72,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
   const clearUserData = () => {
     setUsername('');
     setUserSurname('');
+    setUserRole(roles.member);
   };
 
   const onCreateCancel = () => {
@@ -96,13 +85,16 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
     dispatch(setUserRole(roles.member));
   };
 
-  const onRoleChange = (observer: boolean) => {
-    if (!observer) {
-      dispatch(setUserRole(roles.observer));
-    } else {
-      dispatch(setUserRole(roles.member));
-    }
-  };
+  useEffect(
+    () => {
+      if (role === roles.observer) {
+        dispatch(setUserRole(role));
+      } else {
+        dispatch(setUserRole(role));
+      }
+    },
+    [ role ],
+  );
 
   return (
     <div className={classes.wrapper}>
@@ -128,7 +120,12 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
               changeName={(name) => setUsername(name)}
               changeSurname={(name) => setUserSurname(name)}
               confirm={onCreateRoom}
-              onRoleChange={onRoleChange}
+              onRoleChange={() =>
+                setRole(
+                  (prev) =>
+                    prev === roles.observer ? roles.member : roles.observer,
+                )}
+              role={role}
             />
           </Grid>
           <Grid container item alignItems="center" spacing={2}>
@@ -154,7 +151,12 @@ export const InitPage: FC<MakeChoiceProps> = ({ message, rooms }) => {
                 changeName={(name) => setUsername(name)}
                 changeSurname={(name) => setUserSurname(name)}
                 confirm={onEnterRoom}
-                onRoleChange={onRoleChange}
+                onRoleChange={() =>
+                  setRole(
+                    (prev) =>
+                      prev === roles.observer ? roles.member : roles.observer,
+                  )}
+                role={role}
               />
             </Grid>
           </Grid>

@@ -3,10 +3,10 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { FormControlLabel, Grid, makeStyles, Switch, Theme, createStyles } from '@material-ui/core';
+import { roles } from 'utils/configs';
 
 
 const useStyleDialog = makeStyles((theme: Theme) => 
@@ -21,7 +21,8 @@ interface UserDialogProps {
   changeName: (username: string) => void;
   changeSurname: (userSurname: string) => void;
   open: boolean;
-  onRoleChange: (observer: boolean) => void
+  onRoleChange: () => void
+  role: string
 }
 
 export const UserDialog: FC<UserDialogProps> = ({
@@ -30,17 +31,10 @@ export const UserDialog: FC<UserDialogProps> = ({
   changeName,
   changeSurname,
   confirm,
-  onRoleChange
+  onRoleChange,
+  role,
 }) => {
   const classes = useStyleDialog();
-  const [ isChecked, setIsChecked ] = useState(false);
-
-  const handleChange = () => {
-    onRoleChange(isChecked);
-    setIsChecked((prev) => !prev);
-    
-  };
-
   return (
     <div>
       <Dialog open={open} onClose={onDialogClose}>
@@ -52,8 +46,8 @@ export const UserDialog: FC<UserDialogProps> = ({
             <FormControlLabel
               control={
                 <Switch
-                  checked={isChecked}
-                  onChange={handleChange}
+                  checked={role === roles.observer? true : false}
+                  onChange={onRoleChange}
                   name="checkedB"
                   color="primary"
                 />
