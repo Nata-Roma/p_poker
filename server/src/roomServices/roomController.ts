@@ -1,4 +1,9 @@
-import { IChatMessage, IUserData } from '../models/interfaces';
+import {
+  IChatMessage,
+  IGameTask,
+  IUserChoice,
+  IUserData,
+} from '../models/interfaces';
 import Room from '../models/roomModel';
 
 class Rooms {
@@ -57,6 +62,28 @@ class Rooms {
   ): void => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     room.addMessage(userId, message);
+  };
+
+  getGameId = (roomId: string): string => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    const id = room.getGameId();
+    return id;
+  };
+
+  setGameUserChoice = (roomId: string, userChoice: IUserChoice): void => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    room.setUserChoice(userChoice);
+  };
+
+  getGameTask = (roomId: string, taskName: string): IGameTask => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    const gameTask = room.getGameTask(taskName);
+    return gameTask;
+  };
+
+  gameInit = (roomId: string, tasks: Array<string>): void => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    room.gameInit(tasks);
   };
 }
 

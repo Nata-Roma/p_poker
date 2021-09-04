@@ -1,5 +1,5 @@
 import { Server } from 'socket.io';
-import roomContoller from '../rooms/roomController';
+import roomContoller from '../roomServices/roomController';
 
 const socketServer = (httpServer) => {
   const io = new Server(httpServer, {

@@ -31,3 +31,14 @@ export const apiGetRooms = async () => {
   });
   return rooms.data;
 };
+
+export const apiCreateGame = async(room: string | Array<string>) => {
+// For now it is GET request. Will be converted to POST
+if(typeof room === 'string') {
+  const users = await axios({
+    method: 'GET',
+    url: `${BASE_URL}/game/${room}`,
+  });
+}
+
+}
