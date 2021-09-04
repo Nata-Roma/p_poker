@@ -21,7 +21,7 @@ export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
   const router = useRouter();
   const { lobby } = router.query;
   const [ dealer, setDealer ] = useState<IUser>();
-  const [userArr, setUserArr] = useState<Array<IUser>>(users)
+  const [ userArr, setUserArr ] = useState<Array<IUser>>(users);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -41,11 +41,13 @@ export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
     console.log('Lobby user left', message);
   });
 
-
-  useEffect(() => {
-    const dealer = userArr.find((user) => user.dealer);
-    setDealer(dealer);
-  }, [userArr]);
+  useEffect(
+    () => {
+      const dealer = userArr.find((user) => user.dealer);
+      setDealer(dealer);
+    },
+    [ userArr ],
+  );
 
   return (
     <>
@@ -88,10 +90,10 @@ export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
         </Button>
       </Grid>
       <Grid item container>
-        <MemberList users={userArr} />
+        {userArr && <MemberList users={userArr} />}
       </Grid>
       <Grid item container>
-        <ObserverList users={userArr} />
+        {userArr && <ObserverList users={userArr} />}
       </Grid>
     </>
   );

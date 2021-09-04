@@ -1,4 +1,4 @@
-import { IChatMessage, IUserData } from "./interfaces";
+import { IChatMessage, IUserData } from './interfaces';
 
 class Room {
   private users: Array<IUserData> = [];
@@ -15,8 +15,22 @@ class Room {
   };
 
   joinUser = (user: IUserData): void => {
-    this.users.push(user);
+    const userFoundIndex = this.findUser(user.id);
+    console.log('userFound', userFoundIndex);
+    if (userFoundIndex >= 0) {
+      const leftPart = this.users.slice(0, userFoundIndex);
+      leftPart.push(user);
+      const rightPart = this.users.slice(userFoundIndex + 1);
+      this.users = leftPart.concat(rightPart);
+      console.log('left', leftPart);
+      console.log('right', rightPart);
+      console.log('user', user);
+      
+    } else {
+      this.users.push(user);
+    }
   };
+
   leaveUser = (userId: string): void => {
     this.users = this.users.filter((item) => item.id !== userId);
   };
@@ -44,6 +58,16 @@ class Room {
   getChatMessages = (): Array<IChatMessage> => {
     console.log('request for CHAT');
     return this.chatMessages;
+  };
+
+  findUser = (userId: string): number => {
+    const userFoundIndex = this.users.findIndex((user) => user.id === userId);
+console.log('found user', userFoundIndex);
+console.log('all users', this.users);
+
+
+    if (userFoundIndex >= 0) return userFoundIndex;
+    return -1;
   };
 }
 

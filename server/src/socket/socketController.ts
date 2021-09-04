@@ -34,10 +34,11 @@ const socketServer = (httpServer) => {
 
     socket.on('leaveRoom', (message) => {
       console.log('SOCKET LEAVE', message);
+      const {roomId,userId} = message;
       socket.leave(message.roomId);
-      roomContoller.leaveUserFromRoom(message.roomId, message.userId)
-      const users = roomContoller.getRoomUsers(message.roomId);
-      socket.to(message.roomId).emit('userLeft', users);
+      roomContoller.leaveUserFromRoom(roomId, userId)
+      const users = roomContoller.getRoomUsers(roomId);
+      socket.to(roomId).emit('userLeft', users);
     });
   });
 };
