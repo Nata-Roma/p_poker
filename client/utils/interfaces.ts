@@ -4,7 +4,7 @@ export interface IUser {
   avatar: string;
   id: string;
   userRole: string;
-  dealer: boolean
+  dealer: boolean;
 }
 
 export interface IUserCreate {
@@ -29,9 +29,7 @@ export interface IRoomData {
 }
 
 export interface IChatMessage {
-  username: string;
-  userSurname: string;
-  avatar: string;
+  user: IUser
   message: string;
 }
 

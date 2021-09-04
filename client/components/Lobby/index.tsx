@@ -10,8 +10,8 @@ import { LobbyPart } from './lobbyPart';
 
 interface LobbyProps {
   lobbyInfo: {
-    chat: IChat;
-    users: IRoomData;
+    chat: Array<IChatMessage>;
+    users: Array<IUser>;
   };
 }
 
@@ -20,14 +20,18 @@ const Lobby = () => {
   const [ chatMessages, setChatMessages ] = useState<Array<IChatMessage>>();
   const [ users, setUsers ] = useState<Array<IUser>>();
   const router = useRouter();
-  const { state } = useContext(AppContext);
-  // console.log(lobbyInfo);
 
   const initData = async () => {
     const data = await apiGetLobbyInfo(router.query.lobby);
-    setChatMessages(data.chat.chatMessages);
-    setUsers(data.users.users);
-    console.log(data);
+
+    if (data.chat.length) {
+      console.log('we have a chat!', data.chat);
+      
+      setChatMessages(data.chat);
+    }
+    if (data.users) {
+      setUsers(data.users);
+    }
   };
 
   useEffect(() => {
@@ -46,10 +50,11 @@ const Lobby = () => {
           sm={7}
           className={classes.lobbyPartContainer}
         >
-          {users && users && <LobbyPart users={users} />}
+          {users && <LobbyPart users={users} />}
         </Grid>
         <Grid item xs={12} md={3} sm={5} className={classes.chatPartContainer}>
-          <Chat chatMessages={chatMessages} />
+          {chatMessages && <Chat chatMessages={chatMessages} />}
+          {!chatMessages && <Chat chatMessages={chatMessages} />}
         </Grid>
       </Grid>
     </div>

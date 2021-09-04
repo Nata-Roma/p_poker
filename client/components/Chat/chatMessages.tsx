@@ -1,23 +1,25 @@
 import { Grid } from '@material-ui/core';
 import useStylesChat from '@styles/chat.style';
-import { IChatMessages } from './chat';
+import { FC } from 'react';
+import { IChatMessage } from 'utils/interfaces';
 import { ChatMessage } from './chatMessage';
+import { nanoid } from 'nanoid';
 
 interface ChatMessagesProps {
-  messages: Array<IChatMessages>;
+  messages: Array<IChatMessage>;
 }
 
-export const ChatMessages = ({ messages }: ChatMessagesProps) => {
+export const ChatMessages: FC<ChatMessagesProps> = ({ messages }) => {
   const classes = useStylesChat();
-  
+
   return (
-    <Grid container direction="column" wrap='nowrap' className={classes.chatMessages}>
+    <>
       {messages &&
         messages.map((message) => (
-          <Grid item key={message.id}>
+          <Grid item key={nanoid()}>
             <ChatMessage message={message} />
           </Grid>
         ))}
-    </Grid>
+    </>
   );
 };

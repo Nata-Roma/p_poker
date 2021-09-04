@@ -32,16 +32,20 @@ export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
   };
 
   state.socket.on('userJoined', (message) => {
-    setUserArr(message.users);
-    console.log(message.users);
+    setUserArr(message);
+    console.log('Lobby join user', message);
   });
 
+  state.socket.on('userLeft', (message) => {
+    setUserArr(message);
+    console.log('Lobby user left', message);
+  });
 
 
   useEffect(() => {
     const dealer = userArr.find((user) => user.dealer);
     setDealer(dealer);
-  }, []);
+  }, [userArr]);
 
   return (
     <>

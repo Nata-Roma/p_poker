@@ -12,6 +12,9 @@ const useStylesChat = makeStyles((theme: Theme) =>
       justifyContent: 'space-between',
       height: '100%',
     },
+    messagesWrapper: {
+      height: '100%',
+    },
     inputBox: {
       paddingRight: '5px',
       display: 'flex',
@@ -25,9 +28,8 @@ const useStylesChat = makeStyles((theme: Theme) =>
     },
     chatMessages: {
       overflowY: 'auto',
-      height: '100%',
       '&::-webkit-scrollbar': {
-        width: '8px'
+        width: '8px',
       },
       '&::-webkit-scrollbar-thumb': {
         backgroundColor: '#60dabf',
@@ -35,16 +37,15 @@ const useStylesChat = makeStyles((theme: Theme) =>
       '&::-webkit-scrollbar-thumb:hover': {
         backgroundColor: '#8fe4d1',
       },
-      
+
       '&::-webkit-scrollbar-track': {
-        backgroundColor: '#ccc'
+        backgroundColor: '#ccc',
       },
-      
+
       '&::-webkit-scrollbar-track:hover': {
         backgroundColor: '#eee',
-      }
+      },
     },
-    
   }),
 );
 

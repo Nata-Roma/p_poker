@@ -30,39 +30,53 @@ const chatMessages = [
 ];
 
 interface ChatProps {
-  chatMessages: Array<IChatMessage>
+  chatMessages: Array<IChatMessage>;
 }
 
-export const Chat:FC<ChatProps> = ({chatMessages}) => {
+export const Chat: FC<ChatProps> = ({ chatMessages }) => {
   const classes = useStylesChat();
   const { state } = useContext(AppContext);
   const [ message, setMessage ] = useState('');
-  const [ messages, setMessages ] = useState<Array<IChatMessage>>(chatMessages);
+  const [ messages, setMessages ] = useState(chatMessages);
 
   const onSendClick = () => {
     if (message) {
-      state.socket.emit('sendMessage', { roomId: state.roomId, userId: state.userId, message });
+      state.socket.emit('sendMessage', {
+        roomId: state.roomId,
+        userId: state.userId,
+        message,
+      });
       setMessage('');
     }
   };
 
   const onSendEnter = (e) => {
     if (message && e.key === 'Enter') {
-      state.socket.emit('sendMessage', { roomId: state.roomId, userId: state.userId, message });
+      state.socket.emit('sendMessage', {
+        roomId: state.roomId,
+        userId: state.userId,
+        message,
+      });
       setMessage('');
     }
   };
 
   state.socket.on('chatMessage', (message) => {
-    console.log(message);
-    setMessages(message)
-    
-  })
-  
+    console.log('chat on client via SOCKET', message);
+    setMessages(message);
+  });
 
   return (
     <div className={classes.container}>
-      <ChatMessages messages={messages} />
+      <Grid
+        item
+        container
+        direction="column"
+        wrap="nowrap"
+        className={classes.chatMessages}
+      >
+        {messages && <ChatMessages messages={messages} />}
+      </Grid>
       <Grid container wrap="nowrap">
         <div className={classes.inputField}>
           <Input
