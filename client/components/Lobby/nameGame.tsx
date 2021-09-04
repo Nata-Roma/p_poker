@@ -32,7 +32,7 @@ const NameGame: FC = () => {
     <Grid container spacing={2}>
       {!editMode &&
         <Grid container item xs={12} justifyContent="center">
-          <Typography className={classes.gameName} variant="subtitle2" gutterBottom onDoubleClick={activateEditMode} >
+          <Typography className={classes.gameName} variant="subtitle2" gutterBottom onClick={activateEditMode} >
             {name || 'enter a name of game'}
           </Typography>
           <CreateIcon className={classes.icon} color="primary" onClick={() => setEditMode(true)} />
