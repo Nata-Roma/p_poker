@@ -5,19 +5,19 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { apiGetLobbyInfo } from 'services/apiServices';
 import AppContext from 'store/store';
-import { IChat, IRoomData, IUser } from 'utils/interfaces';
+import { IChat, IChatMessage, IRoomData, IUser } from 'utils/interfaces';
 import { LobbyPart } from './lobbyPart';
 
 interface LobbyProps {
   lobbyInfo: {
-    chats: IChat;
+    chat: IChat;
     users: IRoomData;
   };
 }
 
 const Lobby = () => {
   const classes = useStylesLobby();
-  const [ chatMessages, setChatMessages ] = useState<IChat>();
+  const [ chatMessages, setChatMessages ] = useState<Array<IChatMessage>>();
   const [ users, setUsers ] = useState<Array<IUser>>();
   const router = useRouter();
   const { state } = useContext(AppContext);
@@ -25,7 +25,7 @@ const Lobby = () => {
 
   const initData = async () => {
     const data = await apiGetLobbyInfo(router.query.lobby);
-    setChatMessages(data.chat);
+    setChatMessages(data.chat.chatMessages);
     setUsers(data.users.users);
     console.log(data);
   };
@@ -49,7 +49,7 @@ const Lobby = () => {
           {users && users && <LobbyPart users={users} />}
         </Grid>
         <Grid item xs={12} md={3} sm={5} className={classes.chatPartContainer}>
-          <Chat />
+          <Chat chatMessages={chatMessages} />
         </Grid>
       </Grid>
     </div>

@@ -4,6 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core';
 const useStylesChat = makeStyles((theme: Theme) =>
   createStyles({
     container: {
+      paddingTop: '10px',
       paddingRight: '10px',
       paddingLeft: '5px',
       display: 'flex',
