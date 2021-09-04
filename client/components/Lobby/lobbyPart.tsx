@@ -6,6 +6,7 @@ import { Button, Typography, Grid } from '@material-ui/core';
 import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'components/userCard';
+import NameGame from './nameGame';
 import AppContext, { appStore } from 'store/store';
 import { IRoomData, IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
@@ -50,11 +51,14 @@ export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
   );
 
   return (
-    <>
+    <Grid container spacing={2}>
       <Grid item>
         <Typography variant="h4" align="center" gutterBottom>
           Lobby Title
         </Typography>
+      </Grid>
+      <Grid item xs={12} justifyContent="center">
+      <NameGame/>
       </Grid>
       <Grid item className={classes.mBottom}>
         <Typography variant="subtitle2">Dealer:</Typography>
@@ -68,7 +72,7 @@ export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
       {state.dealer && (
         <Grid item className={classes.mBottom}>
           <Link href="/lobby/game">
-            <Button color="primary" variant="contained">
+            <Button color="primary" variant="contained" className={classes.btn}>
               Start Game
             </Button>
           </Link>
@@ -95,6 +99,6 @@ export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
       <Grid item container>
         {userArr && <ObserverList users={userArr} />}
       </Grid>
-    </>
+    </Grid>
   );
 };
