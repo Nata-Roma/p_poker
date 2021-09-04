@@ -51,10 +51,10 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   );
 
   return (
-    <Grid container spacing={2}>
+    <>
       <Grid item>
         <Typography variant="h4" align="center" gutterBottom>
-          Lobby Title
+          Lobby
         </Typography>
       </Grid>
       <NameGame />
@@ -95,6 +95,6 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
       <Grid item container>
         {userArr && <ObserverList users={userArr} />}
       </Grid>
-    </Grid>
+    </>
   );
 };
