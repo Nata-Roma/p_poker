@@ -1,6 +1,7 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, createStyles, Theme } from "@material-ui/core";
 
-const useStylesUserCard = makeStyles({
+const useStylesUserCard = makeStyles((theme: Theme) => 
+createStyles({
   container: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -16,11 +17,13 @@ const useStylesUserCard = makeStyles({
     flexShrink: 0,
     justifyContent: 'center',
     alignItems:'center',
-    backgroundColor: '#60dabf',
+    backgroundColor: theme.palette.primary.main,
     boxShadow: 'inset 0px 1px 3px rgba(0, 0, 0, 0.5)',
     borderRadius: '50%',
     padding: 0,
-    marginRight: '10px'
+    marginRight: '10px',
+    border: '3px solid',
+    borderColor: theme.palette.primary.main,
   },
   avatarImg: {
     height: '100%',
@@ -37,9 +40,12 @@ const useStylesUserCard = makeStyles({
     textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
     color: '#fff',
   },
+  avatarObserver: {
+    borderColor: theme.palette.secondary.main,
+  },
   icon: {
     fontSize: '30px'
   }
-});
+}));
 
 export default useStylesUserCard;

@@ -4,11 +4,15 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core';
 const useStylesChat = makeStyles((theme: Theme) =>
   createStyles({
     container: {
+      paddingTop: '10px',
       paddingRight: '10px',
       paddingLeft: '5px',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
+      height: '100%',
+    },
+    messagesWrapper: {
       height: '100%',
     },
     inputBox: {
@@ -24,9 +28,8 @@ const useStylesChat = makeStyles((theme: Theme) =>
     },
     chatMessages: {
       overflowY: 'auto',
-      height: '100%',
       '&::-webkit-scrollbar': {
-        width: '8px'
+        width: '8px',
       },
       '&::-webkit-scrollbar-thumb': {
         backgroundColor: '#60dabf',
@@ -34,16 +37,15 @@ const useStylesChat = makeStyles((theme: Theme) =>
       '&::-webkit-scrollbar-thumb:hover': {
         backgroundColor: '#8fe4d1',
       },
-      
+
       '&::-webkit-scrollbar-track': {
-        backgroundColor: '#ccc'
+        backgroundColor: '#ccc',
       },
-      
+
       '&::-webkit-scrollbar-track:hover': {
         backgroundColor: '#eee',
-      }
+      },
     },
-    
   }),
 );
 

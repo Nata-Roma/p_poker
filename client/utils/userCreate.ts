@@ -6,6 +6,8 @@ export const userCreate = (
   userSurname: string,
   avatar: string,
   userId: string,
+  userRole: string,
+  dealer:boolean
 ): IUserCreate => {
   return {
     roomId: id,
@@ -14,6 +16,8 @@ export const userCreate = (
       userSurname,
       avatar: avatar,
       id: userId,
+      userRole,
+      dealer
     },
   };
 };

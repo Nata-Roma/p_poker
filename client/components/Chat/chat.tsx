@@ -1,8 +1,8 @@
 import { Button, Grid, Input } from '@material-ui/core';
 import useStylesChat from '@styles/chat.style';
-import { useContext, useState } from 'react';
-import { Socket } from 'socket.io-client';
+import { FC, useContext, useState } from 'react';
 import AppContext from 'store/store';
+import { IChatMessage } from 'utils/interfaces';
 import { ChatMessages } from './chatMessages';
 
 const chatMessages = [
@@ -29,59 +29,66 @@ const chatMessages = [
   },
 ];
 
-export interface IChatUser {
-  username: string;
-  avatar: string;
-  message: string;
+interface ChatProps {
+  chatMessages: Array<IChatMessage>;
 }
 
-export interface UserData {
-  id: string;
-  username: string;
-  userSurname: string;
-  avatar: string;
-}
-
-export interface IChatMessages {
-  id: string;
-  username: string;
-  userSurname: string;
-  avatar: string;
-  message: string;
-}
-
-export const Chat = () => {
+export const Chat: FC<ChatProps> = ({ chatMessages }) => {
   const classes = useStylesChat();
   const { state } = useContext(AppContext);
   const [ message, setMessage ] = useState('');
-  const [ messages, setMessages ] = useState<Array<IChatMessages>>([]);
+  const [ messages, setMessages ] = useState(chatMessages);
 
-  const onSendMessage = () => {
+  const onSendClick = () => {
     if (message) {
-      state.socket.emit('sendMessage', { roomId: state.roomId, userId: state.userId, message });
+      state.socket.emit('sendMessage', {
+        roomId: state.roomId,
+        userId: state.userId,
+        message,
+      });
+      setMessage('');
+    }
+  };
+
+  const onSendEnter = (e) => {
+    if (message && e.key === 'Enter') {
+      state.socket.emit('sendMessage', {
+        roomId: state.roomId,
+        userId: state.userId,
+        message,
+      });
+      setMessage('');
     }
   };
 
   state.socket.on('chatMessage', (message) => {
-    console.log(message);
-    setMessages(message)
-    
-  })
-  
+    console.log('chat on client via SOCKET', message);
+    setMessages(message);
+  });
 
   return (
     <div className={classes.container}>
-      <ChatMessages messages={messages} />
+      <Grid
+        item
+        container
+        direction="column"
+        wrap="nowrap"
+        className={classes.chatMessages}
+      >
+        {messages && <ChatMessages messages={messages} />}
+      </Grid>
       <Grid container wrap="nowrap">
         <div className={classes.inputField}>
           <Input
             placeholder="Your message..."
             fullWidth
             onChange={(e) => setMessage(e.target.value)}
+            onKeyUp={(e) => onSendEnter(e)}
+            value={message}
           />
         </div>
         <div className={classes.noShrink}>
-          <Button onClick={onSendMessage}>Send</Button>
+          <Button onClick={onSendClick}>Send</Button>
         </div>
       </Grid>
     </div>

@@ -3,6 +3,8 @@ export interface IUser {
   userSurname: string;
   avatar: string;
   id: string;
+  userRole: string;
+  dealer: boolean;
 }
 
 export interface IUserCreate {
@@ -19,4 +21,19 @@ export interface IDialogUsers {
   username: IDialogUser;
   userSurname: IDialogUser;
   avatar: string;
+}
+
+export interface IRoomData {
+  roomId: string;
+  users: Array<IUser> | null;
+}
+
+export interface IChatMessage {
+  user: IUser
+  message: string;
+}
+
+export interface IChat {
+  roomId: string;
+  chatMessages: Array<IChatMessage>;
 }

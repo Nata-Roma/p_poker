@@ -1,6 +1,9 @@
 import { Grid, Typography } from '@material-ui/core';
 import useStylesMemberList from '@styles/memberList.style';
 import { UserCard } from 'components/userCard';
+import { FC } from 'react';
+import { roles } from 'utils/configs';
+import { IUser } from 'utils/interfaces';
 
 const users = [
   {
@@ -22,7 +25,11 @@ const users = [
   },
 ];
 
-export const MemberList = () => {
+interface MemberListProps {
+  users: Array<IUser>;
+}
+
+export const MemberList: FC<MemberListProps> = ({ users }) => {
   const classes = useStylesMemberList();
 
   return (
@@ -31,11 +38,16 @@ export const MemberList = () => {
         Members:
       </Typography>
       <Grid container spacing={2} className={classes.root}>
-        {users.map((user) => (
-          <Grid item key={user.username}>
-            <UserCard user={user} />
-          </Grid>
-        ))}
+        {users &&
+          users.map(
+            (user) =>
+              !user.dealer &&
+              user.userRole === roles.member && (
+                <Grid item key={user.username}>
+                  <UserCard user={user} observer={false} />
+                </Grid>
+              ),
+          )}
       </Grid>
     </div>
   );

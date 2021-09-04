@@ -1,61 +1,17 @@
-import {
-  getRoomIdsOnly,
-  getRooms,
-  createRoom,
-  joinUser,
-  leaveUser,
-  getUser,
-  getRoom,
-} from './models/rooms';
 import express from 'express';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
 import cors from 'cors';
-import { addChatMessage, getChatAllMessages } from './models/chat';
+import socketServer from './socket/socketController';
+import roomContoller from './rooms/roomController';
 
 const app = express();
 const httpServer = createServer(app);
 app.use(cors());
 
-const io = new Server(httpServer, {
-  cors: {
-    origin: 'http://localhost:3000',
-    methods: [ 'GET', 'POST' ],
-    allowedHeaders: [ 'my-custom-header' ],
-    credentials: true,
-  },
-});
+socketServer(httpServer);
 const PORT = 4000;
 
 app.use(express.json());
-
-io.on('connection', (socket) => {
-  console.log(`Connected to socket: ${socket.id}`);
-  socket.on('joinRoom', (message) => {
-    socket.join(message.roomId);
-    console.log('SOCKET JOIN', message);
-    joinUser(message.roomId, message.user);
-
-    const rooms = getRoomIdsOnly();
-    socket.broadcast.emit('roomList', rooms);
-    socket.to(message.roomId).emit('userJoined', {user: message.user, room: getRoom(message.roomId)})
-  });
-  socket.on('sendMessage', (message) => {
-    console.log(message);
-    const user = getUser(message.roomId, message.userId);
-    addChatMessage(user, message.message, message.roomId);
-    const chatMessages = getChatAllMessages(message.roomId);
-    io.in(message.roomId).emit('chatMessage', chatMessages.chatMessages);
-  });
-  socket.on('leaveRoom', (message) => {
-    console.log('SOCKET LEAVE', message);
-    socket.leave(message.roomId);
-    leaveUser(message.roomId, message.userId);
-
-    const rooms = getRoomIdsOnly();
-    socket.broadcast.emit('roomList', rooms);
-  });
-});
 
 app.get('/', (req, res) => {
   res.send(`<h1>Hello from server</h1>`);
@@ -68,23 +24,26 @@ app.post('/', (req, res) => {
 });
 
 app.get('/rooms', (req, res) => {
-  const rooms = getRoomIdsOnly();
+  const rooms = roomContoller.getRoomIds();
   console.log('ROOMS', rooms);
   res.json(rooms);
 });
 
-app.get('/chat', (req, res) => {
-  const { data } = req.body;
-  // const chat = getRoomIdsOnly();
-  // console.log('ROOMS', rooms);
-  // res.json(rooms);
-  console.log('request for chat');
-  
+app.get('/chats/:room', (req, res) => {
+  const room = req.params.room;
+  const chat = roomContoller.getRoomChat(room);
+  res.json(chat);
+});
+
+app.get('/users/:room', (req, res) => {
+  const room = req.params.room;
+  const users = roomContoller.getRoomUsers(room);
+  res.json(users);
 });
 
 app.post('/rooms', (req, res) => {
   const { data } = req.body;
-  createRoom(data);
+  roomContoller.createRoom(data);
   res.status(201).json('created');
 });
 

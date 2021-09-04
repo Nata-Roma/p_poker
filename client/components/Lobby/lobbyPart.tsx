@@ -1,6 +1,6 @@
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { useContext } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { Button, Typography, Grid } from '@material-ui/core';
 
 import useStylesLobbyPart from '@styles/lobbyPart.style';
@@ -8,30 +8,48 @@ import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'components/userCard';
 import NameGame from './nameGame';
 import AppContext, { appStore } from 'store/store';
+import { IRoomData, IUser } from 'utils/interfaces';
+import { ObserverList } from './observerList';
+import { roles } from 'utils/configs';
 
+interface LobbyPartProps {
+  users: Array<IUser>;
+}
 
-
-const roles = new Map([ [ 'dealer', 'dealer' ], [ 'member', 'member' ] ]);
-
-export const LobbyPart = () => {
-  const role = 'dealer';
+export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
   const classes = useStylesLobbyPart();
-  const {state} = useContext(AppContext);
+  const { state } = useContext(AppContext);
   const router = useRouter();
   const { lobby } = router.query;
+  const [ dealer, setDealer ] = useState<IUser>();
+  const [ userArr, setUserArr ] = useState<Array<IUser>>(users);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
       roomId: lobby,
-      userId: state.userId
+      userId: state.userId,
     });
-    router.push('/')
-  }
+    router.push('/');
+  };
 
   state.socket.on('userJoined', (message) => {
-    console.log(message);
-  })
-  
+    setUserArr(message);
+    console.log('Lobby join user', message);
+  });
+
+  state.socket.on('userLeft', (message) => {
+    setUserArr(message);
+    console.log('Lobby user left', message);
+  });
+
+  useEffect(
+    () => {
+      const dealer = userArr.find((user) => user.dealer);
+      setDealer(dealer);
+    },
+    [ userArr ],
+  );
+
   return (
     <Grid container spacing={2}>
       <Grid item>
@@ -44,16 +62,15 @@ export const LobbyPart = () => {
       </Grid>
       <Grid item className={classes.mBottom}>
         <Typography variant="subtitle2">Dealer:</Typography>
-        <UserCard user={{ username: 'Koza Nostra', avatar: '' }} />
+        {dealer && (
+          <UserCard
+            user={dealer}
+            observer={dealer.userRole === roles.observer ? true : false}
+          />
+        )}
       </Grid>
-      <Grid
-        item
-        container
-        justifyContent="space-between"
-        className={classes.mBottom}
-      >
-      {role === roles.get('dealer') && (
-        <Grid item >
+      {state.dealer && (
+        <Grid item className={classes.mBottom}>
           <Link href="/lobby/game">
             <Button color="primary" variant="contained" className={classes.btn}>
               Start Game
@@ -61,12 +78,26 @@ export const LobbyPart = () => {
           </Link>
         </Grid>
       )}
-          <Button variant="outlined" className={classes.btn} onClick={onRoomLeave}>
-            Exit
-          </Button>
+
+      <Grid
+        item
+        container
+        justifyContent="flex-end"
+        className={classes.mBottom}
+      >
+        <Button
+          variant="outlined"
+          className={classes.btn}
+          onClick={onRoomLeave}
+        >
+          Exit
+        </Button>
       </Grid>
       <Grid item container>
-        <MemberList />
+        {userArr && <MemberList users={userArr} />}
+      </Grid>
+      <Grid item container>
+        {userArr && <ObserverList users={userArr} />}
       </Grid>
     </Grid>
   );

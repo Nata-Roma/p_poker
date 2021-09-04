@@ -30,7 +30,15 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   const [ roomList, setRoomList ] = useState<Array<string>>(rooms);
   const [ openCreate, setOpenCreate ] = useState(false);
   const [ openConnect, setOpenConnect ] = useState(false);
-  const [ userData, setUserData ] = useState({ ...userInitData });
+  const [ userData, setUserData ] = useState({
+    ...userInitData,
+    username: {
+      ...userInitData.username,
+    },
+    userSurname: {
+      ...userInitData.userSurname,
+    },
+  });
   const [ role, setRole ] = useState(roles.member);
   const [ room, setRoom ] = useState('');
   const [ loading, setLoading ] = useState(false);
@@ -50,6 +58,8 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       userData.userSurname.nameData,
       userData.avatar,
       userId,
+      state.userRole,
+      state.dealer,
     );
     dispatch(setUserId(message.user.id));
     state.socket.emit('joinRoom', message);
@@ -62,13 +72,12 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   const onCreateRoom = async () => {
     if (userData.username.statusData && userData.userSurname.statusData) {
       const id = nanoid();
+      dispatch(setRoomId(id));
       const config = {
         data: id,
       };
       setOpenCreate(false);
       const created = await axios.post(`${BASE_URL}/rooms`, config);
-      dispatch(setRoomId(id));
-      dispatch(setDealer(true));
       goToLobby(id);
     }
   };
@@ -86,13 +95,22 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   };
 
   const clearUserData = () => {
-    setUserData({ ...userInitData });
+    setUserData({
+      ...userInitData,
+      username: {
+        ...userInitData.username,
+      },
+      userSurname: {
+        ...userInitData.userSurname,
+      },
+    });
     setRole(roles.member);
   };
 
   const onCreateCancel = () => {
     if (!loading) {
       setOpenCreate(false);
+      dispatch(setDealer(false));
       clearUserData();
     }
   };
@@ -123,6 +141,13 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     [ role ],
   );
 
+  useEffect(() => {
+    dispatch(setRoomId(''));
+    dispatch(setUserId(''));
+    dispatch(setDealer(false));
+    dispatch(setUserRole(roles.member));
+  }, []);
+
   return (
     <div className={classes.wrapper}>
       <div className={classes.container}>
@@ -145,14 +170,24 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
         <Typography variant="h4" align="center" className={classes.title}>
           Start your planning:
         </Typography>
-        <Grid container justifyContent='center'>
-          <Grid container item alignItems="center" justifyContent='center' spacing={2} className={classes.choiceWrapper}>
+        <Grid container justifyContent="center">
+          <Grid
+            container
+            item
+            alignItems="center"
+            justifyContent="center"
+            spacing={2}
+            className={classes.choiceWrapper}
+          >
             <Grid item className={classes.choiceContainer} />
-            <Grid item >
+            <Grid item>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => setOpenCreate(true)}
+                onClick={() => {
+                  setOpenCreate(true);
+                  dispatch(setDealer(true));
+                }}
                 className={classes.btn}
               >
                 Start New game
@@ -174,7 +209,14 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
               />
             </Grid>
           </Grid>
-          <Grid container item alignItems="center" justifyContent='center' spacing={2} className={classes.choiceWrapper}>
+          <Grid
+            container
+            item
+            alignItems="center"
+            justifyContent="center"
+            spacing={2}
+            className={classes.choiceWrapper}
+          >
             <Grid item className={classes.choiceContainer}>
               <RoomSelect
                 rooms={roomList.map((item) => item)}
