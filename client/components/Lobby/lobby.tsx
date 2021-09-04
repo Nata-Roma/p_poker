@@ -5,8 +5,9 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { apiGetLobbyInfo } from 'services/apiServices';
 import AppContext from 'store/store';
-import { IChat, IChatMessage, IRoomData, IUser } from 'utils/interfaces';
-import { LobbyPart } from './lobbyPart';
+import { IChatMessage, IUser } from 'utils/interfaces';
+import { LobbyDealer } from './lobbyDealer';
+import { LobbyUser } from './lobbyUsers';
 
 interface LobbyProps {
   lobbyInfo: {
@@ -19,6 +20,7 @@ const Lobby = () => {
   const classes = useStylesLobby();
   const [ chatMessages, setChatMessages ] = useState<Array<IChatMessage>>();
   const [ users, setUsers ] = useState<Array<IUser>>();
+  const { state } = useContext(AppContext);
   const router = useRouter();
 
   const initData = async () => {
@@ -26,7 +28,7 @@ const Lobby = () => {
 
     if (data.chat.length) {
       console.log('we have a chat!', data.chat);
-      
+
       setChatMessages(data.chat);
     }
     if (data.users) {
@@ -50,7 +52,8 @@ const Lobby = () => {
           sm={7}
           className={classes.lobbyPartContainer}
         >
-          {users && <LobbyPart users={users} />}
+          {state.dealer && users && <LobbyDealer users={users} />}
+          {!state.dealer && users && <LobbyUser users={users} />}
         </Grid>
         <Grid item xs={12} md={3} sm={5} className={classes.chatPartContainer}>
           {chatMessages && <Chat chatMessages={chatMessages} />}

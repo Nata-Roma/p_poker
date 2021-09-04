@@ -16,7 +16,7 @@ interface LobbyPartProps {
   users: Array<IUser>;
 }
 
-export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
+export const LobbyUser: FC<LobbyPartProps> = ({ users }) => {
   const classes = useStylesLobbyPart();
   const { state } = useContext(AppContext);
   const router = useRouter();
@@ -57,9 +57,6 @@ export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
           Lobby Title
         </Typography>
       </Grid>
-      <Grid item xs={12} justifyContent="center">
-      <NameGame/>
-      </Grid>
       <Grid item className={classes.mBottom}>
         <Typography variant="subtitle2">Dealer:</Typography>
         {dealer && (
@@ -69,16 +66,6 @@ export const LobbyPart: FC<LobbyPartProps> = ({ users }) => {
           />
         )}
       </Grid>
-      {state.dealer && (
-        <Grid item className={classes.mBottom}>
-          <Link href="/lobby/game">
-            <Button color="primary" variant="contained" className={classes.btn}>
-              Start Game
-            </Button>
-          </Link>
-        </Grid>
-      )}
-
       <Grid
         item
         container
