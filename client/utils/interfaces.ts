@@ -42,3 +42,12 @@ export interface IApiGetLobbyInfo {
   chat: Array<IChatMessage>;
   users: Array<IUser>;
 }
+export interface IssueData {
+  issueName: string;
+  priority: string;
+  id: string;
+}
+
+export interface CreateIssuePopupProps {
+  onCreate: (issue: IssueData) => void;
+}

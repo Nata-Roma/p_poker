@@ -7,6 +7,8 @@ import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'components/userCard';
 import NameGame from './nameGame';
+import GameSettings from './gameSettings';
+import IssueList from './issueList';
 import AppContext, { appStore } from 'store/store';
 import { IRoomData, IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
@@ -21,8 +23,8 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   const { state } = useContext(AppContext);
   const router = useRouter();
   const { lobby } = router.query;
-  const [ dealer, setDealer ] = useState<IUser>();
-  const [ userArr, setUserArr ] = useState<Array<IUser>>(users);
+  const [dealer, setDealer] = useState<IUser>();
+  const [userArr, setUserArr] = useState<Array<IUser>>(users);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -47,7 +49,7 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
       const dealer = userArr.find((user) => user.dealer);
       setDealer(dealer);
     },
-    [ userArr ],
+    [userArr],
   );
 
   return (
@@ -67,20 +69,17 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
           />
         )}
       </Grid>
-      <Grid item className={classes.mBottom}>
-        <Link href="/lobby/game">
-          <Button color="primary" variant="contained" className={classes.btn}>
-            Start Game
-          </Button>
-        </Link>
-      </Grid>
-
       <Grid
         item
         container
-        justifyContent="flex-end"
+        justifyContent="space-between"
         className={classes.mBottom}
       >
+          <Link href="/lobby/game">
+            <Button color="primary" variant="contained" className={classes.btn}>
+              Start Game
+            </Button>
+          </Link>
         <Button
           variant="outlined"
           className={classes.btn}
@@ -94,6 +93,10 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
       </Grid>
       <Grid item container>
         {userArr && <ObserverList users={userArr} />}
+      </Grid>
+      <Grid item container>
+        <IssueList />
+        <GameSettings />
       </Grid>
     </>
   );
