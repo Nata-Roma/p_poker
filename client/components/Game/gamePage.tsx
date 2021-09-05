@@ -11,7 +11,7 @@ import { IChatMessage, IUser } from 'utils/interfaces';
 import { GameDealer } from './gameDealer';
 import { ScoreList } from './ScoreList';
 import IssuesCards from './issuesCards';
-
+import { GameCard } from './gameCard';
 
 
 export const GamePage = () => {
@@ -65,7 +65,9 @@ export const GamePage = () => {
           { users && <GameDealer users={users} issues={issues}/>}
           {/**Below is for TODO */}
           {/* {!state.dealer && users && <GameUser users={users} />} */}
+          
         </Grid>
+        
         <Grid item xs={4} md={4} sm={5} className={classes.scorePartContainer}>
          
       {/* <Grid item container xs={4}> */}

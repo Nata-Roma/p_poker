@@ -8,7 +8,7 @@ const useStylesGamePart = makeStyles((theme: Theme) => ({
     marginBottom: '20px',
   },
   issuesContainer: {
-    maxHeight: '60vh',
+    maxHeight: '50vh',
     overflowY: 'auto',
     [theme.breakpoints.down(960)]: {
       maxHeight: '20vh',
