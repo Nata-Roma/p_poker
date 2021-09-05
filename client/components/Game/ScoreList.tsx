@@ -15,13 +15,13 @@ export const ScoreList: FC<ScoreListProps> = ({ users }) => {
   
     return (
       <div className={classes.container}>
-        <Grid container item spacing={2} justifyContent="space-around">
+        <Grid container item spacing={2} justifyContent="space-around" className={classes.heading}>
             <Typography variant="h6" align="center" gutterBottom>
-            Scores:
-        </Typography>
-        <Typography variant="h6" align="center" gutterBottom>
-            Members:
-        </Typography>
+                Scores:
+            </Typography>
+            <Typography variant="h6" align="center" gutterBottom>
+                Members:
+             </Typography>
         </Grid>
           {users &&
             users.map(

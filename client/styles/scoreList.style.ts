@@ -7,6 +7,9 @@ const useStylesScoreList = makeStyles({
   container: {
       width: '100%',
     
+  },
+  heading: {
+    padding: '20px 0'
   }
 });
 

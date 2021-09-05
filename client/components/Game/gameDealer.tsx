@@ -4,19 +4,21 @@ import React, { FC, useContext, useEffect, useState } from 'react';
 import { Button, Typography, Grid, Box } from '@material-ui/core';
 
 import useStylesGamePart from '@styles/gamePart.style';
-import { MemberList } from 'components/Lobby/memberList';
+
 import { UserCard } from 'components/userCard';
 
 import AppContext, { appStore } from 'store/store';
 import { IRoomData, IUser } from 'utils/interfaces';
 import { ObserverList } from '../Lobby/observerList';
 import { roles } from 'utils/configs';
+import IssuesCards from './issuesCards';
 
 interface LobbyPartProps {
   users: Array<IUser>;
+  issues?: number[];
 }
 
-export const GameDealer: FC<LobbyPartProps> = ({ users }) => {
+export const GameDealer: FC<LobbyPartProps> = ({ users, issues }) => {
   const classes = useStylesGamePart();
   const { state } = useContext(AppContext);
   const router = useRouter();
@@ -48,12 +50,11 @@ export const GameDealer: FC<LobbyPartProps> = ({ users }) => {
   );
 
   return (
-    <>
-      
+    <>      
         <Typography variant="subtitle2">Dealer:</Typography>
-        <Grid  container  justifyContent="space-between" alignItems="flex-end" >
-        <Grid item className={classes.mBottom}>
-        {/* {dealer && (
+        <Grid  container justifyContent="space-between" alignItems="flex-end" >
+        <Grid item xs={4} className={classes.mBottom}>
+        {/* {state.dealer && (
             
           <UserCard
             user={dealer}
@@ -77,7 +78,9 @@ export const GameDealer: FC<LobbyPartProps> = ({ users }) => {
         </Button>
         </Box>
         </Grid>
-        
+        <Grid container className={classes.issuesContainer}>
+        <IssuesCards issues={issues} /> 
+        </Grid>
       </Grid>     
       
      

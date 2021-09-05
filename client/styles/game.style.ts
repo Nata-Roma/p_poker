@@ -32,8 +32,15 @@ const useStylesGame = makeStyles((theme: Theme) => createStyles({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-around',
-    padding: '2px'
+    // justifyContent: 'space-around',
+    alignItems: 'center',
+    padding: '20px 5px',
+    boxShadow:'1px 0 3px rgba(0, 0, 0, 0.3)',
+    [theme.breakpoints.down(700)]: {
+      height: '300px',
+      minWidth: '100%'
+      
+    },
   }
 })
 );

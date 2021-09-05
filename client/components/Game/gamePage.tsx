@@ -9,28 +9,24 @@ import { apiGetLobbyInfo } from 'services/apiServices';
 import AppContext from 'store/store';
 import { IChatMessage, IUser } from 'utils/interfaces';
 import { GameDealer } from './gameDealer';
-import { MemberList, mockedUsers } from 'components/Lobby/memberList';
 import { ScoreList } from './ScoreList';
+import IssuesCards from './issuesCards';
 
 
 
 export const GamePage = () => {
   const classes = useStylesGame();
-  const [ chatMessages, setChatMessages ] = useState<Array<IChatMessage>>();
-  const [ users, setUsers ] = useState<Array<IUser>>();
+    const [ users, setUsers ] = useState<Array<IUser>>();
   const { state } = useContext(AppContext);
   const router = useRouter();
   console.log('state', state);
   console.log('router', router);
+  const issues = [1, 2, 3, 4, 5, 6];
+  const springNum = 123;
 
   const initData = async () => {
     const data = await apiGetLobbyInfo('z3aRNZxzhODl9LRFLln13');
-
-    if (data.chat.length) {
-      console.log('we have a chat!', data.chat);
-
-      setChatMessages(data.chat);
-    }
+      
     if (data.users) {
       setUsers(data.users);
       console.log('we have users!', data.users);
@@ -54,25 +50,27 @@ export const GamePage = () => {
         </Button>
       </Link> */}
        
-      <Grid container style={{ height: '100%' }} xs={12} >
+      <Grid container style={{ height: '100%', overflow: 'hidden' }} >
         <Grid
           container
           direction="column"
           item
-          xs={8}
+          xs={12}
           md={8}
-          sm={6}
+          sm={7}
           className={classes.gamePartContainer}
         >
+          <Grid>
           <div>Game Page</div>
            <Typography variant="h6" align="center" gutterBottom>
-            Spring:  planning (issues: )
-          </Typography> 
+            Spring: {springNum} planning (issues: {issues.toString()})
+          </Typography>
+          </Grid>        
           {/* {state.dealer && users && <GameDealer users={users} />} */}
-          { users && <GameDealer users={users} />}
-          {/* {!state.dealer && users && <LobbyUser users={users} />} */}
+          { users && <GameDealer users={users} issues={issues}/>}
+          {/* {!state.dealer && users && <GameUser users={users} />} */}
         </Grid>
-        <Grid item xs={4} md={4} sm={2} >
+        <Grid item xs={4} md={4} sm={5} className={classes.scorePartContainer}>
          
       {/* <Grid item container xs={4}> */}
         {/* {users && <MemberList users={users} />} */}

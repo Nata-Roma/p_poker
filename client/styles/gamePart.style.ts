@@ -7,6 +7,10 @@ const useStylesGamePart = makeStyles({
   mBottom: {
     marginBottom: '20px',
   },
+  issuesContainer: {
+    maxHeight: '60vh',
+    overflowY: 'auto'
+  }
   
 });
 
