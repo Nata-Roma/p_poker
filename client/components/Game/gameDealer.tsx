@@ -54,18 +54,18 @@ export const GameDealer: FC<LobbyPartProps> = ({ users, issues }) => {
         <Typography variant="subtitle2">Dealer:</Typography>
         <Grid  container justifyContent="space-between" alignItems="flex-end" >
         <Grid item className={classes.mBottom}>
-        {/* {state.dealer && (
+        {state.dealer && (
             
           <UserCard
             user={dealer}
             observer={dealer.userRole === roles.observer ? true : false}
           />
-        )} */}
-            
-            <UserCard
+        )}
+            {/* made for develope*/}
+            {/* <UserCard
               user={{"username":"Main","userSurname":"Dealer","avatar":"","id":"AsClmPqC3H9fyBcWAABp","userRole":"member","dealer":true}}
               observer={false}
-            />
+            /> */}
              </Grid>
              <Grid item className={classes.mBottom} >
              <Box  boxShadow={2} mr={10}>

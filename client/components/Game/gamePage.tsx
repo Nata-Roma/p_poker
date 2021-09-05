@@ -25,7 +25,8 @@ export const GamePage = () => {
   const springNum = 123;
 
   const initData = async () => {
-    const data = await apiGetLobbyInfo('z3aRNZxzhODl9LRFLln13');
+    const data = await apiGetLobbyInfo(router.query.game);
+    // const data = await apiGetLobbyInfo('z3aRNZxzhODl9LRFLln13');
       
     if (data.users) {
       setUsers(data.users);
@@ -39,16 +40,7 @@ export const GamePage = () => {
 
   return (
     <div className={classes.container}>
-      {/* <div>Game Page</div>
-      <Typography variant="h6" align="center" gutterBottom>
-            Spring: {state.gameSpring} planning (issues: )
-      </Typography> 
-      <Link href="/">
-        <Button color="primary" variant="contained">
-          {/* {state.dealer ? 'Stop Game' : 'Exit '} */}
-{/*          
-        </Button>
-      </Link> */}
+
        
       <Grid container style={{ height: '100%', overflow: 'hidden' }} >
         <Grid
@@ -66,8 +58,8 @@ export const GamePage = () => {
             Spring: {springNum} planning (issues: {issues.toString()})
           </Typography>
           </Grid>        
-          {/* {state.dealer && users && <GameDealer users={users} />} */}
-          { users && <GameDealer users={users} issues={issues}/>}
+          {state.dealer && users && <GameDealer users={users} />}
+          {/* { users && <GameDealer users={users} issues={issues}/>} */}
           {/* {!state.dealer && users && <GameUser users={users} />} */}
         </Grid>
         <Grid item xs={4} md={4} sm={5} className={classes.scorePartContainer}>
