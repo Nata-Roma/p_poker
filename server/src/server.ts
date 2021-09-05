@@ -40,6 +40,8 @@ app.get('/chats/:room', (req, res) => {
 });
 
 app.get('/users/:room', (req, res) => {
+  console.log('USERS request');
+  
   const room = req.params.room;
   if (room) {
     const users = roomContoller.getRoomUsers(room);

@@ -9,12 +9,12 @@ export const Footer = () => {
   const classes = useStylesFooter();
 
   return (
-    <div className={classes.container}>
+    <div className={classes.footerContainer}>
       <Grid
         container
         alignItems="center"
         justifyContent="space-between"
-        className={classes.root}
+        className={classes.footerRoot}
       >
         <Grid item>
           <Typography variant="subtitle1">
