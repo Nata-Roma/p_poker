@@ -23,8 +23,8 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   const { state } = useContext(AppContext);
   const router = useRouter();
   const { lobby } = router.query;
-  const [dealer, setDealer] = useState<IUser>();
-  const [userArr, setUserArr] = useState<Array<IUser>>(users);
+  const [ dealer, setDealer ] = useState<IUser>();
+  const [ userArr, setUserArr ] = useState<Array<IUser>>(users);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -49,11 +49,20 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
       const dealer = userArr.find((user) => user.dealer);
       setDealer(dealer);
     },
-    [userArr],
+    [ userArr ],
   );
 
   return (
-    <>
+    <Grid
+      container
+      direction="column"
+      item
+      xs={12}
+      md={9}
+      sm={7}
+      className={classes.lobbyPartDealerContainer}
+      wrap="nowrap"
+    >
       <Grid item>
         <Typography variant="h4" align="center" gutterBottom>
           Lobby
@@ -75,17 +84,17 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
         justifyContent="space-between"
         className={classes.mBottom}
       >
-          <Link href="/lobby/game">
-            <Button color="primary" variant="contained" className={classes.btn}>
-              Start Game
-            </Button>
-          </Link>
+        <Link href="/lobby/game">
+          <Button color="primary" variant="contained" className={classes.btn}>
+            Start Game
+          </Button>
+        </Link>
         <Button
           variant="outlined"
           className={classes.btn}
           onClick={onRoomLeave}
         >
-          Exit
+          Cancel Game
         </Button>
       </Grid>
       <Grid item container>
@@ -98,6 +107,6 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
         <IssueList />
         <GameSettings />
       </Grid>
-    </>
+    </Grid>
   );
 };

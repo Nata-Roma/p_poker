@@ -49,7 +49,16 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users }) => {
   );
 
   return (
-    <>
+    <Grid
+      container
+      direction="column"
+      item
+      xs={12}
+      md={9}
+      sm={7}
+      className={classes.lobbyPartUserContainer}
+      wrap="nowrap"
+    >
       <Grid item>
         <Typography variant="h4" align="center" gutterBottom>
           Lobby
@@ -84,6 +93,6 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users }) => {
       <Grid item container>
         {userArr && <ObserverList users={userArr} />}
       </Grid>
-    </>
+    </Grid>
   );
 };
