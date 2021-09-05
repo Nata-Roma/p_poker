@@ -31,14 +31,21 @@ app.get('/rooms', (req, res) => {
 
 app.get('/chats/:room', (req, res) => {
   const room = req.params.room;
-  const chat = roomContoller.getRoomChat(room);
-  res.json(chat);
+  console.log('ROOM request for chat', room);
+  if (room) {
+    const chat = roomContoller.getRoomChat(room);
+    res.json(chat);
+  }
+  res.json(null);
 });
 
 app.get('/users/:room', (req, res) => {
   const room = req.params.room;
-  const users = roomContoller.getRoomUsers(room);
-  res.json(users);
+  if (room) {
+    const users = roomContoller.getRoomUsers(room);
+    res.json(users);
+  }
+  res.json(null);
 });
 
 app.post('/rooms', (req, res) => {

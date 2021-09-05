@@ -1,8 +1,11 @@
 import { Button, Grid, Input } from '@material-ui/core';
 import useStylesChat from '@styles/chat.style';
+import { useRouter } from 'next/router';
 import { FC, useContext, useState } from 'react';
+import { setRoomId, setUserId } from 'store/actionCreators';
 import AppContext from 'store/store';
 import { IChatMessage } from 'utils/interfaces';
+import appStorage from 'utils/storage';
 import { ChatMessages } from './chatMessages';
 
 const chatMessages = [
@@ -35,12 +38,21 @@ interface ChatProps {
 
 export const Chat: FC<ChatProps> = ({ chatMessages }) => {
   const classes = useStylesChat();
-  const { state } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
   const [ message, setMessage ] = useState('');
   const [ messages, setMessages ] = useState(chatMessages);
+  const router = useRouter();
 
-  const onSendClick = () => {
+  const onSendClick = async () => {
     if (message) {
+      if (!state.userId) {
+        console.log('userId: ', state.userId);
+        await dispatch(setUserId(appStorage.getSession()));
+      }
+      if (!state.roomId) {
+        console.log('roomId: ', state.roomId);
+        await dispatch(setRoomId(router.query.lobby));
+      }
       state.socket.emit('sendMessage', {
         roomId: state.roomId,
         userId: state.userId,
@@ -50,8 +62,17 @@ export const Chat: FC<ChatProps> = ({ chatMessages }) => {
     }
   };
 
-  const onSendEnter = (e) => {
+  const onSendEnter = async (e) => {
     if (message && e.key === 'Enter') {
+      if (!state.userId) {
+        await dispatch(setUserId(appStorage.getSession()));
+        console.log('userId: ', state.userId);
+      }
+      if (!state.roomId) {
+        await dispatch(setRoomId(router.query.lobby));
+        console.log('roomId: ', state.roomId);
+      }
+
       state.socket.emit('sendMessage', {
         roomId: state.roomId,
         userId: state.userId,
@@ -62,7 +83,6 @@ export const Chat: FC<ChatProps> = ({ chatMessages }) => {
   };
 
   state.socket.on('chatMessage', (message) => {
-    console.log('chat on client via SOCKET', message);
     setMessages(message);
   });
 

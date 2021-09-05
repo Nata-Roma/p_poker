@@ -40,18 +40,24 @@ class Rooms {
 
   joinUserToRoom = (roomId: string, user: IUserData): void => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
-    room.joinUser(user);
+    if (room) {
+      room.joinUser(user);
+    }
   };
 
   leaveUserFromRoom = (roomId: string, userId: string): void => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
-    room.leaveUser(userId);
+    if (room) {
+      room.leaveUser(userId);
+    }
   };
 
   getRoomChat = (roomId: string): Array<IChatMessage> => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
-    const chat = room.getChatMessages();
-    if (chat) return chat;
+    if (room) {
+      const chat = room.getChatMessages();
+      if (chat) return chat;
+    }
     return null;
   };
 
@@ -84,6 +90,24 @@ class Rooms {
   gameInit = (roomId: string, tasks: Array<string>): void => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     room.gameInit(tasks);
+  };
+
+  userDisconnect = (userId: string): void => {
+    this.rooms.forEach((room) => {
+      const userIndex = room.findUser(userId);
+      if (userIndex >= 0) {
+        room.leaveUser(userId);
+      } else return null;
+    });
+  };
+
+  getRoomUser = (roomId: string, userId: string): IUserData | null => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      const user = room.getUser(userId);
+      return user;
+    }
+    return null;
   };
 }
 
