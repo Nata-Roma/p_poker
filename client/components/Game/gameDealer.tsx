@@ -53,7 +53,7 @@ export const GameDealer: FC<LobbyPartProps> = ({ users, issues }) => {
     <>      
         <Typography variant="subtitle2">Dealer:</Typography>
         <Grid  container justifyContent="space-between" alignItems="flex-end" >
-        <Grid item xs={4} className={classes.mBottom}>
+        <Grid item className={classes.mBottom}>
         {/* {state.dealer && (
             
           <UserCard

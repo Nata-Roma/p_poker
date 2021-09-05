@@ -1,6 +1,6 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core';
 
-const useStylesGamePart = makeStyles({
+const useStylesGamePart = makeStyles((theme: Theme) => ({
   btn: {
     width: '190px',
   },
@@ -9,9 +9,12 @@ const useStylesGamePart = makeStyles({
   },
   issuesContainer: {
     maxHeight: '60vh',
-    overflowY: 'auto'
+    overflowY: 'auto',
+    [theme.breakpoints.down(960)]: {
+      maxHeight: '20vh',
+    },
   }
   
-});
+}));
 
 export default useStylesGamePart;
