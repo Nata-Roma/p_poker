@@ -35,7 +35,7 @@ const IssueList: FC = () => {
   }
 
   return (
-    <Grid container spacing={2} justifyContent="center">
+    <Grid item container spacing={2} justifyContent="center">
       <Typography variant="h4" align="center" gutterBottom >
         Issues:
       </Typography>

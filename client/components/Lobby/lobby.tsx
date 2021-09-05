@@ -89,7 +89,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
         roomId: router.query.lobby,
         userId: appStorage.getSession(),
       });
-      state.socket.on('reconnectToLobby', (message:IUser) => {
+      state.socket.on('reconnectToLobby', (message: IUser) => {
         onLobbyReconnect(message);
         onLobbyEntrance();
       });
@@ -99,20 +99,10 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   }, []);
 
   return (
-    <div className={classes.container}>
+    <div className={state.dealer ? classes.containerDealer : classes.containerUser}>
       <Grid container style={{ height: '100%' }}>
-        <Grid
-          container
-          direction="column"
-          item
-          xs={12}
-          md={9}
-          sm={7}
-          className={classes.lobbyPartContainer}
-        >
-          {state.dealer && users && <LobbyDealer users={users} />}
-          {!state.dealer && users && <LobbyUser users={users} />}
-        </Grid>
+        {state.dealer && users && <LobbyDealer users={users} />}
+        {!state.dealer && users && <LobbyUser users={users} />}
         <Grid item xs={12} md={3} sm={5} className={classes.chatPartContainer}>
           {chatMessages && <Chat chatMessages={chatMessages} />}
           {!chatMessages && <Chat chatMessages={chatMessages} />}
