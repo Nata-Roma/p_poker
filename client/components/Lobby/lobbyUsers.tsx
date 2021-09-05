@@ -1,14 +1,12 @@
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { FC, useContext, useEffect, useState } from 'react';
 import { Button, Typography, Grid } from '@material-ui/core';
 
 import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'components/userCard';
-import NameGame from './nameGame';
 import AppContext, { appStore } from 'store/store';
-import { IRoomData, IUser } from 'utils/interfaces';
+import { IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
 import { roles } from 'utils/configs';
 

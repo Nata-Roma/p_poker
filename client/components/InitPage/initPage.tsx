@@ -54,7 +54,6 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   });
 
   const goToLobby = (id: string) => {
-    // const userId = state.socket.id;
     const userId = appStorage.getSession();
     dispatch(setUserId(userId));
     dispatch(setUsername(userData.username.nameData)),
@@ -148,14 +147,9 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     }
     if (!state.socket.auth.userId) {
       const session = appStorage.getSession();
-      console.log(session);
-      
       state.socket.auth.userId = session;
     }
-    console.log(state.socket);
-    state.socket.disconnect().connect()
-
-    // state.socket.emit('changeUsername', appStorage.getSession());
+    state.socket.disconnect().connect();
   }, []);
 
   return (

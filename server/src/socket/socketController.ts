@@ -13,7 +13,7 @@ const socketServer = (httpServer) => {
 
   io.on('connection', (socket) => {
     console.log(`Connected to socket: ${socket.id}`);
-console.log('Socket userId',socket.handshake.auth.userId);
+    console.log('Socket userId', socket.handshake.auth.userId);
 
     // socket.on('changeUsername', (message) => {
     //   socket.handshake.auth.username = message;
@@ -23,18 +23,31 @@ console.log('Socket userId',socket.handshake.auth.userId);
     socket.on('joinRoom', (message) => {
       socket.join(message.roomId);
       console.log('SOCKET JOIN');
-      roomContoller.joinUserToRoom(message.roomId, message.user);
-      const rooms = roomContoller.getRoomIds();
-      const users = roomContoller.getRoomUsers(message.roomId);
-      socket.broadcast.emit('roomList', rooms);
-      io.in(message.roomId).emit('userJoined', users);
+      const { roomId, user } = message;
+      if (user.id) {
+        roomContoller.joinUserToRoom(roomId, user);
+        const rooms = roomContoller.getRoomIds();
+        const users = roomContoller.getRoomUsers(roomId);
+        socket.broadcast.emit('roomList', rooms);
+        io.in(roomId).emit('userJoined', users);
+      }
+    });
+
+    socket.on('userRoomReconnect', (message) => {
+      const { roomId, userId } = message;
+      console.log('Socket REconnected', roomId, userId);
+
+      // socket.join(roomId);
+      // roomContoller.joinUserToRoom(roomId, userId);
+      const user = roomContoller.getRoomUser(roomId, userId);
+      socket.emit('reconnectToLobby', user);
     });
 
     socket.on('sendMessage', (data) => {
       console.log(data);
       const { roomId, userId, message } = data;
       console.log(roomId, userId, message);
-      
+
       if (roomId && userId && message) {
         roomContoller.addMessagetoRoomChat(roomId, userId, message);
         const chatMessages = roomContoller.getRoomChat(roomId);
@@ -60,8 +73,8 @@ console.log('Socket userId',socket.handshake.auth.userId);
     //   // const users = roomContoller.getRoomUsers(roomId);
     //   // socket.to(roomId).emit('userLeft', users);
     //   console.log(socket.handshake.auth.username);
-      
-  //  });
+
+    //  });
   });
 };
 

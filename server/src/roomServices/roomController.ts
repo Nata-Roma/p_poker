@@ -40,12 +40,16 @@ class Rooms {
 
   joinUserToRoom = (roomId: string, user: IUserData): void => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
-    room.joinUser(user);
+    if (room) {
+      room.joinUser(user);
+    }
   };
 
   leaveUserFromRoom = (roomId: string, userId: string): void => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
-    room.leaveUser(userId);
+    if (room) {
+      room.leaveUser(userId);
+    }
   };
 
   getRoomChat = (roomId: string): Array<IChatMessage> => {
@@ -95,6 +99,15 @@ class Rooms {
         room.leaveUser(userId);
       } else return null;
     });
+  };
+
+  getRoomUser = (roomId: string, userId: string): IUserData | null => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      const user = room.getUser(userId);
+      return user;
+    }
+    return null;
   };
 }
 

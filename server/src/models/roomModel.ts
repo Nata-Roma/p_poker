@@ -20,8 +20,10 @@ class Room {
 
   joinUser = (user: IUserData): void => {
     const userFoundIndex = this.findUser(user.id);
-    console.log('userFound', userFoundIndex);
+    console.log('userFoundIndexInCreate', userFoundIndex);
     if (userFoundIndex >= 0) {
+      console.log('index > 0');
+      
       const leftPart = this.users.slice(0, userFoundIndex);
       leftPart.push(user);
       const rightPart = this.users.slice(userFoundIndex + 1);
@@ -30,6 +32,7 @@ class Room {
       console.log('right', rightPart);
       console.log('user', user);
     } else {
+      console.log('index < 0');
       this.users.push(user);
     }
   };
@@ -39,8 +42,10 @@ class Room {
   };
 
   getUser = (userId: string): IUserData => {
-    const user = this.users.find((item) => item.id === userId);
-    if (user) return user;
+    const userIndex = this.findUser(userId);
+    if (userIndex >= 0) {
+      return this.users[userIndex];
+    }
     return null;
   };
 
@@ -64,6 +69,8 @@ class Room {
   };
 
   findUser = (userId: string): number => {
+    console.log('incoming userId', userId);
+    
     const userFoundIndex = this.users.findIndex((user) => user.id === userId);
     console.log('found user', userFoundIndex);
     console.log('all users', this.users);

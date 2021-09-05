@@ -83,7 +83,6 @@ export const Chat: FC<ChatProps> = ({ chatMessages }) => {
   };
 
   state.socket.on('chatMessage', (message) => {
-    console.log('chat on client via SOCKET', message);
     setMessages(message);
   });
 
