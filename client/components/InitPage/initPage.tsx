@@ -11,7 +11,9 @@ import {
   setDealer,
   setRoomId,
   setUserId,
+  setUsername,
   setUserRole,
+  setUserSurname,
 } from 'store/actionCreators';
 import AppContext from 'store/store';
 import { roles, userInitData } from 'utils/configs';
@@ -19,6 +21,7 @@ import { userCreate } from 'utils/userCreate';
 import { IDialogUsers } from 'utils/interfaces';
 import { UserDialog } from './Dialog/userDialog';
 import pokerImage from '../../public/poker-cards_green.png';
+import appStorage from 'utils/storage';
 
 interface MakeChoiceProps {
   rooms: Array<string>;
@@ -51,18 +54,11 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   });
 
   const goToLobby = (id: string) => {
-    const userId = state.socket.id;
-    const message = userCreate(
-      id,
-      userData.username.nameData,
-      userData.userSurname.nameData,
-      userData.avatar,
-      userId,
-      state.userRole,
-      state.dealer,
-    );
-    dispatch(setUserId(message.user.id));
-    state.socket.emit('joinRoom', message);
+    // const userId = state.socket.id;
+    const userId = appStorage.getSession();
+    dispatch(setUserId(userId));
+    dispatch(setUsername(userData.username.nameData)),
+      dispatch(setUserSurname(userData.userSurname.nameData));
     router.push({
       pathname: '/[lobby]',
       query: { lobby: id },
@@ -73,6 +69,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     if (userData.username.statusData && userData.userSurname.statusData) {
       const id = nanoid();
       dispatch(setRoomId(id));
+
       const config = {
         data: id,
       };
@@ -146,6 +143,19 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     dispatch(setUserId(''));
     dispatch(setDealer(false));
     dispatch(setUserRole(roles.member));
+    if (!appStorage.getSession()) {
+      appStorage.setSession(nanoid());
+    }
+    if (!state.socket.auth.userId) {
+      const session = appStorage.getSession();
+      console.log(session);
+      
+      state.socket.auth.userId = session;
+    }
+    console.log(state.socket);
+    state.socket.disconnect().connect()
+
+    // state.socket.emit('changeUsername', appStorage.getSession());
   }, []);
 
   return (

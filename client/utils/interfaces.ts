@@ -29,11 +29,16 @@ export interface IRoomData {
 }
 
 export interface IChatMessage {
-  user: IUser
+  user: IUser;
   message: string;
 }
 
 export interface IChat {
   roomId: string;
   chatMessages: Array<IChatMessage>;
+}
+
+export interface IApiGetLobbyInfo {
+  chat: Array<IChatMessage>;
+  users: Array<IUser>;
 }

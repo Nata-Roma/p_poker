@@ -2,21 +2,20 @@ import { Grid } from '@material-ui/core';
 import useStylesLobby from '@styles/lobby.style';
 import { Chat } from 'components/Chat/chat';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { apiGetLobbyInfo } from 'services/apiServices';
 import AppContext from 'store/store';
-import { IChatMessage, IUser } from 'utils/interfaces';
+import { IApiGetLobbyInfo, IChatMessage, IUser } from 'utils/interfaces';
+import appStorage from 'utils/storage';
+import { userCreate } from 'utils/userCreate';
 import { LobbyDealer } from './lobbyDealer';
 import { LobbyUser } from './lobbyUsers';
 
 interface LobbyProps {
-  lobbyInfo: {
-    chat: Array<IChatMessage>;
-    users: Array<IUser>;
-  };
+  lobbyInfo: IApiGetLobbyInfo;
 }
 
-const Lobby = () => {
+const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   const classes = useStylesLobby();
   const [ chatMessages, setChatMessages ] = useState<Array<IChatMessage>>();
   const [ users, setUsers ] = useState<Array<IUser>>();
@@ -36,8 +35,40 @@ const Lobby = () => {
     }
   };
 
+  state.socket.on('disconnected', () => {
+    console.log('Disconnected!!!');
+    
+    router.push('/')
+  });
+
+  // state.socket.emit('disconnect')
   useEffect(() => {
-    initData();
+    // initData();
+    if (lobbyInfo.chat.length) {
+      console.log('we have a chat!', lobbyInfo.chat);
+
+      setChatMessages(lobbyInfo.chat);
+    }
+    if (lobbyInfo.users) {
+      setUsers(lobbyInfo.users);
+    }
+
+    const message = userCreate(
+      router.query.lobby,
+      state.username,
+      state.userSurname,
+      state.avatar,
+      state.userId,
+      state.userRole,
+      state.dealer,
+    );
+
+    console.log(message);
+    state.socket.emit('changeUsername', appStorage.getSession());
+    state.socket.emit('joinRoom', message);
+
+    console.log(state.socket);
+    
   }, []);
 
   return (
@@ -63,17 +94,5 @@ const Lobby = () => {
     </div>
   );
 };
-
-// export const getServerSideProps = async (context) => {
-//   const { lobby } = context.params;
-
-//   const lobbyInfo = await apiGetLobbyInfo(lobby);
-
-//   return {
-//     props: {
-//       lobbyInfo: lobbyInfo,
-//     },
-//   };
-// };
 
 export default Lobby;
