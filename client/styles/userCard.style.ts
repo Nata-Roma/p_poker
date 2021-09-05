@@ -10,6 +10,12 @@ createStyles({
     width: '300px',
     boxShadow: '1px 1px 5px rgba(0, 0, 0, 0.3)'
   },
+  containerScore: {
+    width: '92%',
+    height: '50px',   
+    alignItems: 'center',
+    padding: '1px'
+  },
   avatar: {
     height: '60px',
     width: '60px',
@@ -43,8 +49,15 @@ createStyles({
   avatarObserver: {
     borderColor: theme.palette.secondary.main,
   },
+  avatarScore: {
+    height: '40px',
+    width: '40px',
+  },
   icon: {
     fontSize: '30px'
+  },
+  iconScore: {
+    fontSize: '15px'
   }
 }));
 

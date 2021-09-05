@@ -5,15 +5,16 @@ import { IUser } from 'utils/interfaces';
 
 interface UserCardProps {
   user: IUser;
-  observer: boolean
+  observer: boolean;
+  score?: boolean;
 }
 
-export const UserCard = ({ user, observer }: UserCardProps) => {
+export const UserCard = ({ user, observer, score }: UserCardProps) => {
   const classes = useStylesUserCard();
 
   return (
-    <div className={classes.container}>
-      <div className={observer ? `${classes.avatar} ${classes.avatarObserver}` : `${classes.avatar}`}>
+    <div className={!score ? `${classes.container}` : `${classes.container} ${classes.containerScore}`}>
+      <div className={observer ? `${classes.avatar} ${classes.avatarObserver}` : score ? `${classes.avatar} ${classes.avatarScore}` : `${classes.avatar}`}>
         {user.avatar && (
           <div
             className={classes.avatarImg}
@@ -28,7 +29,7 @@ export const UserCard = ({ user, observer }: UserCardProps) => {
         )}
       </div>
       <Typography variant="h5">{user.username}{' '}{user.userSurname}</Typography>
-      <BlockIcon fontSize="large" />
+      <BlockIcon fontSize={score ? "medium" : "large"} />
     </div>
   );
 };

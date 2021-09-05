@@ -5,6 +5,7 @@ export interface IUser {
   id: string;
   userRole: string;
   dealer: boolean;
+  score?: string;
 }
 
 export interface IUserCreate {

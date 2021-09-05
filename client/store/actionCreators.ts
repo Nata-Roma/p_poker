@@ -27,3 +27,10 @@ export const setDealer = (status: boolean) => {
     payload: status,
   };
 };
+
+export const setSpring = (spring: string) => {
+  return {
+    type: actionTypes.SET_SPRING,
+    payload: spring,
+  };
+};

@@ -5,7 +5,8 @@ export const actionTypes = {
   SET_USER_ID: 'SET_USER_ID',
   SET_ROOM_ID: 'SET_ROOM_ID',
   SET_USER_ROLE: 'SET_USER_ROLE',
-  SET_DEALER: 'SET_DEALER'
+  SET_DEALER: 'SET_DEALER',
+  SET_SPRING: 'SET_SPRING'
 };
 
 export const appReducer = (state = appStore, action) => {
@@ -24,6 +25,9 @@ export const appReducer = (state = appStore, action) => {
 
         case actionTypes.SET_DEALER:
         return { ...state, dealer: action.payload };
+
+        case actionTypes.SET_SPRING:
+        return { ...state, gameSpring: action.payload };
   
     default:
       return state;
