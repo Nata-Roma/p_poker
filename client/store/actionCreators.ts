@@ -1,10 +1,12 @@
-import { actionTypes } from "./reducer";
+import { actionTypes } from './reducer';
 
-export const setRoomId = (id: string) => {
-  return {
-    type: actionTypes.SET_ROOM_ID,
-    payload: id,
-  };
+export const setRoomId = (id: string | Array<string>) => {
+  if (typeof id === 'string') {
+    return {
+      type: actionTypes.SET_ROOM_ID,
+      payload: id,
+    };
+  }
 };
 
 export const setUserId = (id: string) => {
@@ -28,9 +30,23 @@ export const setDealer = (status: boolean) => {
   };
 };
 
-export const setSpring = (spring: string) => {
+export const setUsername = (username: string) => {
   return {
-    type: actionTypes.SET_SPRING,
-    payload: spring,
+    type: actionTypes.SET_USER_NAME,
+    payload: username,
+  };
+};
+
+export const setUserSurname = (userSurname: string) => {
+  return {
+    type: actionTypes.SET_USER_SURNAME,
+    payload: userSurname,
+  };
+};
+
+export const setUserAvatar = (avatar: string) => {
+  return {
+    type: actionTypes.SET_USER_AVATAR,
+    payload: avatar,
   };
 };

@@ -1,11 +1,15 @@
-import { IChatMessage, IUserData } from './interfaces';
+import Game from './gameModel';
+import { IChatMessage, IGameTask, IUserChoice, IUserData } from './interfaces';
 
 class Room {
   private users: Array<IUserData> = [];
   private roomId: string;
   private chatMessages: Array<IChatMessage> = [];
+  private game: Game;
+
   constructor(roomId: string) {
     this.roomId = roomId;
+    this.game = new Game(this.roomId);
     console.log('new room created');
   }
 
@@ -16,8 +20,10 @@ class Room {
 
   joinUser = (user: IUserData): void => {
     const userFoundIndex = this.findUser(user.id);
-    console.log('userFound', userFoundIndex);
+    console.log('userFoundIndexInCreate', userFoundIndex);
     if (userFoundIndex >= 0) {
+      console.log('index > 0');
+      
       const leftPart = this.users.slice(0, userFoundIndex);
       leftPart.push(user);
       const rightPart = this.users.slice(userFoundIndex + 1);
@@ -25,8 +31,8 @@ class Room {
       console.log('left', leftPart);
       console.log('right', rightPart);
       console.log('user', user);
-      
     } else {
+      console.log('index < 0');
       this.users.push(user);
     }
   };
@@ -36,8 +42,10 @@ class Room {
   };
 
   getUser = (userId: string): IUserData => {
-    const user = this.users.find((item) => item.id === userId);
-    if (user) return user;
+    const userIndex = this.findUser(userId);
+    if (userIndex >= 0) {
+      return this.users[userIndex];
+    }
     return null;
   };
 
@@ -61,13 +69,50 @@ class Room {
   };
 
   findUser = (userId: string): number => {
+    console.log('incoming userId', userId);
+    
     const userFoundIndex = this.users.findIndex((user) => user.id === userId);
-console.log('found user', userFoundIndex);
-console.log('all users', this.users);
-
+    console.log('found user', userFoundIndex);
+    console.log('all users', this.users);
 
     if (userFoundIndex >= 0) return userFoundIndex;
     return -1;
+  };
+
+  getGameId = () => {
+    return this.game.getGameId();
+  };
+
+  setUserChoice = (userChoice: IUserChoice) => {
+    this.game.setUserChoice(userChoice);
+  };
+
+  getGameTask = (taskName: string): IGameTask => {
+    const task = this.game.getGameTask(taskName);
+    const users = task.users.map((task) => {
+      const userFound = this.users.find((us) => us.id === task.user);
+      if (userFound) {
+        const newUser = {
+          user: userFound,
+          choice: task.choice,
+        };
+        return newUser;
+      }
+      return null;
+    });
+    task.users = users;
+
+    return task;
+  };
+
+  gameInit = (tasks: Array<string>) => {
+    const users = this.users.map((user) => {
+      if (user.userRole === 'member') {
+        return user.id;
+      }
+      return null;
+    });
+    this.game.gameInit({ userIds: users, tasks });
   };
 }
 

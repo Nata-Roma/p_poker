@@ -2,7 +2,7 @@ import express from 'express';
 import { createServer } from 'http';
 import cors from 'cors';
 import socketServer from './socket/socketController';
-import roomContoller from './rooms/roomController';
+import roomContoller from './roomServices/roomController';
 
 const app = express();
 const httpServer = createServer(app);
@@ -31,20 +31,34 @@ app.get('/rooms', (req, res) => {
 
 app.get('/chats/:room', (req, res) => {
   const room = req.params.room;
-  const chat = roomContoller.getRoomChat(room);
-  res.json(chat);
+  console.log('ROOM request for chat', room);
+  if (room) {
+    const chat = roomContoller.getRoomChat(room);
+    res.json(chat);
+  }
+  res.json(null);
 });
 
 app.get('/users/:room', (req, res) => {
   const room = req.params.room;
-  const users = roomContoller.getRoomUsers(room);
-  res.json(users);
+  if (room) {
+    const users = roomContoller.getRoomUsers(room);
+    res.json(users);
+  }
+  res.json(null);
 });
 
 app.post('/rooms', (req, res) => {
   const { data } = req.body;
   roomContoller.createRoom(data);
   res.status(201).json('created');
+});
+
+app.get('/game/:room', (req, res) => {
+  const room = req.params.room;
+  const gameId = roomContoller.getGameId(room);
+  console.log('Incoming Id', room);
+  console.log('GAME id', gameId);
 });
 
 // app.post('/users', (req, res) => {

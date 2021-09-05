@@ -7,6 +7,8 @@ import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'components/userCard';
 import NameGame from './nameGame';
+import GameSettings from './gameSettings';
+import IssueList from './issueList';
 import AppContext, { appStore } from 'store/store';
 import { IRoomData, IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
@@ -54,7 +56,16 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   );
 
   return (
-    <>
+    <Grid
+      container
+      direction="column"
+      item
+      xs={12}
+      md={9}
+      sm={7}
+      className={classes.lobbyPartDealerContainer}
+      wrap="nowrap"
+    >
       <Grid item>
         <Typography variant="h4" align="center" gutterBottom>
           Lobby
@@ -70,26 +81,23 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
           />
         )}
       </Grid>
-      <Grid item className={classes.mBottom}>
+      <Grid
+        item
+        container
+        justifyContent="space-between"
+        className={classes.mBottom}
+      >
         <Link href="/lobby/game">
           <Button color="primary" variant="contained" className={classes.btn} onClick={onStartGameClick}>
             Start Game
           </Button>
         </Link>
-      </Grid>
-
-      <Grid
-        item
-        container
-        justifyContent="flex-end"
-        className={classes.mBottom}
-      >
         <Button
           variant="outlined"
           className={classes.btn}
           onClick={onRoomLeave}
         >
-          Exit
+          Cancel Game
         </Button>
       </Grid>
       <Grid item container>
@@ -98,6 +106,10 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
       <Grid item container>
         {userArr && <ObserverList users={userArr} />}
       </Grid>
-    </>
+      <Grid item container>
+        <IssueList />
+        <GameSettings />
+      </Grid>
+    </Grid>
   );
 };
