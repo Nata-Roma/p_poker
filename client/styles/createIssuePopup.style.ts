@@ -20,5 +20,8 @@ export const useStylesCreateIssuePopup = makeStyles((theme) => ({
   },
   select: {
     width: "100%",
+  },
+  btn: {
+    width: "190px",
   }
 }));

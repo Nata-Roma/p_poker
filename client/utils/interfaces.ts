@@ -37,3 +37,13 @@ export interface IChat {
   roomId: string;
   chatMessages: Array<IChatMessage>;
 }
+
+export interface IssueData {
+  issueName: string;
+  priority: string;
+  id: string;
+}
+
+export interface CreateIssuePopupProps {
+  onCreate: (issue: IssueData) => void;
+}

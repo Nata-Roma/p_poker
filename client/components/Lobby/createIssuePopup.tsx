@@ -1,10 +1,11 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, FC, useContext } from "react";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
 import {
   FormControl,
   FormHelperText,
@@ -12,11 +13,28 @@ import {
   NativeSelect,
 } from "@material-ui/core";
 import { useStylesCreateIssuePopup } from "@styles/createIssuePopup.style";
+import { nanoid } from "nanoid";
+import { CreateIssuePopupProps } from "utils/interfaces";
 
-const CreateIssuePopup = () => {
+const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onCreate }) => {
   const classes = useStylesCreateIssuePopup();
-  const[priority, setPriority] = useState('');
-  const[issueName, setIssueName] = useState('');
+  const [priority, setPriority] = React.useState('low');
+  const [issueName, setIssueName] = React.useState('');
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    onCreate({
+      issueName,
+      priority,
+      id: nanoid()
+    })
+    setIssueName('');
+  };
 
   const handleChangePriority = (e: ChangeEvent<HTMLSelectElement>) => {
     setPriority(e.target.value);
@@ -27,22 +45,26 @@ const CreateIssuePopup = () => {
   }
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Typography component="h1" variant="h5">
-          Create new Issue
-        </Typography>
-        <form className={classes.form} noValidate>
+    <div>
+      <Button variant="contained" color="primary" onClick={handleClickOpen} className={classes.btn}>
+        Create new Issue
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title" style={{textAlign:'center'}}>Create Issue</DialogTitle>
+        <DialogContent>
           <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            label="Title:"
             autoFocus
+            margin="dense"
+            id="name"
+            label="Issue"
+            fullWidth
             value={issueName}
             onChange={onChangeIssueName}
+            required
           />
           <FormControl className={classes.select}>
             <InputLabel htmlFor="issue">Priority:</InputLabel>
@@ -55,39 +77,30 @@ const CreateIssuePopup = () => {
                 id: "issue",
               }}
             >
-              <option aria-label="None" value="" style={{display: "none"}}/>
               <option value="low">Low</option>
               <option value="middle">Middle</option>
               <option value="hight">Hight</option>
             </NativeSelect>
             <FormHelperText>choose the priority of issue</FormHelperText>
           </FormControl>
+        </DialogContent>
+        <DialogActions>
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Yes
-              </Button>
+            <Button onClick={handleClose} color="primary" variant="contained" fullWidth>
+            Create
+          </Button>
             </Grid>
             <Grid item xs={6}>
-              <Button
-                fullWidth
-                variant="outlined"
-                color="primary"
-                className={classes.submit}
-              >
-                No
-              </Button>
+            <Button onClick={handleClose} color="primary" variant="outlined" fullWidth>
+            Cancel
+          </Button>
             </Grid>
           </Grid>
-        </form>
-      </div>
-    </Container>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
-};
+}
 
 export default CreateIssuePopup;

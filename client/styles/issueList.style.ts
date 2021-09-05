@@ -9,11 +9,12 @@ export const useStylesIssueList = makeStyles((theme: Theme) =>
     selectEmpty: {
       marginTop: theme.spacing(2),
     },
-    issueButtom: {
-      height: '36px'
+    deleteButton: {
+      width: '190px',
+      marginLeft: '10px'
     },
-    positionButtom: {
-      alignSelf: 'center',
-    }
+    btn: {
+      width: '190px',
+    },
   }),
 );
