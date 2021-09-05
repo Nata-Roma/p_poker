@@ -3,17 +3,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import CheckIcon from '@material-ui/icons/Check';
 import { createStyles, makeStyles } from "@material-ui/styles";
 import { Theme, Typography, TextField, Grid } from "@material-ui/core";
-
-export const useStylesSettingsGame = makeStyles((theme: Theme) =>
-  createStyles({
-    icon: {
-      cursor: 'pointer',
-    },
-    gameName: {
-      fontSize: '18px',
-    },
-  }),
-);
+import { useStylesSettingsGame } from "@styles/settings.style";
 
 const NameGame: FC = () => {
   const classes = useStylesSettingsGame();
