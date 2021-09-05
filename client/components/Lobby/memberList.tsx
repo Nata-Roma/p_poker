@@ -5,7 +5,7 @@ import { FC } from 'react';
 import { roles } from 'utils/configs';
 import { IUser } from 'utils/interfaces';
 
-const users = [
+export const users = [
   {
     username: 'John Dow',
     avatar:
@@ -27,6 +27,7 @@ const users = [
 
 interface MemberListProps {
   users: Array<IUser>;
+  from?: string;
 }
 
 export const MemberList: FC<MemberListProps> = ({ users }) => {

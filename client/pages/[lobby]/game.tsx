@@ -1,4 +1,4 @@
-import { GamePage } from 'components/Lobby/gamePage';
+import { GamePage } from 'components/Game/gamePage';
 
 const Game = () => {
   return <GamePage />;
