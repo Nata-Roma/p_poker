@@ -5,7 +5,7 @@ import useStylesGame from '@styles/game.style';
 import { Chat } from 'components/Chat/chat';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
-import { apiGetLobbyInfo } from 'services/apiServices';
+import { apiCreateGame, apiGetLobbyInfo  } from 'services/apiServices';
 import AppContext from 'store/store';
 import { IChatMessage, IUser } from 'utils/interfaces';
 import { GameDealer } from './gameDealer';
@@ -25,8 +25,9 @@ export const GamePage = () => {
   const springNum = 123;
 
   const initData = async () => {
-    const data = await apiGetLobbyInfo(router.query.game);
-    // const data = await apiGetLobbyInfo('z3aRNZxzhODl9LRFLln13');
+    // const data = await apiCreateGame(router.query.lobby);
+    // const data = await apiGetLobbyInfo(router.query.lobby);
+    const data = await apiGetLobbyInfo('tP7BBTmNWmHdbWgs-j0hD');
       
     if (data.users) {
       setUsers(data.users);
@@ -59,7 +60,9 @@ export const GamePage = () => {
           </Typography>
           </Grid>        
           {state.dealer && users && <GameDealer users={users} />}
+          {/** Below line made for developemnt as dealer state is loosing on page reload */}
           {/* { users && <GameDealer users={users} issues={issues}/>} */}
+          {/**Below is for TODO */}
           {/* {!state.dealer && users && <GameUser users={users} />} */}
         </Grid>
         <Grid item xs={4} md={4} sm={5} className={classes.scorePartContainer}>

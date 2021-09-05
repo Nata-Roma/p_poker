@@ -18,16 +18,21 @@ const useStyles = makeStyles({
     alignItems: "center"
   },
   title: {
-    fontSize: 12
+    fontSize: 12,
+    padding: 0
   },
   text: {
-    fontSize: 16
+    fontSize: 16,
+    padding: 0
   },
   cardContainer: {
     padding: 5
   },
   currentBackground: {
     backgroundColor: "#60dabf"
+  },
+  cardContent: {
+    padding: '0 0 0 15px',
   }
 
 });
@@ -60,12 +65,12 @@ export default function IssuesCards({ issues }) {
                 : `${classes.root}`
             }
           >
-            <CardContent>
+            <CardContent className={classes.cardContent}>
               {issue === currentIssue && (
                 <Typography
                   className={classes.title}
                   color="textPrimary"
-                  gutterBottom
+                  
                 >
                   Current
                 </Typography>
@@ -74,14 +79,14 @@ export default function IssuesCards({ issues }) {
                 className={classes.text}
                 variant="h6"
                 color="textPrimary"
-                gutterBottom
+               
               >
                 Issue
               </Typography>
               <Typography
                 className={classes.title}
                 color="textSecondary"
-                gutterBottom
+               
               >
                 Low Priority
               </Typography>
