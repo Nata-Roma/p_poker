@@ -2,13 +2,13 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core';
 
 const useStylesFooter = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    footerRoot: {
       [theme.breakpoints.down('xs')]: {
         flexDirection: 'column',
         alignItems: 'flex-start',
       },
     },
-    container: {
+    footerContainer: {
       padding: '10px',
       cursor: 'pointer',
     },

@@ -36,7 +36,7 @@ export const GameDealer: FC<LobbyPartProps> = ({ users, issues }) => {
     router.push('/');
   };
 
-   state.socket.on('userLeft', (message) => {
+  state.socket.on('userLeft', (message) => {
     setUserArr(message);
     console.log('game user left', message);
   });
@@ -45,45 +45,43 @@ export const GameDealer: FC<LobbyPartProps> = ({ users, issues }) => {
     () => {
       const dealer = userArr.find((user) => user.dealer);
       setDealer(dealer);
+      console.log('gameDealer', userArr);
     },
     [ userArr ],
   );
 
   return (
-    <>      
-        <Typography variant="subtitle2">Dealer:</Typography>
-        <Grid  container justifyContent="space-between" alignItems="flex-end" >
+    <>
+      <Typography variant="subtitle2">Dealer:</Typography>
+      <Grid container justifyContent="space-between" alignItems="flex-end">
         <Grid item className={classes.mBottom}>
-        {state.dealer && (
-            
-          <UserCard
-            user={dealer}
-            observer={dealer.userRole === roles.observer ? true : false}
-          />
-        )}
-            {/* made for develope*/}
-            {/* <UserCard
+          {dealer && (
+            <UserCard
+              user={dealer}
+              observer={dealer.userRole === roles.observer ? true : false}
+            />
+          )}
+          {/* made for develope*/}
+          {/* <UserCard
               user={{"username":"Main","userSurname":"Dealer","avatar":"","id":"AsClmPqC3H9fyBcWAABp","userRole":"member","dealer":true}}
               observer={false}
             /> */}
-             </Grid>
-             <Grid item className={classes.mBottom} >
-             <Box  boxShadow={2} mr={10}>
-                 <Button
-          variant="outlined"
-          className={classes.btn}
-          onClick={onRoomLeave}
-        >
-          {dealer ? `Stop Game` : `Exit`}
-        </Button>
-        </Box>
+        </Grid>
+        <Grid item className={classes.mBottom}>
+          <Box boxShadow={2} mr={10}>
+            <Button
+              variant="outlined"
+              className={classes.btn}
+              onClick={onRoomLeave}
+            >
+              {dealer ? `Stop Game` : `Exit`}
+            </Button>
+          </Box>
         </Grid>
         <Grid container className={classes.issuesContainer}>
-        <IssuesCards issues={issues} /> 
+          <IssuesCards issues={issues} />
         </Grid>
-      </Grid>     
-      
-     
+      </Grid>
     </>
   );
 };

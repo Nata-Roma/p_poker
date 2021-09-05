@@ -19,6 +19,7 @@ export const GamePage = () => {
     const [ users, setUsers ] = useState<Array<IUser>>();
   const { state } = useContext(AppContext);
   const router = useRouter();
+  const {lobby} = router.query;
   console.log('state', state);
   console.log('router', router);
   const issues = [1, 2, 3, 4, 5, 6];
@@ -27,7 +28,7 @@ export const GamePage = () => {
   const initData = async () => {
     // const data = await apiCreateGame(router.query.lobby);
     // const data = await apiGetLobbyInfo(router.query.lobby);
-    const data = await apiGetLobbyInfo('tP7BBTmNWmHdbWgs-j0hD');
+    const data = await apiGetLobbyInfo(lobby);
       
     if (data.users) {
       setUsers(data.users);
@@ -59,9 +60,9 @@ export const GamePage = () => {
             Spring: {springNum} planning (issues: {issues.toString()})
           </Typography>
           </Grid>        
-          {state.dealer && users && <GameDealer users={users} />}
+          {/* {state.dealer && users && <GameDealer users={users} />} */}
           {/** Below line made for developemnt as dealer state is loosing on page reload */}
-          {/* { users && <GameDealer users={users} issues={issues}/>} */}
+          { users && <GameDealer users={users} issues={issues}/>}
           {/**Below is for TODO */}
           {/* {!state.dealer && users && <GameUser users={users} />} */}
         </Grid>
@@ -69,7 +70,7 @@ export const GamePage = () => {
          
       {/* <Grid item container xs={4}> */}
         {/* {users && <MemberList users={users} />} */}
-        {users && <ScoreList users={users} />}
+        {/* {users && <ScoreList users={users} />} */}
        
       {/* </Grid> */}
         </Grid>
