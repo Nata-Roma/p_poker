@@ -1,69 +1,28 @@
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import Avatar from '@material-ui/core/Avatar';
 import { FC, useState } from 'react';
-import { Grid } from '@material-ui/core';
-
-const useStyles = props => makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: props.width,
-      padding: theme.spacing(1),
-      margin: theme.spacing(1),
-    },
-
-    media: {
-      height: '100%',
-      width: '100%',
-    },
-    avatar: {
-      backgroundColor: 'transparent',
-      border: '3px solid',
-      borderColor: theme.palette.primary.main,
-      marginRight: '-16px',
-      marginBottom: 8,
-      color: theme.palette.primary.main,
-      fontWeight: 600,
-    },
-    avatarRoot: {
-      width: 30,
-      height: 30,
-    },
-    cardHeader: {
-      padding: theme.spacing(0, 1),
-    },
-    cardContainer: {
-      width: 'calc(100%)',
-      height: props.ratio*props.width,
-    }
-  }),
-);
+import { Grid, Typography } from '@material-ui/core';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import { useStylesGameCard } from '@styles/gameCard.style';
 
 const cardSize = {
   width: 130,
-  ratio: 1.38
-}
-
-
-{/* <Grid container>
-        {gameCards.map((card, i) => <GameCard cardImg={card} cardNumber={sequence[i]} key={card} />)}
-      </Grid> */}
-
+  ratio: 1.38,
+};
 
 interface GameCardProps {
-  cardImg: string
-  cardNumber: number
+  cardImg: string;
+  cardNumber: number;
 }
 
-export const GameCard: FC<GameCardProps> = ({cardImg, cardNumber}) => {
-  const classes = useStyles(cardSize)();
-  const [ expanded, setExpanded ] = useState(false);
-  // const card = '/card_1.png';
+export const GameCard: FC<GameCardProps> = ({ cardImg, cardNumber }) => {
+  const classes = useStylesGameCard(cardSize)();
+  const [ clicked, setClicked ] = useState(false);
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
+  const onCardClick = () => {
+    setClicked((prev) => !prev);
   };
 
   return (
@@ -74,8 +33,13 @@ export const GameCard: FC<GameCardProps> = ({cardImg, cardNumber}) => {
             <CardHeader
               className={classes.cardHeader}
               avatar={
-                <Avatar aria-label="card number" className={`${classes.avatar} ${classes.avatarRoot}`}>
-                  {cardNumber}
+                <Avatar
+                  aria-label="card number"
+                  className={`${classes.avatar} ${classes.avatarRoot}`}
+                >
+                  <Typography color="textPrimary" variant="body1">
+                    {cardNumber}
+                  </Typography>
                 </Avatar>
               }
             />
@@ -84,21 +48,41 @@ export const GameCard: FC<GameCardProps> = ({cardImg, cardNumber}) => {
             <CardHeader
               className={classes.cardHeader}
               avatar={
-                <Avatar aria-label="card number" className={`${classes.avatar} ${classes.avatarRoot}`}>
-                  {cardNumber}
+                <Avatar
+                  aria-label="card number"
+                  className={`${classes.avatar} ${classes.avatarRoot}`}
+                >
+                  <Typography color="textPrimary" variant="body1">
+                    {cardNumber}
+                  </Typography>
                 </Avatar>
               }
             />
           </Grid>
         </Grid>
-        <Grid item className={classes.cardContainer}>
+        <Grid item className={classes.cardContainer} onClick={onCardClick}>
           <CardMedia
             className={classes.media}
             image={cardImg}
             title="Game Card"
           />
+          <div
+            className={
+              clicked ? (
+                `${classes.cardCover} ${classes.cardCoverActive}`
+              ) : (
+                classes.cardCover
+              )
+            }
+          >
+            {clicked && (
+              <div className={classes.iconUnder}>
+                <CheckCircleIcon color="primary" className={classes.icon} />
+              </div>
+            )}
+          </div>
         </Grid>
       </Grid>
     </Card>
   );
-}
+};

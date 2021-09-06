@@ -9,11 +9,10 @@ interface UserCardProps {
 
 export const ScoreCard = ({ user }: UserCardProps) => {
   const classes = useStylesScoreCard();
-const [score, setScore ] = useState('in progress');
+  const [ score, setScore ] = useState('10 SP');
   return (
     <div className={classes.container}>
-        <Typography variant="h5">{score}</Typography>
-    
+      <Typography variant="h5">{score}</Typography>
     </div>
   );
 };

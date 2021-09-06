@@ -36,6 +36,8 @@ export const gameCards = [
   '/cards/card_2.png',
   '/cards/card_3.png',
   '/cards/card_4.png',
+  '/cards/card_5.png',
+  '/cards/card_6.png',
 ];
 
-export const sequence = [ 1, 2, 3, 5, 8 ];
+export const fibonachi_Seq = [ 1, 2, 3, 5, 8, 13 ];
