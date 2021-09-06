@@ -1,6 +1,6 @@
 import { Grid, Typography } from '@material-ui/core';
 import useStylesMemberList from '@styles/memberList.style';
-import { UserCard } from 'components/userCard';
+import { UserCard } from 'Cards/userCard';
 import { FC } from 'react';
 import { roles } from 'utils/configs';
 import { IUser } from 'utils/interfaces';
@@ -33,11 +33,21 @@ interface MemberListProps {
 export const MemberList: FC<MemberListProps> = ({ users }) => {
   const classes = useStylesMemberList();
 
-  return (
-    <div className={classes.container}>
+
+  let title = <div />;
+  if (users.length) {
+    title = (
       <Typography variant="h4" align="center" gutterBottom>
         Members:
       </Typography>
+    );
+  }
+
+  return (
+    <div className={classes.container}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Members:
+        </Typography>
       <Grid container spacing={2} className={classes.root}>
         {users &&
           users.map(

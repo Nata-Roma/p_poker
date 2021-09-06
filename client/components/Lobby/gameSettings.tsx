@@ -1,37 +1,42 @@
 import { Typography, Grid, TextField, Switch } from '@material-ui/core';
 import { useStylesSettingsGame } from '@styles/settings.style';
-import { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
+import { cardDecks, gameSelectOptions, sequences } from 'utils/configs';
+import { IGameTimer } from 'utils/interfaces';
+import { GameSelect } from './gameSelect';
 
-const GameSettings = () => {
+interface GameSettingsProps {
+  onTimerChange: (timer: boolean) => void;
+  onTimeChange: (timerData: string, dimension: string) => void;
+  onSelectClick: (option: string, selectName: string) => void;
+  timer: IGameTimer;
+  onCardChange: (cardChange: boolean) => void;
+  isCardChange: boolean;
+}
+
+const GameSettings: FC<GameSettingsProps> = ({
+  onTimerChange,
+  onTimeChange,
+  onSelectClick,
+  timer,
+  onCardChange,
+  isCardChange,
+}) => {
   const classes = useStylesSettingsGame();
-  const [fullScoreType, setFullScoreType] = useState('');
-  const [shortScoreType, setShortScoreType] = useState('');
-  const [minutes, setMinutes] = useState('');
-  const [seconds, setSeconds] = useState('');
+  const [ optionsArr, setOptionsArr ] = useState<Array<string>>();
 
-  const onFullScoreType = (e: ChangeEvent<HTMLInputElement>): void => {
-    setFullScoreType(e.target.value);
-  }
+  const onTimerClick = (timerSwitch: string) => {
+    onTimerChange(timerSwitch ? true : false);
+  };
 
-  const onChangeFullScoreType = (e: ChangeEvent<HTMLInputElement>): void => {
-    setShortScoreType(e.target.value);
-  }
+  const onChangingCardClick = (cardChangeSwitch: string): void => {
+    onCardChange(cardChangeSwitch ? true : false);
+  };
 
-  const onChangingCard = (e: ChangeEvent<HTMLInputElement>): void => {
-    console.log(e.target.value)
-  }
-
-  const onTimer = (e: ChangeEvent<HTMLInputElement>): void => {
-    console.log(e.target.value)
-  }
-
-  const onMinutes = (e: ChangeEvent<HTMLInputElement>): void => {
-    setMinutes(e.target.value);
-  }
-
-  const onSeconds = (e: ChangeEvent<HTMLInputElement>): void => {
-    setSeconds(e.target.value);
-  }
+  useEffect(() => {
+    const optArr = sequences.map((seq) => seq.name);
+    setOptionsArr(optArr);
+  }, []);
 
   return (
     <div style={{ width: '100%' }}>
@@ -39,44 +44,121 @@ const GameSettings = () => {
         Game Settings:
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <Typography variant="subtitle1" align="left" gutterBottom className={classes.settingsLabel}>
-            Changing card in round end:
-          </Typography>
-          <Typography variant="subtitle1" align="left" gutterBottom className={classes.settingsLabel}>
-            Is timer needed:
-          </Typography>
-          <Typography variant="subtitle1" align="left" gutterBottom className={classes.settingsLabel}>
-            Score type:
-          </Typography>
-          <Typography variant="subtitle1" align="left" gutterBottom className={classes.settingsLabel}>
-            Score type (Short):
-          </Typography>
-          <Typography variant="subtitle1" align="left" gutterBottom className={classes.settingsLabel}>
-            Round time:
-          </Typography>
+        <Grid item container spacing={2}>
+          <Grid item xl={6} xs={6}>
+            <Typography
+              variant="subtitle1"
+              align="left"
+              gutterBottom
+              className={classes.settingsLabel}
+            >
+              Changing card in round end:
+            </Typography>
+          </Grid>
+          <Grid item xl={6} xs={6}>
+            <Switch
+              color="primary"
+              value={isCardChange ? '' : 'cardChange'}
+              onChange={(e) => onChangingCardClick(e.target.value)}
+            />
+          </Grid>
         </Grid>
-        <Grid container item xs={6} justifyContent="center">
-          <Grid item xs={12}>
-            <Switch color="primary" value="chargingCard" onChange={onChangingCard} />
+        <Grid item container spacing={2}>
+          <Grid item xl={6} xs={6}>
+            <Typography
+              variant="subtitle1"
+              align="left"
+              gutterBottom
+              className={classes.settingsLabel}
+            >
+              Is timer needed:
+            </Typography>
           </Grid>
-          <Grid item xs={12}>
-            <Switch color="primary" value="timer" onChange={onTimer} />
+          <Grid item xl={6} xs={6}>
+            <Switch
+              color="primary"
+              value={timer.isTimer ? '' : 'timer'}
+              onChange={(e) => onTimerClick(e.target.value)}
+            />
           </Grid>
-          <Grid item xs={12}>
-            <TextField placeholder='story point' value={fullScoreType} onChange={onFullScoreType} />
+        </Grid>
+        <Grid item container spacing={2}>
+          <Grid item xl={6} xs={6}>
+            <Typography
+              variant="subtitle1"
+              align="left"
+              gutterBottom
+              className={classes.settingsLabel}
+            >
+              Number Sequence:
+            </Typography>
           </Grid>
-          <Grid item xs={12}>
-            <TextField placeholder='SP' value={shortScoreType} onChange={onChangeFullScoreType} />
+          <Grid item xl={6} xs={6}>
+            {optionsArr && (
+              <GameSelect
+                selectName={gameSelectOptions.sequence}
+                options={optionsArr}
+                onSelectClick={onSelectClick}
+              />
+            )}
           </Grid>
-          <Grid container item xs={12}>
-            <TextField type="number" label="minutes" placeholder='2' className={classes.timerInput} value={minutes} onChange={onMinutes} />
-            <TextField type="number" label="seconds" placeholder='20' className={classes.timerInputRigth} value={seconds} onChange={onSeconds} />
+        </Grid>
+        <Grid item container spacing={2}>
+          <Grid item xl={6} xs={6}>
+            <Typography
+              variant="subtitle1"
+              align="left"
+              gutterBottom
+              className={classes.settingsLabel}
+            >
+              Deck type:
+            </Typography>
+          </Grid>
+          <Grid item xl={6} xs={6}>
+            {cardDecks && (
+              <GameSelect
+                selectName={gameSelectOptions.cardDeck}
+                options={cardDecks}
+                onSelectClick={onSelectClick}
+              />
+            )}
+          </Grid>
+        </Grid>
+        <Grid item container spacing={2}>
+          <Grid item xl={6} xs={6}>
+            <Typography
+              variant="subtitle1"
+              align="left"
+              gutterBottom
+              className={classes.settingsLabel}
+            >
+              Round time:
+            </Typography>
+          </Grid>
+          <Grid container item xl={6} xs={6}>
+            <TextField
+              type="number"
+              label="minutes"
+              className={classes.timerInput}
+              name="minutes"
+              value={timer.minutes}
+              disabled={!timer.isTimer}
+              onChange={(e) => onTimeChange(e.target.value, e.target.name)}
+            />
+            <TextField
+              type="number"
+              label="seconds"
+              className={classes.timerInputRigth}
+              name="seconds"
+              value={timer.seconds}
+              disabled={!timer.isTimer}
+              onChange={(e) => onTimeChange(e.target.value, e.target.name)}
+            />
           </Grid>
         </Grid>
       </Grid>
     </div>
-  )
-}
+  );
+};
 
 export default GameSettings;

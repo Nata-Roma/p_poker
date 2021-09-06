@@ -5,14 +5,14 @@ import { Button, Typography, Grid } from '@material-ui/core';
 
 import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
-import { UserCard } from 'components/userCard';
+import { UserCard } from 'Cards/userCard';
 import NameGame from './nameGame';
 import GameSettings from './gameSettings';
 import IssueList from './issueList';
 import AppContext, { appStore } from 'store/store';
-import { IRoomData, IUser } from 'utils/interfaces';
+import { IGameSettings, IRoomData, IssueData, IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
-import { roles } from 'utils/configs';
+import { initGameSettings, roles } from 'utils/configs';
 
 interface LobbyPartProps {
   users: Array<IUser>;
@@ -25,8 +25,107 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   const { lobby } = router.query;
   const [ dealer, setDealer ] = useState<IUser>();
   const [ userArr, setUserArr ] = useState<Array<IUser>>(users);
+  const [ gameSettings, setGameSettings ] = useState<IGameSettings>(
+    initGameSettings,
+  );
 
-  const onStartGameClick = () => router.push(`/${lobby}/game`);
+  const onStartGameClick = () => {
+    if (
+      !gameSettings.issues.length ||
+      // !gameSettings.card.cardNumber ||
+      (gameSettings.timer.isTimer &&
+        (!gameSettings.timer.minutes || !gameSettings.timer.seconds))
+    )
+      return null;
+
+    console.log(gameSettings);
+
+    router.push(`/${lobby}/game`);
+  };
+
+  const onIssueCreate = (issue: IssueData) => {
+    setGameSettings((prev) => {
+      const issues = prev.issues;
+      issues.push({
+        issueName: issue.issueName,
+        priority: issue.priority,
+      });
+      return {
+        ...prev,
+        issues: issues,
+      };
+    });
+  };
+
+  const onIssueDelete = (issue: string) => {
+    setGameSettings((prev) => {
+      const issues = prev.issues.filter(
+        (issueItem) => issueItem.issueName !== issue,
+      );
+      return {
+        ...prev,
+        issues: issues,
+      };
+    });
+  };
+
+  const onTimerChange = (isTimer: boolean) => {
+    setGameSettings((prev) => {
+      const timer = { ...prev.timer };
+      if (isTimer) {
+        timer.isTimer = true;
+      } else {
+        timer.isTimer = false;
+        timer.minutes = 0;
+        timer.seconds = 0;
+      }
+      return {
+        ...prev,
+        timer: timer,
+      };
+    });
+  };
+
+  const onTimeChange = (timerData: string, dimension: string) => {
+    setGameSettings((prev) => {
+      const timer = { ...prev.timer };
+      if (timer.isTimer) {
+        timer[dimension] = +timerData;
+      }
+      return {
+        ...prev,
+        timer: timer,
+      };
+    });
+  };
+
+  const onSelectClick = (choice: string, selectName: string) => {
+    console.log(choice, selectName);
+
+    setGameSettings((prev) => {
+      const card = { ...prev.card };
+      card[selectName] = choice;
+      return {
+        ...prev,
+        card: card,
+      };
+    });
+  };
+
+  const onCardChange = (isChange: boolean) => {
+    setGameSettings((prev) => {
+      const card = { ...prev.card };
+      if (isChange) {
+        card.cardChange = true;
+      } else {
+        card.cardChange = true;
+      }
+      return {
+        ...prev,
+        card: card,
+      };
+    });
+  };
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -109,8 +208,19 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
         {userArr && <ObserverList users={userArr} />}
       </Grid>
       <Grid item container>
-        <IssueList />
-        <GameSettings />
+        <IssueList
+          onIssueCreate={onIssueCreate}
+          onIssueDelete={onIssueDelete}
+          issues={gameSettings.issues}
+        />
+        <GameSettings
+          onTimerChange={onTimerChange}
+          onTimeChange={onTimeChange}
+          timer={gameSettings.timer}
+          onSelectClick={onSelectClick}
+          onCardChange={onCardChange}
+          isCardChange={gameSettings.card.cardChange}
+        />
       </Grid>
     </Grid>
   );
