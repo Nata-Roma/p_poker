@@ -59,5 +59,10 @@ export const useStylesGameCard = (props) =>
         width: '100%',
         height: '100%',
       },
+      emptyCardIcon: {
+        fontSize: '5rem',
+        color: theme.palette.primary.main,
+        cursor: 'pointer',
+      }
     }),
   );

@@ -12,7 +12,8 @@ import IssueList from './issueList';
 import AppContext, { appStore } from 'store/store';
 import { IGameSettings, IRoomData, IssueData, IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
-import { initGameSettings, roles } from 'utils/configs';
+import { cardDecks, initGameSettings, roles, sequences } from 'utils/configs';
+import { CardList } from './cardList';
 
 interface LobbyPartProps {
   users: Array<IUser>;
@@ -28,6 +29,8 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   const [ gameSettings, setGameSettings ] = useState<IGameSettings>(
     initGameSettings,
   );
+  const [ chosenDeck, setChosenDeck ] = useState<Array<string>>();
+  const [ chosenSeq, setChosenSeq ] = useState<Array<number>>();
 
   const onStartGameClick = () => {
     if (
@@ -37,9 +40,6 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
         (!gameSettings.timer.minutes || !gameSettings.timer.seconds))
     )
       return null;
-
-    console.log(gameSettings);
-
     router.push(`/${lobby}/game`);
   };
 
@@ -100,8 +100,6 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   };
 
   const onSelectClick = (choice: string, selectName: string) => {
-    console.log(choice, selectName);
-
     setGameSettings((prev) => {
       const card = { ...prev.card };
       card[selectName] = choice;
@@ -110,6 +108,27 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
         card: card,
       };
     });
+
+    const seq = sequences.filter((item) => item.name === choice);
+    if (seq.length) {
+      setChosenSeq(
+        Array.from(
+          { length: gameSettings.card.cardNumber },
+          (_, i) => seq[0].sequence[i],
+        ),
+      )
+    }
+
+    const deck = cardDecks.filter((item) => item.name === choice);
+
+    if (deck.length) {
+      setChosenDeck(
+        Array.from(
+          { length: gameSettings.card.cardNumber },
+          (_, i) => deck[0].deck[i],
+        ),
+      );
+    }
   };
 
   const onCardChange = (isChange: boolean) => {
@@ -126,6 +145,15 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
       };
     });
   };
+
+  const onAddCard = () => {
+    
+    setGameSettings(prev => {
+      const card = {...prev.card};
+      card.cardNumber++;
+      return {...prev, card: card}
+    })
+  }
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -151,6 +179,24 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
       setDealer(dealer);
     },
     [ userArr ],
+  );
+  useEffect(
+    () => {
+      setChosenSeq(
+        Array.from(
+          { length: gameSettings.card.cardNumber },
+          (_, i) => sequences[0].sequence[i],
+        ),
+      );
+
+      setChosenDeck(
+        Array.from(
+          { length: gameSettings.card.cardNumber },
+          (_, i) => cardDecks[0].deck[i],
+        ),
+      );
+    },
+    [ gameSettings.card.cardNumber ],
   );
 
   return (
@@ -221,6 +267,9 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
           onCardChange={onCardChange}
           isCardChange={gameSettings.card.cardChange}
         />
+      </Grid>
+      <Grid item container>
+        <CardList cardDeck={chosenDeck} sequence={chosenSeq} onAddCard={onAddCard} />
       </Grid>
     </Grid>
   );

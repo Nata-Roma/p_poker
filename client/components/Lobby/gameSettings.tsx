@@ -1,6 +1,6 @@
 import { Typography, Grid, TextField, Switch } from '@material-ui/core';
 import { useStylesSettingsGame } from '@styles/settings.style';
-import React, { ChangeEvent, FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { cardDecks, gameSelectOptions, sequences } from 'utils/configs';
 import { IGameTimer } from 'utils/interfaces';
 import { GameSelect } from './gameSelect';
@@ -24,6 +24,7 @@ const GameSettings: FC<GameSettingsProps> = ({
 }) => {
   const classes = useStylesSettingsGame();
   const [ optionsArr, setOptionsArr ] = useState<Array<string>>();
+  const [ cardDeckArr, setCardDeckArr ] = useState<Array<string>>();
 
   const onTimerClick = (timerSwitch: string) => {
     onTimerChange(timerSwitch ? true : false);
@@ -36,6 +37,9 @@ const GameSettings: FC<GameSettingsProps> = ({
   useEffect(() => {
     const optArr = sequences.map((seq) => seq.name);
     setOptionsArr(optArr);
+    const deckArr = cardDecks.map(deck => deck.name);
+    setCardDeckArr(deckArr);
+
   }, []);
 
   return (
@@ -115,10 +119,10 @@ const GameSettings: FC<GameSettingsProps> = ({
             </Typography>
           </Grid>
           <Grid item xl={6} xs={6}>
-            {cardDecks && (
+            {cardDeckArr && (
               <GameSelect
                 selectName={gameSelectOptions.cardDeck}
-                options={cardDecks}
+                options={cardDeckArr}
                 onSelectClick={onSelectClick}
               />
             )}

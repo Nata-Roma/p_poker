@@ -5,6 +5,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { FC, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { useStylesGameCard } from '@styles/gameCard.style';
 
 const cardSize = {
@@ -15,9 +16,18 @@ const cardSize = {
 interface GameCardProps {
   cardImg: string;
   cardNumber: number;
+  game?: boolean;
+  empty?: boolean;
+  onAddCard?: () => void;
 }
 
-export const GameCard: FC<GameCardProps> = ({ cardImg, cardNumber }) => {
+export const GameCard: FC<GameCardProps> = ({
+  cardImg,
+  cardNumber,
+  onAddCard,
+  game = false,
+  empty = false,
+}) => {
   const classes = useStylesGameCard(cardSize)();
   const [ clicked, setClicked ] = useState(false);
 
@@ -66,21 +76,32 @@ export const GameCard: FC<GameCardProps> = ({ cardImg, cardNumber }) => {
             image={cardImg}
             title="Game Card"
           />
-          <div
-            className={
-              clicked ? (
-                `${classes.cardCover} ${classes.cardCoverActive}`
-              ) : (
-                classes.cardCover
-              )
-            }
-          >
-            {clicked && (
-              <div className={classes.iconUnder}>
-                <CheckCircleIcon color="primary" className={classes.icon} />
-              </div>
-            )}
-          </div>
+          {game && (
+            <div
+              className={
+                clicked ? (
+                  `${classes.cardCover} ${classes.cardCoverActive}`
+                ) : (
+                  classes.cardCover
+                )
+              }
+            >
+              {clicked && (
+                <div className={classes.iconUnder}>
+                  <CheckCircleIcon color="primary" className={classes.icon} />
+                </div>
+              )}
+            </div>
+          )}
+          {!game &&
+          empty && (
+            <div className={classes.cardCover}>
+              <AddCircleIcon
+                className={classes.emptyCardIcon}
+                onClick={onAddCard}
+              />
+            </div>
+          )}
         </Grid>
       </Grid>
     </Card>

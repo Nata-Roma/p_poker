@@ -32,12 +32,9 @@ export const GameSelect: FC<GameSelectProps> = ({
   const classes = useStyles();
   const [ option, setOptions ] = useState<string | number>(options[0]);
   const [ open, setOpen ] = useState(false);
-  console.log('selectName', selectName);
 
   const handleChange = (e) => {
     setOptions(e.target.value);
-    console.log('select', e.target);
-
     onSelectClick(e.target.value, e.target.name);
   };
 
