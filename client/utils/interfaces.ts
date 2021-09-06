@@ -70,7 +70,7 @@ export interface IGameSettings {
   };
 }
 
-export interface IGameSequence {
+export interface IGameCardOption {
   name: string;
   sequence: Array<number>;
 }
