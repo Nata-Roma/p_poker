@@ -48,8 +48,6 @@ export interface IssueData {
   priority: string;
 }
 
-
-
 export interface IGameIssue {
   issueName: string;
   priority: string;
@@ -65,9 +63,14 @@ export interface IGameSettings {
   issues: Array<IGameIssue>;
   timer: IGameTimer;
   card: {
-    cardDeck: Array<string>;
-    sequenceType: string;
+    cardDeck: string;
+    sequence: string;
     cardNumber: number;
-    cardChangeAtEnd: boolean;
+    cardChange: boolean;
   };
+}
+
+export interface IGameSequence {
+  name: string;
+  sequence: Array<number>;
 }

@@ -40,7 +40,26 @@ export const gameCardSur = [
   '/cards/card_6.png',
 ];
 
-export const fibonachi_Seq = [ 1, 2, 3, 5, 8, 13 ];
+export const cardDecks = [ 'Surrealism' ];
+
+export const fibonacci_Seq = [ 1, 2, 3, 5, 8, 13 ];
+export const doubleNum_Seq = [ 1, 2, 3, 5, 8, 13 ];
+
+export const sequences = [
+  {
+    name: 'Fibonacci numbers',
+    sequence: fibonacci_Seq,
+  },
+  {
+    name: 'Double numbers',
+    sequence: doubleNum_Seq,
+  },
+];
+
+export const gameSelectOptions = {
+  sequence: 'sequence',
+  cardDeck: 'cardDeck',
+};
 
 export const initGameSettings = {
   issues: [] as Array<IGameIssue>,
@@ -50,9 +69,9 @@ export const initGameSettings = {
     seconds: 0,
   },
   card: {
-    cardDeck: gameCardSur,
-    sequenceType: '',
+    cardDeck: cardDecks[0],
+    sequence: sequences[0].name,
     cardNumber: 0,
-    cardChangeAtEnd: false,
+    cardChange: false,
   },
 };

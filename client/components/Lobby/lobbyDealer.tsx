@@ -29,7 +29,19 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     initGameSettings,
   );
 
-  const onStartGameClick = () => router.push(`/${lobby}/game`);
+  const onStartGameClick = () => {
+    if (
+      !gameSettings.issues.length ||
+      // !gameSettings.card.cardNumber ||
+      (gameSettings.timer.isTimer &&
+        (!gameSettings.timer.minutes || !gameSettings.timer.seconds))
+    )
+      return null;
+
+    console.log(gameSettings);
+
+    router.push(`/${lobby}/game`);
+  };
 
   const onIssueCreate = (issue: IssueData) => {
     setGameSettings((prev) => {
@@ -83,6 +95,34 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
       return {
         ...prev,
         timer: timer,
+      };
+    });
+  };
+
+  const onSelectClick = (choice: string, selectName: string) => {
+    console.log(choice, selectName);
+
+    setGameSettings((prev) => {
+      const card = { ...prev.card };
+      card[selectName] = choice;
+      return {
+        ...prev,
+        card: card,
+      };
+    });
+  };
+
+  const onCardChange = (isChange: boolean) => {
+    setGameSettings((prev) => {
+      const card = { ...prev.card };
+      if (isChange) {
+        card.cardChange = true;
+      } else {
+        card.cardChange = true;
+      }
+      return {
+        ...prev,
+        card: card,
       };
     });
   };
@@ -177,6 +217,9 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
           onTimerChange={onTimerChange}
           onTimeChange={onTimeChange}
           timer={gameSettings.timer}
+          onSelectClick={onSelectClick}
+          onCardChange={onCardChange}
+          isCardChange={gameSettings.card.cardChange}
         />
       </Grid>
     </Grid>

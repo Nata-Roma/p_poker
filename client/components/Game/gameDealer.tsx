@@ -10,7 +10,7 @@ import { UserCard } from 'Cards/userCard';
 import AppContext, { appStore } from 'store/store';
 import { IRoomData, IUser } from 'utils/interfaces';
 import { ObserverList } from '../Lobby/observerList';
-import { gameCardSur, roles, fibonachi_Seq } from 'utils/configs';
+import { gameCardSur, roles, fibonacci_Seq } from 'utils/configs';
 import IssuesCards from './issuesCards';
 import { GameCard } from '../../Cards/gameCard';
 
@@ -86,7 +86,7 @@ export const GameDealer: FC<LobbyPartProps> = ({ users, issues }) => {
         
       </Grid>
       <Grid container>
-        {gameCardSur.map((card, i) => <GameCard key={card} cardImg={card} cardNumber={fibonachi_Seq[i]} />)}
+        {gameCardSur.map((card, i) => <GameCard key={card} cardImg={card} cardNumber={fibonacci_Seq[i]} />)}
         </Grid>
         </Grid>
     </>

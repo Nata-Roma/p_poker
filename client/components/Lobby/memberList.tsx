@@ -33,11 +33,21 @@ interface MemberListProps {
 export const MemberList: FC<MemberListProps> = ({ users }) => {
   const classes = useStylesMemberList();
 
-  return (
-    <div className={classes.container}>
+
+  let title = <div />;
+  if (users.length) {
+    title = (
       <Typography variant="h4" align="center" gutterBottom>
         Members:
       </Typography>
+    );
+  }
+
+  return (
+    <div className={classes.container}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Members:
+        </Typography>
       <Grid container spacing={2} className={classes.root}>
         {users &&
           users.map(
