@@ -1,6 +1,6 @@
 import { Grid, Typography } from '@material-ui/core';
 import useStylesMemberList from '@styles/memberList.style';
-import { UserCard } from 'components/userCard';
+import { UserCard } from 'Cards/userCard';
 import { FC } from 'react';
 import { roles } from 'utils/configs';
 import { IUser } from 'utils/interfaces';

@@ -1,4 +1,4 @@
-import { defaultAvatar } from './defaultAvatar';
+import { IGameIssue } from './interfaces';
 
 export const roles = {
   dealer: 'dealer',
@@ -31,7 +31,7 @@ export const userInitData = {
   avatar: '',
 };
 
-export const gameCards = [
+export const gameCardSur = [
   '/cards/card_1.png',
   '/cards/card_2.png',
   '/cards/card_3.png',
@@ -41,3 +41,18 @@ export const gameCards = [
 ];
 
 export const fibonachi_Seq = [ 1, 2, 3, 5, 8, 13 ];
+
+export const initGameSettings = {
+  issues: [] as Array<IGameIssue>,
+  timer: {
+    isTimer: false,
+    minutes: 0,
+    seconds: 0,
+  },
+  card: {
+    cardDeck: gameCardSur,
+    sequenceType: '',
+    cardNumber: 0,
+    cardChangeAtEnd: false,
+  },
+};

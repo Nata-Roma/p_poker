@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import { roles } from 'utils/configs';
 import { IUser } from 'utils/interfaces';
 import { UserGameCard } from './userGameCard';
-import {ScoreCard} from './scoreCard'
+import { ScoreCard } from './scoreCard';
 
 interface ScoreListProps {
   users: Array<IUser>;
@@ -34,9 +34,14 @@ export const ScoreList: FC<ScoreListProps> = ({ users }) => {
           (user) =>
             !user.dealer &&
             user.userRole === roles.member && (
-              <Grid container item justifyContent='space-evenly' alignItems='center' key={user.id}>
-                <Grid item xl={6} xs={6} container
-                  justifyContent="center">
+              <Grid
+                container
+                item
+                justifyContent="space-evenly"
+                alignItems="center"
+                key={user.id}
+              >
+                <Grid item xl={6} xs={6} container justifyContent="center">
                   <ScoreCard user={user} />
                 </Grid>
                 <Grid

@@ -46,9 +46,28 @@ export interface IApiGetLobbyInfo {
 export interface IssueData {
   issueName: string;
   priority: string;
-  id: string;
 }
 
-export interface CreateIssuePopupProps {
-  onCreate: (issue: IssueData) => void;
+
+
+export interface IGameIssue {
+  issueName: string;
+  priority: string;
+}
+
+export interface IGameTimer {
+  isTimer: boolean;
+  minutes: number;
+  seconds: number;
+}
+
+export interface IGameSettings {
+  issues: Array<IGameIssue>;
+  timer: IGameTimer;
+  card: {
+    cardDeck: Array<string>;
+    sequenceType: string;
+    cardNumber: number;
+    cardChangeAtEnd: boolean;
+  };
 }

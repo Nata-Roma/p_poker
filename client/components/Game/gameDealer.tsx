@@ -5,14 +5,14 @@ import { Button, Typography, Grid, Box } from '@material-ui/core';
 
 import useStylesGamePart from '@styles/gamePart.style';
 
-import { UserCard } from 'components/userCard';
+import { UserCard } from 'Cards/userCard';
 
 import AppContext, { appStore } from 'store/store';
 import { IRoomData, IUser } from 'utils/interfaces';
 import { ObserverList } from '../Lobby/observerList';
-import { gameCards, roles, fibonachi_Seq } from 'utils/configs';
+import { gameCardSur, roles, fibonachi_Seq } from 'utils/configs';
 import IssuesCards from './issuesCards';
-import { GameCard } from './gameCard';
+import { GameCard } from '../../Cards/gameCard';
 
 interface LobbyPartProps {
   users: Array<IUser>;
@@ -86,7 +86,7 @@ export const GameDealer: FC<LobbyPartProps> = ({ users, issues }) => {
         
       </Grid>
       <Grid container>
-        {gameCards.map((card, i) => <GameCard key={card} cardImg={card} cardNumber={fibonachi_Seq[i]} />)}
+        {gameCardSur.map((card, i) => <GameCard key={card} cardImg={card} cardNumber={fibonachi_Seq[i]} />)}
         </Grid>
         </Grid>
     </>

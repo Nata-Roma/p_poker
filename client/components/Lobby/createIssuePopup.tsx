@@ -13,10 +13,13 @@ import {
   NativeSelect,
 } from "@material-ui/core";
 import { useStylesCreateIssuePopup } from "@styles/createIssuePopup.style";
-import { nanoid } from "nanoid";
-import { CreateIssuePopupProps } from "utils/interfaces";
+import { IssueData } from "utils/interfaces";
 
-const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onCreate }) => {
+interface CreateIssuePopupProps {
+  onIssueCreate: (issue: IssueData) => void;
+}
+
+const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate }) => {
   const classes = useStylesCreateIssuePopup();
   const [priority, setPriority] = React.useState('low');
   const [issueName, setIssueName] = React.useState('');
@@ -28,10 +31,9 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onCreate }) => {
 
   const handleClose = () => {
     setOpen(false);
-    onCreate({
+    onIssueCreate({
       issueName,
       priority,
-      id: nanoid()
     })
     setIssueName('');
   };
@@ -74,7 +76,6 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onCreate }) => {
               onChange={handleChangePriority}
               inputProps={{
                 name: "issue",
-                id: "issue",
               }}
             >
               <option value="low">Low</option>

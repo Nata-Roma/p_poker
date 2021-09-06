@@ -10,28 +10,20 @@ import {
 } from "@material-ui/core";
 import { useStylesIssueList } from "@styles/issueList.style";
 import CreateIssuePopup from "./createIssuePopup";
-import { IssueData } from "utils/interfaces";
+import { IGameIssue, IssueData } from "utils/interfaces";
 
-const IssueList: FC = () => {
+interface IssueListProps {
+  onIssueCreate: (issue: IGameIssue) => void;
+  onIssueDelete: (issue: string) => void;
+  issues: Array<IGameIssue>
+}
+
+const IssueList: FC<IssueListProps> = ({onIssueCreate, onIssueDelete, issues}) => {
   const classes = useStylesIssueList();
-  const[issueForEdit, setIssueForEdit] = useState('');
-  const[issues, setIssues] = useState<Array<IssueData>>([])
-  const onCreate = (issue: IssueData) => {
-    setIssues([
-      ...issues,
-      issue
-    ])
-  }
+  const[issueEdit, setIssueEdit] = useState('');
 
-  const onIssueForEdit = (e: ChangeEvent<HTMLSelectElement>) => {
-    setIssueForEdit(e.target.value);
-  }
-
-  const onDelete = () => {
-    setIssues((prevIssues) => {
-      const newIssues = prevIssues.slice().filter((item) => item.issueName !== issueForEdit);
-      return newIssues;
-    })
+  const onIssueEdit = (e: ChangeEvent<HTMLSelectElement>) => {
+    setIssueEdit(e.target.value);
   }
 
   return (
@@ -41,28 +33,29 @@ const IssueList: FC = () => {
       </Typography>
       <Grid container item alignItems="center">
         <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="issue">Issue</InputLabel>
+          <InputLabel htmlFor="issue">No Issue</InputLabel>
           <NativeSelect
-          value={issueForEdit}
-          onChange={onIssueForEdit}
+          value={issueEdit}
+          onChange={onIssueEdit}
           inputProps={{
             name: 'issue',
-            id: 'issue',
           }}
           >
           {issues.map((issue) => {
             return (
               <>
               <option value="" style={{display: 'none'}}></option>
-              <option value={issue.issueName} key={issue.id}>{issue.issueName} | Priority: {issue.priority}</option>
+              <option value={issue.issueName} key={issue.issueName}>
+                {issue.issueName} | Priority: {issue.priority}
+                </option>
               </>
             )
           })}
           </NativeSelect>
           <FormHelperText>select an issue to edit</FormHelperText>
         </FormControl>
-        <CreateIssuePopup onCreate={onCreate}/>
-        <Button color="primary" variant="outlined" onClick={onDelete} className={classes.deleteButton}>
+        <CreateIssuePopup onIssueCreate={onIssueCreate}/>
+        <Button color="primary" variant="outlined" onClick={() => onIssueDelete(issueEdit)} className={classes.deleteButton}>
             Delete Issue
           </Button>
       </Grid>

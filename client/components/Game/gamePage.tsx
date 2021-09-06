@@ -9,9 +9,9 @@ import { apiCreateGame, apiGetLobbyInfo } from 'services/apiServices';
 import AppContext from 'store/store';
 import { IChatMessage, IUser } from 'utils/interfaces';
 import { GameDealer } from './gameDealer';
-import { ScoreList } from './ScoreList';
+import { ScoreList } from './scoreList';
 import IssuesCards from './issuesCards';
-import { GameCard } from './gameCard';
+import { GameCard } from '../../Cards/gameCard';
 
 export const GamePage = () => {
   const classes = useStylesGame();
