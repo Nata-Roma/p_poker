@@ -1,16 +1,17 @@
 import { Typography } from '@material-ui/core';
 import BlockIcon from '@material-ui/icons/Block';
-import useStylesUserCard from '@styles/userCard.style';
+import useStylesUserGameCard from '@styles/userGameCard.style';
+import { FC } from 'react';
 import { IUser } from 'utils/interfaces';
 
-interface UserCardProps {
+interface UserGameCardProps {
   user: IUser;
   observer: boolean;
   score?: boolean;
 }
 
-export const UserCard = ({ user, observer, score }: UserCardProps) => {
-  const classes = useStylesUserCard();
+export const UserGameCard: FC<UserGameCardProps> = ({ user, observer, score }) => {
+  const classes = useStylesUserGameCard();
 
   return (
     <div className={classes.container}>
@@ -28,7 +29,7 @@ export const UserCard = ({ user, observer, score }: UserCardProps) => {
           </>
         )}
       </div>
-      <Typography variant="h5">{user.username}{' '}{user.userSurname}</Typography>
+      <Typography variant="body1">{user.username}{' '}{user.userSurname}</Typography>
       <BlockIcon fontSize={score ? "medium" : "large"} />
     </div>
   );

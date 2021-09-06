@@ -1,4 +1,4 @@
-import { defaultAvatar } from "./defaultAvatar";
+import { defaultAvatar } from './defaultAvatar';
 
 export const roles = {
   dealer: 'dealer',
@@ -28,5 +28,16 @@ export const userInitData = {
     nameData: '',
     statusData: false,
   },
-  avatar: ''
+  avatar: '',
 };
+
+export const gameCards = [
+  '/cards/card_1.png',
+  '/cards/card_2.png',
+  '/cards/card_3.png',
+  '/cards/card_4.png',
+  '/cards/card_5.png',
+  '/cards/card_6.png',
+];
+
+export const fibonachi_Seq = [ 1, 2, 3, 5, 8, 13 ];

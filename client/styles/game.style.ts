@@ -4,7 +4,7 @@ const useStylesGame = makeStyles((theme: Theme) => createStyles({
 
   container: {
     // width: '100%',
-    height: 'calc(100vh - 56px)',
+    // height: 'calc(100vh - 56px)',
     [theme.breakpoints.down('xs')]: {
       height: '100%',
     },

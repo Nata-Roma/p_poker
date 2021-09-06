@@ -9,7 +9,7 @@ const useStylesFooter = makeStyles((theme: Theme) =>
       },
     },
     footerContainer: {
-      padding: '10px',
+      padding: theme.spacing(1),
       cursor: 'pointer',
     },
   }),
