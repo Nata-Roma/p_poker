@@ -70,7 +70,7 @@ export const GameDealer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
                 className={classes.btn}
                 onClick={onRoomLeave}
               >
-                {dealer ? `Stop Game` : `Exit`}
+                `Stop Game`
               </Button>
             </Box>
           </Grid>
