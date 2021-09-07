@@ -12,7 +12,7 @@ export const useStylesGameCard = (props) =>
       media: {
         height: '100%',
         width: '100%',
-        borderRadius: 10,
+        borderRadius: 6,
       },
       avatar: {
         backgroundColor: 'transparent',
@@ -20,13 +20,14 @@ export const useStylesGameCard = (props) =>
         borderColor: theme.palette.primary.main,
         marginRight: '-16px',
         marginBottom: 8,
+        borderRadius: '10px',
       },
       avatarRoot: {
-        width: 30,
+        width: 40,
         height: 30,
       },
       cardHeader: {
-        padding: theme.spacing(0, 1),
+        padding: theme.spacing(0, 0.5),
       },
       cardContainer: {
         width: 'calc(100%)',

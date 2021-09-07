@@ -75,3 +75,18 @@ export interface IGameCardOption {
   name: string;
   sequence: Array<number>;
 }
+
+export interface IGamePagePlayer {
+  player: string | IUser;
+  choice: number;
+}
+
+export interface IGamePageIssueScore {
+  choice: number;
+  score: number;
+}
+export interface IGamePageIssue {
+  issue: IGameIssue;
+  players: Array<IGamePagePlayer>;
+  score: Array<IGamePageIssueScore>;
+}

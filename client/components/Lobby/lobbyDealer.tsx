@@ -12,8 +12,15 @@ import IssueList from './issueList';
 import AppContext, { appStore } from 'store/store';
 import { IGameSettings, IRoomData, IssueData, IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
-import { cardDecks, initGameSettings, roles, sequences } from 'utils/configs';
+import {
+  cardDecks,
+  initGameSettings,
+  maxCardNumber,
+  roles,
+  sequences,
+} from 'utils/configs';
 import { CardList } from './cardList';
+import { apiCreateGame } from 'services/apiServices';
 
 interface LobbyPartProps {
   users: Array<IUser>;
@@ -31,15 +38,20 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   );
   const [ chosenDeck, setChosenDeck ] = useState<Array<string>>();
   const [ chosenSeq, setChosenSeq ] = useState<Array<number>>();
+  const [ cardPot, setCardPot ] = useState('');
 
-  const onStartGameClick = () => {
+  const onStartGameClick = async () => {
     if (
       !gameSettings.issues.length ||
-      // !gameSettings.card.cardNumber ||
+      !gameSettings.card.cardNumber ||
       (gameSettings.timer.isTimer &&
         (!gameSettings.timer.minutes || !gameSettings.timer.seconds))
     )
       return null;
+    console.log(gameSettings);
+    const create = await apiCreateGame(lobby, gameSettings);
+    console.log(create);
+    state.socket.emit('startGame', {roomId: lobby});
     router.push(`/${lobby}/game`);
   };
 
@@ -116,7 +128,7 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
           { length: gameSettings.card.cardNumber },
           (_, i) => seq[0].sequence[i],
         ),
-      )
+      );
     }
 
     const deck = cardDecks.filter((item) => item.name === choice);
@@ -153,7 +165,8 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     setGameSettings(prev => {
       const card = {...prev.card};
       console.log('card', card);
-      if (card.cardNumber !== cardDecks[0].deck.length) {
+      // if (card.cardNumber !== cardDecks[0].deck.length) {
+        if (card.cardNumber < maxCardNumber) {
         card.cardNumber++;
         card.cardNumberStart++;
       }
@@ -166,7 +179,7 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     setGameSettings(prev => {
       const card = {...prev.card};
       console.log('card', card);
-      if (card.cardNumber > 0) {
+      if (cardDecks[0].deck[0] !== chosenDeck[0]) {
         card.cardNumber--;
         card.cardNumberStart--;
       }
@@ -185,7 +198,7 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
 
   state.socket.on('userJoined', (message) => {
     setUserArr(message);
-    console.log('Lobby join user', message);
+    console.log('Lobby Dealer join user', message);
   });
 
   state.socket.on('userLeft', (message) => {
@@ -224,6 +237,17 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
       console.log('cardDecks', cardDecks);
     },
     [ gameSettings.card.cardNumber, gameSettings.card.cardNumberStart ],
+  );
+
+  useEffect(
+    () => {
+      const deckName = initGameSettings.card.cardDeck;
+      const deck = cardDecks.find((item) => item.name === deckName).deck;
+      if (deck) {
+        setCardPot(deck[deck.length - 1]);
+      }
+    },
+    [ chosenDeck ],
   );
 
   return (
@@ -296,7 +320,13 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
         />
       </Grid>
       <Grid item container>
-        <CardList cardDeck={chosenDeck} sequence={chosenSeq} onAddCard={onAddCard} onRemoveCard={onRemoveCard}/>
+        <CardList
+          cardDeck={chosenDeck}
+          sequence={chosenSeq}
+          onAddCard={onAddCard}
+          onRemoveCard={onRemoveCard}
+          cardPot={cardPot}
+        />
       </Grid>
     </Grid>
   );

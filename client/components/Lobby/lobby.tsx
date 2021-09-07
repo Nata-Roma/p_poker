@@ -44,9 +44,9 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
     }
   };
 
-  state.socket.on('userJoined', (message) => {
-    setUsers(message);
-  });
+  // state.socket.on('userJoined', (message) => {
+  //   setUsers(message);
+  // });
 
   state.socket.on('disconnected', () => {
     console.log('Disconnected!!!');
@@ -54,6 +54,8 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   });
 
   const onLobbyEntrance = () => {
+    console.log('USER Avatar', state.avatar,);
+    
     const message = userCreate(
       router.query.lobby,
       state.username,

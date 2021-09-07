@@ -38,6 +38,11 @@ export const gameCardSur = [
   '/cards/card_4.png',
   '/cards/card_5.png',
   '/cards/card_6.png',
+  '/cards/card_7.png',
+  '/cards/card_8.png',
+  '/cards/card_9.png',
+  '/cards/card_10.png',
+  '/cards/card_pot.png',
 ];
 
 export const cardDecks = [
@@ -47,8 +52,10 @@ export const cardDecks = [
   } 
 ];
 
-export const fibonacci_Seq = [ 1, 2, 3, 5, 8, 13 ];
-export const doubleNum_Seq = [ 1, 2, 4, 8, 16, 32 ];
+export const fibonacci_Seq = [ 1, 2, 3, 5, 8, 13, 21, 34, 55, 89 ];
+export const doubleNum_Seq = [ 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 ];
+
+export const maxCardNumber = 9;
 
 export const sequences = [
   {
