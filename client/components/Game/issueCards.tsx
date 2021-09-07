@@ -14,9 +14,6 @@ export const IssueCards: FC<IssuesCardsProps> = ({
   activeIssueName,
   onIssueClick,
 }) => {
-  const createIssue = () => {
-    console.log('create issue');
-  };
 
   return (
     <>
@@ -31,12 +28,6 @@ export const IssueCards: FC<IssuesCardsProps> = ({
               key={`${issue.issueName}-${Date.now()}`}
             />
         ))}
-        <IssueCard
-          issueName="Create New Issue"
-          priority=""
-          addIssue={true}
-          onAddIssue={createIssue}
-        />
     </>
   );
 };

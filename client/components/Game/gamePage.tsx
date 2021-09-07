@@ -1,21 +1,15 @@
-import {Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import useStylesGame from '@styles/game.style';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  apiGetLobbyInfo,
-  apiStartGame,
-} from 'services/apiServices';
+import { apiGetLobbyInfo, apiStartGame } from 'services/apiServices';
 import AppContext from 'store/store';
 import { IGameIssue, IUser } from 'utils/interfaces';
 import { GameCard } from '../../Cards/gameCard';
 import { ScoreList } from './scoreList';
-import {
-  cardDecks,
-  roles,
-  sequences,
-} from 'utils/configs';
+import { cardDecks, roles, sequences } from 'utils/configs';
 import { GameDealer } from './gameDealer';
+import { GamePlayer } from './gamePlayer';
 
 export const GamePage = () => {
   const classes = useStylesGame();
@@ -29,9 +23,6 @@ export const GamePage = () => {
   const [ cardPot, setCardPot ] = useState('');
   const [ dealer, setDealer ] = useState<IUser>();
 
-  console.log('state', state);
-  console.log('router', router);
-
   const initData = async () => {
     const data = await apiGetLobbyInfo(lobby);
     if (data.users) {
@@ -39,8 +30,8 @@ export const GamePage = () => {
     }
 
     const dealer = data.users.find((user) => user.dealer);
-      setDealer(dealer);
-      console.log('gameDealer', dealer.username);
+    setDealer(dealer);
+    console.log('gameDealer', dealer.username);
 
     const gameData = await apiStartGame(lobby);
     setGameIssues(gameData.issues);
@@ -67,8 +58,6 @@ export const GamePage = () => {
       );
       setCardPot(currentDeck.deck[currentDeck.deck.length - 1]);
     }
-
-    
   };
 
   useEffect(() => {
@@ -77,39 +66,51 @@ export const GamePage = () => {
 
   return (
     // <div className={classes.container}>
-      <Grid container className={classes.container}>
-        <Grid
-          container
-          direction="column"
-          item
-          xl={9}
-          md={8}
-          sm={7}
-          xs={12}
-          className={classes.gamePartContainer}
-        >
-          {dealer && gameIssues && <GameDealer dealer={dealer} gameIssues={gameIssues} />}
-          <Grid container item>
-            {dealer && dealer.userRole === roles.member && chosenDeck &&
-              chosenSeq &&
-              chosenDeck.map((card, i) => (
-                <GameCard key={card} cardImg={card} cardNumber={chosenSeq[i]} game={true} />
-              ))}
-            {dealer && dealer.userRole === roles.member && cardPot && <GameCard cardImg={cardPot} cardNumber={999} game={true} />}
-          </Grid>
-        </Grid>
-        <Grid
-          item
-          container
-          xl={3}
-          md={4}
-          sm={5}
-          xs={4}
-          className={classes.scorePartContainer}
-        >
-          {users && <ScoreList users={users} />}
+    <Grid container className={classes.container}>
+      <Grid
+        container
+        direction="column"
+        item
+        xl={9}
+        md={8}
+        sm={7}
+        xs={12}
+        className={classes.gamePartContainer}
+      >
+        {state.dealer &&
+        gameIssues && <GameDealer dealer={dealer} gameIssues={gameIssues} />}
+        {!state.dealer &&
+        gameIssues && <GamePlayer dealer={dealer} gameIssues={gameIssues} />}
+        <Grid container item>
+          {state.userRole === roles.member &&
+            chosenDeck &&
+            chosenSeq &&
+            chosenDeck.map((card, i) => (
+              <GameCard
+                key={card}
+                cardImg={card}
+                cardNumber={chosenSeq[i]}
+                game={true}
+              />
+            ))}
+          {state.userRole === roles.member &&
+          cardPot && (
+            <GameCard cardImg={cardPot} cardNumber={999} game={true} />
+          )}
         </Grid>
       </Grid>
+      <Grid
+        item
+        container
+        xl={3}
+        md={4}
+        sm={5}
+        xs={4}
+        className={classes.scorePartContainer}
+      >
+        {users && <ScoreList users={users} />}
+      </Grid>
+    </Grid>
     // </div>
   );
 };
