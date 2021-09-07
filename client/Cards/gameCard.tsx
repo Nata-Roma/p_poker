@@ -6,6 +6,7 @@ import { FC, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import { useStylesGameCard } from '@styles/gameCard.style';
 
 const cardSize = {
@@ -19,12 +20,14 @@ interface GameCardProps {
   game?: boolean;
   empty?: boolean;
   onAddCard?: () => void;
+  onRemoveCard?: () => void;
 }
 
 export const GameCard: FC<GameCardProps> = ({
   cardImg,
   cardNumber,
   onAddCard,
+  onRemoveCard,
   game = false,
   empty = false,
 }) => {
@@ -96,10 +99,16 @@ export const GameCard: FC<GameCardProps> = ({
           {!game &&
           empty && (
             <div className={classes.cardCover}>
+              <Grid container justifyContent="center">
               <AddCircleIcon
                 className={classes.emptyCardIcon}
                 onClick={onAddCard}
               />
+              <RemoveCircleIcon
+                className={classes.emptyCardIcon}
+                onClick={onRemoveCard}
+              />
+              </Grid>
             </div>
           )}
         </Grid>

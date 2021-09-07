@@ -6,10 +6,13 @@ import { cardDecks, sequences } from 'utils/configs';
 interface CardListProps {
   cardDeck: Array<string>;
   sequence: Array<number>;
-  onAddCard: () => void
+  onAddCard: () => void;
+  onRemoveCard: () => void;
 }
 
-export const CardList: FC<CardListProps> = ({ cardDeck, sequence, onAddCard }) => {
+const LAST_CARD_INDEX = 3;
+
+export const CardList: FC<CardListProps> = ({ cardDeck, sequence, onAddCard, onRemoveCard }) => {
   return (
     <>
       <Typography variant="subtitle1">Add card</Typography>
@@ -18,10 +21,13 @@ export const CardList: FC<CardListProps> = ({ cardDeck, sequence, onAddCard }) =
           sequence &&
           cardDeck.map((deck, i) => (
             <Grid item>
-              <GameCard cardImg={deck} cardNumber={sequence[i]} key={deck} />
+              {i !== LAST_CARD_INDEX
+                ? <GameCard cardImg={deck} cardNumber={sequence[i]} key={deck} />
+                  : <GameCard cardImg={''} cardNumber={666} key={deck} />
+              }
             </Grid>
           ))}
-          <GameCard cardImg={''} cardNumber={null} key={'null'} empty={true} onAddCard={onAddCard} />
+          <GameCard cardImg={''} cardNumber={null} key={'null'} empty={true} onAddCard={onAddCard} onRemoveCard={onRemoveCard}/>
       </Grid>
     </>
   );

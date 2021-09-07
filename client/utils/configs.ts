@@ -77,6 +77,7 @@ export const initGameSettings = {
     cardDeck: cardDecks[0].name,
     sequence: sequences[0].name,
     cardNumber: 4,
+    cardNumberStart: 0,
     cardChange: false,
   },
 };

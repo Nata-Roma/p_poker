@@ -131,6 +131,8 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     }
   };
 
+  console.log('chosenDeck', chosenDeck);
+
   const onCardChange = (isChange: boolean) => {
     setGameSettings((prev) => {
       const card = { ...prev.card };
@@ -150,10 +152,28 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     
     setGameSettings(prev => {
       const card = {...prev.card};
-      card.cardNumber++;
+      console.log('card', card);
+      if (card.cardNumber !== cardDecks[0].deck.length) {
+        card.cardNumber++;
+        card.cardNumberStart++;
+      }
       return {...prev, card: card}
-    })
-  }
+    });    
+  };
+
+  const onRemoveCard = () => {
+    console.log('we are on remove card');
+    setGameSettings(prev => {
+      const card = {...prev.card};
+      console.log('card', card);
+      if (card.cardNumber > 0) {
+        card.cardNumber--;
+        card.cardNumberStart--;
+      }
+      return {...prev, card: card}
+    });  
+  };
+  console.log('game settings ', gameSettings);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -184,19 +204,26 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     () => {
       setChosenSeq(
         Array.from(
-          { length: gameSettings.card.cardNumber },
-          (_, i) => sequences[0].sequence[i],
+          { length: (gameSettings.card.cardNumber - gameSettings.card.cardNumberStart) },
+          (_, i) => sequences[0].sequence[gameSettings.card.cardNumberStart + i],
         ),
       );
 
       setChosenDeck(
         Array.from(
-          { length: gameSettings.card.cardNumber },
-          (_, i) => cardDecks[0].deck[i],
+          { length: (gameSettings.card.cardNumber - gameSettings.card.cardNumberStart) },
+          (_, i) =>  cardDecks[0].deck[gameSettings.card.cardNumberStart + i],
         ),
       );
+
+      // not allow more than three cards except 666
+      // when add cards first from left move to deck
+      //and next in sequence appears
+
+      console.log('chosenDeck', chosenDeck);
+      console.log('cardDecks', cardDecks);
     },
-    [ gameSettings.card.cardNumber ],
+    [ gameSettings.card.cardNumber, gameSettings.card.cardNumberStart ],
   );
 
   return (
@@ -269,7 +296,7 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
         />
       </Grid>
       <Grid item container>
-        <CardList cardDeck={chosenDeck} sequence={chosenSeq} onAddCard={onAddCard} />
+        <CardList cardDeck={chosenDeck} sequence={chosenSeq} onAddCard={onAddCard} onRemoveCard={onRemoveCard}/>
       </Grid>
     </Grid>
   );

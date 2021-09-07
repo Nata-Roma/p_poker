@@ -9,7 +9,7 @@ import { apiCreateGame, apiGetLobbyInfo } from 'services/apiServices';
 import AppContext from 'store/store';
 import { IChatMessage, IUser } from 'utils/interfaces';
 import { GameDealer } from './gameDealer';
-import { ScoreList } from './scoreList';
+import { ScoreList } from './ScoreList';
 import IssuesCards from './issuesCards';
 import { GameCard } from '../../Cards/gameCard';
 
