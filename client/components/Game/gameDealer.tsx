@@ -1,32 +1,33 @@
 import { useRouter } from 'next/router';
-import React, { FC, useContext, useEffect, useState } from 'react';
-import { Button, Typography, Grid, Box } from '@material-ui/core';
-
-import useStylesGamePart from '@styles/gamePart.style';
-
-import { UserCard } from 'Cards/userCard';
+import { FC, useEffect, useState, useContext } from 'react';
+import useStylesGame from '@styles/game.style';
+import { Typography, Grid, Box, Button } from '@material-ui/core';
+import { IGameIssue, IUser } from 'utils/interfaces';
 
 import AppContext from 'store/store';
-import { IGameIssue, IUser } from 'utils/interfaces';
-import { ObserverList } from '../Lobby/observerList';
+import { UserCard } from 'Cards/userCard';
 import { roles } from 'utils/configs';
-import { IssuesCards } from './issuesCards';
+import { IssueCards } from './issueCards';
+import useStylesGamePart from '@styles/gamePart.style';
 
-interface LobbyPartProps {
-  users: Array<IUser>;
+interface GameDealerProps {
+  dealer: IUser;
   gameIssues: Array<IGameIssue>;
 }
 
-export const GameDealer: FC<LobbyPartProps> = ({ users, gameIssues }) => {
+export const GameDealer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
   const classes = useStylesGamePart();
-  const { state } = useContext(AppContext);
+  const [ issues, setIssues ] = useState<Array<IGameIssue>>();
   const router = useRouter();
   const { lobby } = router.query;
-  const [ dealer, setDealer ] = useState<IUser>();
-  const [ userArr, setUserArr ] = useState<Array<IUser>>(users);
-  const [ issues, setIssues ] = useState<Array<IGameIssue>>();
+  const { state } = useContext(AppContext);
+  const [ activeIssueName, setActiveIssueName ] = useState<string>();
+  const [ title, setTitle ] = useState<string>();
 
-  console.log('USers', users);
+  const onIssueClick = (issueName: string) => {
+    const foundIssue = issues.find((issue) => issue.issueName === issueName);
+    setActiveIssueName(foundIssue.issueName);
+  };
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -36,29 +37,21 @@ export const GameDealer: FC<LobbyPartProps> = ({ users, gameIssues }) => {
     router.push('/');
   };
 
-  state.socket.on('userLeft', (message) => {
-    setUserArr(message);
-    console.log('game user left', message);
-  });
-
-  useEffect(
-    () => {
-      const dealer = userArr.find((user) => user.dealer);
-      setDealer(dealer);
-      console.log('gameDealer', userArr);
-    },
-    [ userArr ],
-  );
-
   useEffect(
     () => {
       setIssues(gameIssues);
+      setActiveIssueName(gameIssues[0].issueName);
+      const newTitle = gameIssues.map((item) => item.issueName).join(', ');
+      setTitle(newTitle);
     },
     [ gameIssues ],
   );
-
   return (
     <>
+      <Typography variant="h6" align="center" gutterBottom>
+        Spring: planning (issues: {title && `${title}`})
+      </Typography>
+
       <Typography variant="subtitle2">Dealer:</Typography>
       <Grid container direction="column">
         <Grid container justifyContent="space-between" alignItems="flex-end">
@@ -81,9 +74,18 @@ export const GameDealer: FC<LobbyPartProps> = ({ users, gameIssues }) => {
               </Button>
             </Box>
           </Grid>
-          <Grid container className={classes.issuesContainer}>
-            {issues && <IssuesCards issues={issues} />}
-          </Grid>
+        </Grid>
+        <Grid container item className={classes.mBottom}>
+          <div className={classes.issuesContainer}>
+            {issues && (
+              <IssueCards
+                issues={issues}
+                activeIssueName={activeIssueName}
+                onIssueClick={onIssueClick}
+              />
+            )}
+          </div>
+          Statistics
         </Grid>
       </Grid>
     </>
