@@ -21,7 +21,17 @@ export const GamePage = () => {
   const [ chosenDeck, setChosenDeck ] = useState<Array<string>>();
   const [ chosenSeq, setChosenSeq ] = useState<Array<number>>();
   const [ cardPot, setCardPot ] = useState('');
+  const [ activeCard, setActiveCard ] = useState<string>('');
   const [ dealer, setDealer ] = useState<IUser>();
+
+  const onGameCardClick = (cardName: string, cardNumber: number) => {
+    setActiveCard(cardName);
+    state.socket.emit('gameCardChoice', {
+      roomId: lobby,
+      player: state.userId,
+      choice: cardNumber,
+    });
+  };
 
   const initData = async () => {
     const data = await apiGetLobbyInfo(lobby);
@@ -65,7 +75,6 @@ export const GamePage = () => {
   }, []);
 
   return (
-    // <div className={classes.container}>
     <Grid container className={classes.container}>
       <Grid
         container
@@ -91,11 +100,19 @@ export const GamePage = () => {
                 cardImg={card}
                 cardNumber={chosenSeq[i]}
                 game={true}
+                onGameCardClick={onGameCardClick}
+                activeCard={activeCard}
               />
             ))}
           {state.userRole === roles.member &&
           cardPot && (
-            <GameCard cardImg={cardPot} cardNumber={999} game={true} />
+            <GameCard
+              cardImg={cardPot}
+              cardNumber={999}
+              game={true}
+              onGameCardClick={onGameCardClick}
+              activeCard={activeCard}
+            />
           )}
         </Grid>
       </Grid>
@@ -111,6 +128,5 @@ export const GamePage = () => {
         {users && <ScoreList users={users} />}
       </Grid>
     </Grid>
-    // </div>
   );
 };

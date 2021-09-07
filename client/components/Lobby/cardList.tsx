@@ -19,8 +19,8 @@ export const CardList: FC<CardListProps> = ({ cardDeck, sequence, onAddCard, car
         {cardDeck &&
           sequence &&
           cardDeck.map((deck, i) => (
-            <Grid item>
-              <GameCard cardImg={deck} cardNumber={sequence[i]} key={deck} />
+            <Grid item key={deck}>
+              <GameCard cardImg={deck} cardNumber={sequence[i]} />
             </Grid>
           ))}
           <GameCard cardImg={''} cardNumber={null} empty={true} onAddCard={onAddCard} />

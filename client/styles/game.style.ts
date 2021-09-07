@@ -21,6 +21,7 @@ const useStylesGame = makeStyles((theme: Theme) => createStyles({
     },
   },
   gamePartContainer: {
+    minHeight: 'calc(100vh - 60px)',
     padding: theme.spacing(2, 1),
     boxShadow: '1px 0 3px rgba(0, 0, 0, 0.3)',
     [theme.breakpoints.down(700)]: {
