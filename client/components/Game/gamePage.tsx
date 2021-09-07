@@ -5,13 +5,22 @@ import useStylesGame from '@styles/game.style';
 import { Chat } from 'components/Chat/chat';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
-import { apiCreateGame, apiGetLobbyInfo } from 'services/apiServices';
+import {
+  apiCreateGame,
+  apiGetLobbyInfo,
+  apiStartGame,
+} from 'services/apiServices';
 import AppContext from 'store/store';
-import { IChatMessage, IUser } from 'utils/interfaces';
+import { IChatMessage, IGameIssue, IUser } from 'utils/interfaces';
 import { GameDealer } from './gameDealer';
-import { ScoreList } from './scoreList';
-import IssuesCards from './issuesCards';
 import { GameCard } from '../../Cards/gameCard';
+import { ScoreList } from './scoreList';
+import {
+  cardDecks,
+  fibonacci_Seq,
+  gameCardSur,
+  sequences,
+} from 'utils/configs';
 
 export const GamePage = () => {
   const classes = useStylesGame();
@@ -19,19 +28,46 @@ export const GamePage = () => {
   const { state } = useContext(AppContext);
   const router = useRouter();
   const { lobby } = router.query;
+  const [ gameIssues, setGameIssues ] = useState<Array<IGameIssue>>();
+  const [ chosenDeck, setChosenDeck ] = useState<Array<string>>();
+  const [ chosenSeq, setChosenSeq ] = useState<Array<number>>();
+  const [ cardPot, setCardPot ] = useState('');
+
   console.log('state', state);
   console.log('router', router);
-  const issues = [ 1, 2, 3, 4, 5, 6 ];
+  // const issues = [ 1, 2, 3, 4, 5, 6 ];
   const springNum = 123;
 
   const initData = async () => {
-    // const data = await apiCreateGame(router.query.lobby);
-    // const data = await apiGetLobbyInfo(router.query.lobby);
     const data = await apiGetLobbyInfo(lobby);
-
     if (data.users) {
       setUsers(data.users);
-      console.log('we have users!', data.users);
+    }
+
+    const gameData = await apiStartGame(lobby);
+    setGameIssues(gameData.issues);
+
+    const seq = gameData.card.sequence;
+    const currentSeq = sequences.find((item) => item.name === seq);
+    if (currentSeq) {
+      setChosenSeq(
+        Array.from(
+          { length: gameData.card.cardNumber },
+          (_, i) => currentSeq.sequence[i],
+        ),
+      );
+    }
+
+    const deck = gameData.card.cardDeck;
+    const currentDeck = cardDecks.find((item) => item.name === deck);
+    if (currentDeck) {
+      setChosenDeck(
+        Array.from(
+          { length: gameData.card.cardNumber },
+          (_, i) => currentDeck.deck[i],
+        ),
+      );
+      setCardPot(currentDeck.deck[currentDeck.deck.length - 1]);
     }
   };
 
@@ -53,12 +89,20 @@ export const GamePage = () => {
           className={classes.gamePartContainer}
         >
           <Grid>
-            <div>Game Page</div>
             <Typography variant="h6" align="center" gutterBottom>
-              Spring: {springNum} planning (issues: {issues.toString()})
+              Spring: {springNum} planning (issues: Issues)
             </Typography>
           </Grid>
-          {users && <GameDealer users={users} issues={issues} />}
+          {users &&
+          gameIssues && <GameDealer users={users} gameIssues={gameIssues} />}
+          <Grid container>
+            {chosenDeck &&
+              chosenSeq &&
+              chosenDeck.map((card, i) => (
+                <GameCard key={card} cardImg={card} cardNumber={chosenSeq[i]} />
+              ))}
+            {cardPot && <GameCard cardImg={cardPot} cardNumber={999} />}
+          </Grid>
         </Grid>
         <Grid
           item

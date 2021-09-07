@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { BASE_URL } from 'utils/apiConfig';
-import { IApiGetLobbyInfo, IChatMessage, IUser } from 'utils/interfaces';
+import {
+  IApiGetLobbyInfo,
+  IChatMessage,
+  IGameSettings,
+  IUser,
+} from 'utils/interfaces';
 
 export const apiGetLobbyInfo = async (
   room: string | Array<string>,
@@ -27,13 +32,27 @@ export const apiGetRooms = async () => {
   return rooms.data;
 };
 
-export const apiCreateGame = async (room: string | Array<string>) => {
+export const apiStartGame = async (room: string | Array<string>) => {
   // For now it is GET request. Will be converted to POST
   if (typeof room === 'string') {
-    const users = await axios({
+    const gameInitData = await axios({
       method: 'GET',
-      url: `${BASE_URL}/game/${room}`,
+      url: `${BASE_URL}/gamestart/${room}`,
+    });
+    return gameInitData.data;
+  }
+  return null;
+};
+
+export const apiCreateGame = async (
+  room: string | Array<string>,
+  data: IGameSettings,
+) => {
+  if (typeof room === 'string') {
+    const users = await axios({
+      method: 'POST',
+      url: `${BASE_URL}/gamestart/${room}`,
+      data: data,
     });
   }
 };
-

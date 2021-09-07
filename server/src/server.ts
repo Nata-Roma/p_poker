@@ -56,12 +56,18 @@ app.post('/rooms', (req, res) => {
   res.status(201).json('created');
 });
 
-app.get('/game/:room', (req, res) => {
+app.get('/gamestart/:room', (req, res) => {
   const room = req.params.room;
-  const gameId = roomContoller.getGameId(room);
-  console.log('Incoming Id', room);
-  console.log('GAME id', gameId);
+  const gameInitData = roomContoller.getGameInitData(room);
+  res.status(200).json(gameInitData)
 });
+
+app.post('/gamestart/:room', (req, res) => {
+  const room = req.params.room;
+  console.log('START');
+  roomContoller.gameInit(room, req.body)
+  res.status(201).json('created')
+}) 
 
 // app.post('/users', (req, res) => {
 //   console.log(req.body);

@@ -15,11 +15,6 @@ const socketServer = (httpServer) => {
     console.log(`Connected to socket: ${socket.id}`);
     console.log('Socket userId', socket.handshake.auth.userId);
 
-    // socket.on('changeUsername', (message) => {
-    //   socket.handshake.auth.username = message;
-    //   console.log('socket.handshake.auth: ', message);
-    // });
-
     socket.on('joinRoom', (message) => {
       socket.join(message.roomId);
       console.log('SOCKET JOIN');
@@ -62,6 +57,10 @@ const socketServer = (httpServer) => {
       roomContoller.leaveUserFromRoom(roomId, userId);
       const users = roomContoller.getRoomUsers(roomId);
       socket.to(roomId).emit('userLeft', users);
+    });
+
+    socket.on('startGame', (message) => {
+      socket.to(message.roomId).emit('gameStarted');
     });
 
     // socket.on('disconnect', (message) => {
