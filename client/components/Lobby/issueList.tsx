@@ -1,36 +1,41 @@
-import { ChangeEvent, FC, useContext, useState } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import {
   Typography,
   Grid,
   Button,
   FormControl,
   InputLabel,
-  NativeSelect,
   FormHelperText,
   Select,
   MenuItem,
 } from '@material-ui/core';
 import { useStylesIssueList } from '@styles/issueList.style';
 import CreateIssuePopup from './createIssuePopup';
-import { IGameIssue, IssueData } from 'utils/interfaces';
-
-interface IssueListProps {
-  onIssueCreate: (issue: IGameIssue) => void;
-  onIssueDelete: (issue: string) => void;
-  issues: Array<IGameIssue>;
-}
+import ChangeIssuePopup from './changeIssuePopup';
+import { IssueData, IssueListProps } from 'utils/interfaces';
 
 const IssueList: FC<IssueListProps> = ({
   onIssueCreate,
   onIssueDelete,
+  onIssueChangeEdit,
   issues,
 }) => {
   const classes = useStylesIssueList();
-  const [ issueEdit, setIssueEdit ] = useState('');
+  const[issueEdit, setIssueEdit ] = useState('');
+  const[issueChange, setIssueChange] = useState(false);
 
   const onIssueEdit = (e: ChangeEvent<HTMLSelectElement>) => {
     setIssueEdit(e.target.value);
+    setIssueChange(true)
   };
+
+  const onIssueChange = (changedIssue: IssueData) => {
+    onIssueChangeEdit({
+      prevValue: issueEdit,
+      nextValue: changedIssue.issueName,
+      priority: changedIssue.priority
+    });
+  }
 
   return (
     <Grid item container spacing={2} justifyContent="center">
@@ -67,6 +72,7 @@ const IssueList: FC<IssueListProps> = ({
         >
           Delete Issue
         </Button>
+        <ChangeIssuePopup issueChange={issueChange} onIssueChange={onIssueChange} setIssueChange={setIssueChange}/>
       </Grid>
     </Grid>
   );
