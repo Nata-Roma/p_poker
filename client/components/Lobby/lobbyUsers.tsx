@@ -32,12 +32,17 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users }) => {
 
   state.socket.on('userJoined', (message) => {
     setUserArr(message);
-    console.log('Lobby join user', message);
+    console.log('Lobby Users join user', message);
   });
 
   state.socket.on('userLeft', (message) => {
     setUserArr(message);
     console.log('Lobby user left', message);
+  });
+
+  state.socket.on('gameStarted', (message) => {
+    router.push(`/${lobby}/game`);
+    console.log('Go to Game Page', message);
   });
 
   useEffect(

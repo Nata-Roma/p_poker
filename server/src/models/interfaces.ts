@@ -12,24 +12,48 @@ export interface IChatMessage {
   message: string;
 }
 
-export interface IGameUser {
-  user: string | IUserData;
+export interface IIssue {
+  issueName: string;
+  priority: string;
+}
+
+export interface IGameTimer {
+  isTimer: boolean;
+  minutes: number;
+  seconds: number;
+}
+
+export interface IGameCard {
+  cardDeck: string;
+  sequence: string;
+  cardNumber: number;
+  cardChange: boolean;
+}
+
+export interface IGameSettings {
+  issues: Array<IIssue>;
+  timer: IGameTimer;
+  card: IGameCard;
+}
+
+export interface IGamePlayer {
+  player: string | IUserData;
   choice: number;
 }
 
-export interface IGameTaskScore {
+export interface IGameIssueScore {
   choice: number;
   score: number;
 }
 
-export interface IGameTask {
-  taskName: string;
-  users: Array<IGameUser>;
-  score: Array<IGameTaskScore>;
+export interface IPlayerChoice {
+  issue: IIssue;
+  playerId: string;
+  playerChoice: number;
 }
 
-export interface IUserChoice {
-  taskName: string;
-  userId: string;
-  userChoice: number;
+export interface IGameIssue {
+  issue: IIssue;
+  players: Array<IGamePlayer>;
+  score: Array<IGameIssueScore>;
 }

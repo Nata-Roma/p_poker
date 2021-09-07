@@ -1,7 +1,8 @@
 import {
   IChatMessage,
-  IGameTask,
-  IUserChoice,
+  IGameSettings,
+  IGameIssue,
+  IPlayerChoice,
   IUserData,
 } from '../models/interfaces';
 import Room from '../models/roomModel';
@@ -76,20 +77,30 @@ class Rooms {
     return id;
   };
 
-  setGameUserChoice = (roomId: string, userChoice: IUserChoice): void => {
+  setGameUserChoice = (roomId: string, userChoice: IPlayerChoice): void => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     room.setUserChoice(userChoice);
   };
 
-  getGameTask = (roomId: string, taskName: string): IGameTask => {
+  getGameIssue = (roomId: string, taskName: string): IGameIssue => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
-    const gameTask = room.getGameTask(taskName);
+    const gameTask = room.getGameIssue(taskName);
     return gameTask;
   };
 
-  gameInit = (roomId: string, tasks: Array<string>): void => {
+  gameInit = (roomId: string, client: IGameSettings): void => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
-    room.gameInit(tasks);
+    if (room) {
+      room.gameInit(client);
+    }
+  };
+
+  getGameInitData = (roomId: string): IGameSettings | null => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      return room.getGameInitData();
+    }
+    return null;
   };
 
   userDisconnect = (userId: string): void => {

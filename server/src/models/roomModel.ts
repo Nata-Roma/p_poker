@@ -1,5 +1,11 @@
 import Game from './gameModel';
-import { IChatMessage, IGameTask, IUserChoice, IUserData } from './interfaces';
+import {
+  IChatMessage,
+  IGameSettings,
+  IGameIssue,
+  IPlayerChoice,
+  IUserData,
+} from './interfaces';
 
 class Room {
   private users: Array<IUserData> = [];
@@ -23,7 +29,7 @@ class Room {
     console.log('userFoundIndexInCreate', userFoundIndex);
     if (userFoundIndex >= 0) {
       console.log('index > 0');
-      
+
       const leftPart = this.users.slice(0, userFoundIndex);
       leftPart.push(user);
       const rightPart = this.users.slice(userFoundIndex + 1);
@@ -70,7 +76,7 @@ class Room {
 
   findUser = (userId: string): number => {
     console.log('incoming userId', userId);
-    
+
     const userFoundIndex = this.users.findIndex((user) => user.id === userId);
     console.log('found user', userFoundIndex);
     console.log('all users', this.users);
@@ -83,36 +89,40 @@ class Room {
     return this.game.getGameId();
   };
 
-  setUserChoice = (userChoice: IUserChoice) => {
-    this.game.setUserChoice(userChoice);
+  setUserChoice = (userChoice: IPlayerChoice) => {
+    this.game.setPlayerChoice(userChoice);
   };
 
-  getGameTask = (taskName: string): IGameTask => {
-    const task = this.game.getGameTask(taskName);
-    const users = task.users.map((task) => {
-      const userFound = this.users.find((us) => us.id === task.user);
+  getGameIssue = (issueName: string): IGameIssue => {
+    const issue = this.game.getGameIssue(issueName);
+    const users = issue.players.map((task) => {
+      const userFound = this.users.find((us) => us.id === task.player);
       if (userFound) {
         const newUser = {
-          user: userFound,
+          player: userFound,
           choice: task.choice,
         };
         return newUser;
       }
       return null;
     });
-    task.users = users;
+    issue.players = users;
 
-    return task;
+    return issue;
   };
 
-  gameInit = (tasks: Array<string>) => {
-    const users = this.users.map((user) => {
+  gameInit = (client: IGameSettings) => {
+    const players = this.users.map((user) => {
       if (user.userRole === 'member') {
         return user.id;
       }
       return null;
     });
-    this.game.gameInit({ userIds: users, tasks });
+    this.game.gameInit({ playerIds: players, client });
+  };
+
+  getGameInitData = (): IGameSettings => {
+    return this.game.getGameInitData();
   };
 }
 

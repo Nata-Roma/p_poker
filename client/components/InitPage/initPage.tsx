@@ -10,6 +10,7 @@ import { RoomSelect } from './roomSelect';
 import {
   setDealer,
   setRoomId,
+  setUserAvatar,
   setUserId,
   setUsername,
   setUserRole,
@@ -56,8 +57,9 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   const goToLobby = (id: string) => {
     const userId = appStorage.getSession();
     dispatch(setUserId(userId));
-    dispatch(setUsername(userData.username.nameData)),
-      dispatch(setUserSurname(userData.userSurname.nameData));
+    dispatch(setUsername(userData.username.nameData));
+    dispatch(setUserSurname(userData.userSurname.nameData));
+    dispatch(setUserAvatar(userData.avatar));
     router.push({
       pathname: '/[lobby]',
       query: { lobby: id },

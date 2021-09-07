@@ -1,55 +1,83 @@
-import { IGameTask, IUserChoice } from './interfaces';
+import {
+  IGameCard,
+  IGameSettings,
+  IGameIssue,
+  IGameTimer,
+  IPlayerChoice,
+} from './interfaces';
 
 interface GameInitProps {
-  userIds: Array<string>;
-  tasks: Array<string>;
+  playerIds: Array<string>;
+  client: IGameSettings;
 }
 
 class Game {
   private id: string;
-  private tasks: Array<IGameTask> = [];
+  private issues: Array<IGameIssue> = [];
+  private card: IGameCard = null;
+  private timer: IGameTimer = null;
 
   constructor(roomId: string) {
     this.id = roomId;
   }
 
   gameInit = (props: GameInitProps): void => {
-    const users = props.userIds.map((user) => ({ user: user, choice: 0 }));
-    props.tasks.forEach((taskName) => {
-      const task = {
-        taskName,
-        users: users,
+    const players = props.playerIds.map((player) => ({
+      player: player,
+      choice: 0,
+    }));
+    props.client.issues.forEach((issue) => {
+      const newIssue = {
+        issue: { ...issue },
+        players: { ...players },
         score: [],
       };
-      this.tasks.push(task);
+      this.issues.push(newIssue);
     });
+    this.card = { ...props.client.card };
+    this.timer = { ...props.client.timer };
+    console.log('INIT GAME');
+    console.log(this.issues);
+    console.log(this.card);
+    console.log(this.timer);
   };
 
   getGameId = (): string => {
     return this.id;
   };
 
-  setUserChoice = (userChoice: IUserChoice): void => {
-    const taskFound = this.tasks.find(
-      (task) => task.taskName === userChoice.taskName,
+  getGameInitData = (): IGameSettings => {
+    const gameData = {
+      timer: { ...this.timer },
+      card: { ...this.card },
+      issues: this.issues.map((issue) => issue.issue),
+    };
+    return gameData;
+  };
+
+  setPlayerChoice = (playerChoice: IPlayerChoice): void => {
+    const issueFound = this.issues.find(
+      (issue) => issue.issue === playerChoice.issue,
     );
-    if (taskFound) {
-      const userFound = taskFound.users.find(
-        (user) => user.user === userChoice.userId,
+    if (issueFound) {
+      const playerFound = issueFound.players.find(
+        (player) => player.player === playerChoice.playerId,
       );
-      if (userFound) {
-        userFound.choice = userChoice.userChoice;
+      if (playerFound) {
+        playerFound.choice = playerChoice.playerChoice;
       }
     }
   };
 
-  getGameTask = (taskName: string): IGameTask | null => {
-    const gameTask = this.tasks.find((task) => task.taskName === taskName);
-    if (gameTask) {
+  getGameIssue = (issueName: string): IGameIssue | null => {
+    const gameIssue = this.issues.find(
+      (issue) => issue.issue.issueName === issueName,
+    );
+    if (gameIssue) {
       const gameTaskCopy = {
-        ...gameTask,
-        users: [ ...gameTask.users ],
-        score: [ ...gameTask.score ],
+        ...gameIssue,
+        players: [ ...gameIssue.players ],
+        score: [ ...gameIssue.score ],
       };
       return gameTaskCopy;
     }
