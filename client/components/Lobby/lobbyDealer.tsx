@@ -143,8 +143,6 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     }
   };
 
-  console.log('chosenDeck', chosenDeck);
-
   const onCardChange = (isChange: boolean) => {
     setGameSettings((prev) => {
       const card = { ...prev.card };
@@ -164,8 +162,6 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     
     setGameSettings(prev => {
       const card = {...prev.card};
-      console.log('card', card);
-      // if (card.cardNumber !== cardDecks[0].deck.length) {
         if (card.cardNumber < maxCardNumber) {
         card.cardNumber++;
         card.cardNumberStart++;
@@ -175,10 +171,8 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   };
 
   const onRemoveCard = () => {
-    console.log('we are on remove card');
     setGameSettings(prev => {
       const card = {...prev.card};
-      console.log('card', card);
       if (cardDecks[0].deck[0] !== chosenDeck[0]) {
         card.cardNumber--;
         card.cardNumberStart--;
@@ -186,7 +180,6 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
       return {...prev, card: card}
     });  
   };
-  console.log('game settings ', gameSettings);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -227,14 +220,7 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
           { length: (gameSettings.card.cardNumber - gameSettings.card.cardNumberStart) },
           (_, i) =>  cardDecks[0].deck[gameSettings.card.cardNumberStart + i],
         ),
-      );
-
-      // not allow more than three cards except 666
-      // when add cards first from left move to deck
-      //and next in sequence appears
-
-      console.log('chosenDeck', chosenDeck);
-      console.log('cardDecks', cardDecks);
+      ); 
     },
     [ gameSettings.card.cardNumber, gameSettings.card.cardNumberStart ],
   );
