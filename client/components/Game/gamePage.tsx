@@ -13,13 +13,10 @@ import {
 import AppContext from 'store/store';
 import { IChatMessage, IGameIssue, IUser } from 'utils/interfaces';
 import { GameDealer } from './gameDealer';
-<<<<<<< HEAD
 import { ScoreList } from './ScoreList';
-import IssuesCards from './issuesCards';
-=======
->>>>>>> aef353b15cd4e49e1b3c06f37e8b46a9a710c610
+// import IssuesCards from './issuesCards';
 import { GameCard } from '../../Cards/gameCard';
-import { ScoreList } from './scoreList';
+
 import {
   cardDecks,
   fibonacci_Seq,

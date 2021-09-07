@@ -16,6 +16,7 @@ import {
   cardDecks,
   initGameSettings,
   maxCardNumber,
+  minCardNumber,
   roles,
   sequences,
 } from 'utils/configs';
@@ -41,6 +42,7 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   const [ cardPot, setCardPot ] = useState('');
 
   const onStartGameClick = async () => {
+    console.log(gameSettings);
     if (
       !gameSettings.issues.length ||
       !gameSettings.card.cardNumber ||
@@ -163,9 +165,8 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     setGameSettings(prev => {
       const card = {...prev.card};
         if (card.cardNumber < maxCardNumber) {
-        card.cardNumber++;
-        card.cardNumberStart++;
-      }
+        card.cardNumber++;   
+        }
       return {...prev, card: card}
     });    
   };
@@ -173,10 +174,9 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   const onRemoveCard = () => {
     setGameSettings(prev => {
       const card = {...prev.card};
-      if (cardDecks[0].deck[0] !== chosenDeck[0]) {
-        card.cardNumber--;
-        card.cardNumberStart--;
-      }
+      if (card.cardNumber > minCardNumber ) {
+        card.cardNumber--;        
+      } 
       return {...prev, card: card}
     });  
   };
@@ -210,19 +210,19 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     () => {
       setChosenSeq(
         Array.from(
-          { length: (gameSettings.card.cardNumber - gameSettings.card.cardNumberStart) },
-          (_, i) => sequences[0].sequence[gameSettings.card.cardNumberStart + i],
+          { length: (gameSettings.card.cardNumber) },
+          (_, i) => sequences[0].sequence[i],
         ),
       );
 
       setChosenDeck(
         Array.from(
-          { length: (gameSettings.card.cardNumber - gameSettings.card.cardNumberStart) },
-          (_, i) =>  cardDecks[0].deck[gameSettings.card.cardNumberStart + i],
+          { length: (gameSettings.card.cardNumber) },
+          (_, i) =>  cardDecks[0].deck[i],
         ),
-      ); 
+      );
     },
-    [ gameSettings.card.cardNumber, gameSettings.card.cardNumberStart ],
+    [ gameSettings.card.cardNumber ],
   );
 
   useEffect(
