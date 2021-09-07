@@ -10,7 +10,7 @@ import NameGame from './nameGame';
 import GameSettings from './gameSettings';
 import IssueList from './issueList';
 import AppContext, { appStore } from 'store/store';
-import { IGameSettings, IRoomData, IssueData, IUser } from 'utils/interfaces';
+import { IGameSettings, IRoomData, IssueData, issuePrevNext, IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
 import {
   cardDecks,
@@ -80,6 +80,17 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
       };
     });
   };
+
+  const onIssueChangeEdit = (changedIssue: issuePrevNext) => {
+    setGameSettings((prev) => {
+      const filteredIssues = prev.issues.filter((issue) => issue.issueName !== changedIssue.prevValue);
+      filteredIssues.push({issueName: changedIssue.nextValue, priority: changedIssue.priority});
+      return {
+        ...prev,
+        issues: filteredIssues
+      }
+    })
+  }
 
   const onTimerChange = (isTimer: boolean) => {
     setGameSettings((prev) => {
@@ -176,15 +187,17 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     router.push('/');
   };
 
-  state.socket.on('userJoined', (message) => {
-    setUserArr(message);
-    console.log('Lobby Dealer join user', message);
-  });
-
-  state.socket.on('userLeft', (message) => {
-    setUserArr(message);
-    console.log('Lobby user left', message);
-  });
+  useEffect(() => {
+    state.socket.on('userJoined', (message) => {
+      setUserArr(message);
+      console.log('Lobby Dealer join user', message);
+    });
+  
+    state.socket.on('userLeft', (message) => {
+      setUserArr(message);
+      console.log('Lobby user left', message);
+    });
+  }, [])
 
   useEffect(
     () => {
@@ -281,6 +294,7 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
         <IssueList
           onIssueCreate={onIssueCreate}
           onIssueDelete={onIssueDelete}
+          onIssueChangeEdit={onIssueChangeEdit}
           issues={gameSettings.issues}
         />
         <GameSettings

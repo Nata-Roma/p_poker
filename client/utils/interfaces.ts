@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface IUser {
   username: string;
   userSurname: string;
@@ -88,4 +90,27 @@ export interface IGamePageIssue {
   issue: IGameIssue;
   players: Array<IGamePagePlayer>;
   score: Array<IGamePageIssueScore>;
+}
+
+export interface CreateIssuePopupProps {
+  onIssueCreate: (issue: IssueData) => void;
+}
+
+export interface IssueListProps {
+  onIssueCreate: (issue: IGameIssue) => void;
+  onIssueDelete: (issue: string) => void;
+  onIssueChangeEdit: (issue: issuePrevNext) => void;
+  issues: Array<IGameIssue>;
+}
+
+export interface ChangeIssueProps {
+  issueChange: boolean;
+  onIssueChange: (changedIssue: IssueData) => void;
+  setIssueChange: Dispatch<SetStateAction<boolean>>;
+}
+
+export interface issuePrevNext {
+  prevValue: string;
+  nextValue: string;
+  priority: string;
 }
