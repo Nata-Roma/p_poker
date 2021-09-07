@@ -9,14 +9,13 @@ import { UserCard } from 'Cards/userCard';
 import { roles } from 'utils/configs';
 import { IssueCards } from './issueCards';
 import useStylesGamePart from '@styles/gamePart.style';
-import { IssueCard } from './issueCard';
 
 interface GameDealerProps {
   dealer: IUser;
   gameIssues: Array<IGameIssue>;
 }
 
-export const GameDealer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
+export const GamePlayer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
   const classes = useStylesGamePart();
   const [ issues, setIssues ] = useState<Array<IGameIssue>>();
   const router = useRouter();
@@ -25,14 +24,7 @@ export const GameDealer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
   const [ activeIssueName, setActiveIssueName ] = useState<string>();
   const [ title, setTitle ] = useState<string>();
 
-  const onIssueClick = (issueName: string) => {
-    const foundIssue = issues.find((issue) => issue.issueName === issueName);
-    setActiveIssueName(foundIssue.issueName);
-  };
-
-  const createIssue = () => {
-    console.log('create issue');
-  };
+  const onIssueClick = (issueName: string) => {};
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -75,7 +67,7 @@ export const GameDealer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
                 className={classes.btn}
                 onClick={onRoomLeave}
               >
-                Stop Game
+                Exit
               </Button>
             </Box>
           </Grid>
@@ -89,12 +81,6 @@ export const GameDealer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
                 onIssueClick={onIssueClick}
               />
             )}
-            <IssueCard
-              issueName="Create New Issue"
-              priority=""
-              addIssue={true}
-              onAddIssue={createIssue}
-            />
           </div>
           Statistics
         </Grid>

@@ -19,6 +19,8 @@ interface GameCardProps {
   game?: boolean;
   empty?: boolean;
   onAddCard?: () => void;
+  onGameCardClick?: (cardName: string, cardNumber: number) => void
+  activeCard?: string
 }
 
 export const GameCard: FC<GameCardProps> = ({
@@ -27,6 +29,8 @@ export const GameCard: FC<GameCardProps> = ({
   onAddCard,
   game = false,
   empty = false,
+  onGameCardClick,
+  activeCard
 }) => {
   const classes = useStylesGameCard(cardSize)();
   const [ clicked, setClicked ] = useState(false);
@@ -70,7 +74,7 @@ export const GameCard: FC<GameCardProps> = ({
             />
           </Grid>
         </Grid>
-        <Grid item className={classes.cardContainer} onClick={onCardClick}>
+        <Grid item className={classes.cardContainer} onClick={game ? () => onGameCardClick(cardImg, cardNumber): () => {}}>
           <CardMedia
             className={classes.media}
             image={cardImg}
@@ -79,14 +83,14 @@ export const GameCard: FC<GameCardProps> = ({
           {game && (
             <div
               className={
-                clicked ? (
+                activeCard===cardImg ? (
                   `${classes.cardCover} ${classes.cardCoverActive}`
                 ) : (
                   classes.cardCover
                 )
               }
             >
-              {clicked && (
+              {activeCard===cardImg && (
                 <div className={classes.iconUnder}>
                   <CheckCircleIcon color="primary" className={classes.icon} />
                 </div>
