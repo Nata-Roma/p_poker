@@ -10,7 +10,7 @@ interface GameSettingsProps {
   onTimeChange: (timerData: string, dimension: string) => void;
   onSelectClick: (option: string, selectName: string) => void;
   timer: IGameTimer;
-  onCardChange: (cardChange: boolean) => void;
+  onCardTurn: (cardChange: boolean) => void;
   isCardChange: boolean;
 }
 
@@ -19,7 +19,7 @@ const GameSettings: FC<GameSettingsProps> = ({
   onTimeChange,
   onSelectClick,
   timer,
-  onCardChange,
+  onCardTurn,
   isCardChange,
 }) => {
   const classes = useStylesSettingsGame();
@@ -31,7 +31,7 @@ const GameSettings: FC<GameSettingsProps> = ({
   };
 
   const onChangingCardClick = (cardChangeSwitch: string): void => {
-    onCardChange(cardChangeSwitch ? true : false);
+    onCardTurn(cardChangeSwitch ? true : false);
   };
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const GameSettings: FC<GameSettingsProps> = ({
               gutterBottom
               className={classes.settingsLabel}
             >
-              Changing card in round end:
+              Auto complete vote:
             </Typography>
           </Grid>
           <Grid item xl={6} xs={6}>

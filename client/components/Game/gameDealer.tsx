@@ -50,6 +50,17 @@ export const GameDealer: FC<GameDealerProps> = ({
     [ gameIssues ],
   );
 
+  // useEffect(() => {
+  //   state.socket.on('gameOver', (message => {
+  //     console.log('gameOver');
+  //   }))
+  //   return () => {
+  //     state.socket.off('gameOver', (message => {
+  //       console.log('gameOver');
+  //     }))
+  //   }
+  // })
+
   return (
     <div>
       <Typography variant="h6" align="center" gutterBottom>

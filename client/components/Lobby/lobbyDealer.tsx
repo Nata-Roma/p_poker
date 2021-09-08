@@ -163,13 +163,13 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
     }
   };
 
-  const onCardChange = (isChange: boolean) => {
+  const onCardTurn = (isChange: boolean) => {
     setGameSettings((prev) => {
       const card = { ...prev.card };
       if (isChange) {
-        card.cardChange = true;
+        card.cardTurn = true;
       } else {
-        card.cardChange = true;
+        card.cardTurn = true;
       }
       return {
         ...prev,
@@ -326,8 +326,8 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
           onTimeChange={onTimeChange}
           timer={gameSettings.timer}
           onSelectClick={onSelectClick}
-          onCardChange={onCardChange}
-          isCardChange={gameSettings.card.cardChange}
+          onCardTurn={onCardTurn}
+          isCardChange={gameSettings.card.cardTurn}
         />
       </Grid>
       <Grid item container>

@@ -35,19 +35,17 @@ app.get('/chats/:room', (req, res) => {
   if (room) {
     const chat = roomContoller.getRoomChat(room);
     res.json(chat);
-  }
-  res.json(null);
+  } else res.json(null);
 });
 
 app.get('/users/:room', (req, res) => {
   console.log('USERS request');
-  
+
   const room = req.params.room;
   if (room) {
     const users = roomContoller.getRoomUsers(room);
     res.json(users);
-  }
-  res.json(null);
+  } else res.json(null);
 });
 
 app.post('/rooms', (req, res) => {
@@ -59,15 +57,15 @@ app.post('/rooms', (req, res) => {
 app.get('/gamestart/:room', (req, res) => {
   const room = req.params.room;
   const gameInitData = roomContoller.getGameInitData(room);
-  res.status(200).json(gameInitData)
+  res.status(200).json(gameInitData);
 });
 
 app.post('/gamestart/:room', (req, res) => {
   const room = req.params.room;
   console.log('START');
-  roomContoller.gameInit(room, req.body)
-  res.status(201).json('created')
-}) 
+  roomContoller.gameInit(room, req.body);
+  res.status(201).json('created');
+});
 
 // app.post('/users', (req, res) => {
 //   console.log(req.body);
