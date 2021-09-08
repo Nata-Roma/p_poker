@@ -8,6 +8,7 @@ import { UserCard } from 'Cards/userCard';
 import { roles } from 'utils/configs';
 import { IssueCards } from './issueCards';
 import useStylesGamePart from '@styles/gamePart.style';
+import { IssuesBlock } from './issuesBlock';
 
 interface GameDealerProps {
   dealer: IUser;
@@ -21,7 +22,6 @@ export const GamePlayer: FC<GameDealerProps> = ({
   activeIssueName,
 }) => {
   const classes = useStylesGamePart();
-  const [ issues, setIssues ] = useState<Array<IGamePageIssue>>();
   const router = useRouter();
   const { lobby } = router.query;
   const { state } = useContext(AppContext);
@@ -39,9 +39,6 @@ export const GamePlayer: FC<GameDealerProps> = ({
 
   useEffect(
     () => {
-      console.log('DEALER',gameIssues);
-      
-      setIssues(gameIssues);
       const newTitle = gameIssues.map((item) => item.issue.issueName).join(', ');
       setTitle(newTitle);
     },
@@ -77,7 +74,7 @@ export const GamePlayer: FC<GameDealerProps> = ({
             </Box>
           </Grid>
         </Grid>
-        <Grid container item className={classes.mBottom}>
+        {/* <Grid container item className={classes.mBottom}>
           <div className={classes.issuesContainer}>
             {issues && (
               <IssueCards
@@ -88,7 +85,14 @@ export const GamePlayer: FC<GameDealerProps> = ({
             )}
           </div>
           Statistics
-        </Grid>
+        </Grid> */}
+        {gameIssues && (
+          <IssuesBlock
+            issues={gameIssues}
+            activeIssueName={activeIssueName}
+            onIssueClick={onIssueClick}
+          />
+        )}
       </Grid>
     </>
   );

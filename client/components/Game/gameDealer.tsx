@@ -1,16 +1,12 @@
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState, useContext } from 'react';
 import { Typography, Grid, Box, Button } from '@material-ui/core';
-import { IGamePageIssue, IStatistics, IUser } from 'utils/interfaces';
+import { IGamePageIssue, IUser } from 'utils/interfaces';
 
 import AppContext from 'store/store';
 import { UserCard } from 'Cards/userCard';
 import { roles } from 'utils/configs';
-import { IssueCards } from './issueCards';
 import useStylesGamePart from '@styles/gamePart.style';
-import { IssueCard } from './issueCard';
-import { StaticticsCard } from './statisticsCard';
-import { nanoid } from 'nanoid';
 import { IssuesBlock } from './issuesBlock';
 
 interface GameDealerProps {
@@ -31,7 +27,6 @@ export const GameDealer: FC<GameDealerProps> = ({
   springTitle,
 }) => {
   const classes = useStylesGamePart();
-  const [ issues, setIssues ] = useState<Array<IGamePageIssue>>();
   const router = useRouter();
   const { lobby } = router.query;
   const { state } = useContext(AppContext);
@@ -47,7 +42,6 @@ export const GameDealer: FC<GameDealerProps> = ({
 
   useEffect(
     () => {
-      setIssues(gameIssues);
       const newTitle = gameIssues
         .map((item) => item.issue.issueName)
         .join(', ');
