@@ -4,11 +4,12 @@ import {
   IGameIssue,
   IGameTimer,
   IPlayerChoice,
+  IGameSettingsFromClient,
 } from './interfaces';
 
 interface GameInitProps {
   playerIds: Array<string>;
-  client: IGameSettings;
+  client: IGameSettingsFromClient;
 }
 
 class Game {
@@ -32,6 +33,7 @@ class Game {
         issue: { ...issue },
         players: [ ...players ],
         score: [],
+        totalScore: 0,
       };
       this.issues.push(newIssue);
     });
@@ -49,7 +51,7 @@ class Game {
       spring: this.spring,
       timer: { ...this.timer },
       card: { ...this.card },
-      issues: this.issues.map((issue) => issue.issue),
+      issues: this.issues,
     };
     return gameData;
   };
@@ -68,7 +70,7 @@ class Game {
     }
   };
 
-  calculateIssueScore = (issueName: string): IGameIssue | null => {
+  calculateIssueScore = (issueName: string) => {
     const gameIssue = this.issues.find(
       (issue) => issue.issue.issueName === issueName,
     );
@@ -87,10 +89,32 @@ class Game {
         }
         return arr;
       }, []);
-      gameIssue.score = issueScore;
+
+      const score = issueScore.map((item) => {
+        const ratio = (item.playerQuantity / item.totalPlayers * 100).toFixed(
+          2,
+        );
+        return {
+          choice: item.choice,
+          ratio: +ratio,
+        };
+      });
+      gameIssue.score = score;
+      const totalScore = score.reduce(
+        (acc, item) => Math.max(acc, item.choice),
+        0,
+      );
+      gameIssue.totalScore = totalScore;
+      console.log('amended issue', gameIssue);
     }
-    if (gameIssue.score.length) return gameIssue;
-    return null;
+  };
+
+  setIssueScore = (issueName: string): void => {
+    const gameIssue = this.issues.find(
+      (issue) => issue.issue.issueName === issueName,
+    );
+    if (gameIssue) {
+    }
   };
 
   getGameIssue = (issueName: string): IGameIssue | null => {
@@ -107,6 +131,10 @@ class Game {
     }
     return null;
   };
+
+  getGameIssues = (): Array<IGameIssue> => {
+    return this.issues
+  }
 }
 
 export default Game;

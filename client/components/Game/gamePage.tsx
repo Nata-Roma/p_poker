@@ -4,13 +4,17 @@ import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import { apiGetLobbyInfo, apiStartGame } from 'services/apiServices';
 import AppContext from 'store/store';
-import { IGameIssue, IUser } from 'utils/interfaces';
+import { IGamePageIssue, IStatistics, IUser } from 'utils/interfaces';
 import { GameCard } from '../../Cards/gameCard';
-import { ScoreList } from './scoreList';
 import { cardDecks, roles, sequences } from 'utils/configs';
 import { GameDealer } from './gameDealer';
 import { GamePlayer } from './gamePlayer';
-import { Socket } from 'socket.io-client';
+import { ScoreList } from './scoreList';
+
+export interface IActiveIssue {
+  issueName: string;
+  score: number;
+}
 
 export const GamePage = () => {
   const classes = useStylesGame();
@@ -18,29 +22,41 @@ export const GamePage = () => {
   const { state } = useContext(AppContext);
   const router = useRouter();
   const { lobby } = router.query;
-  const [ gameIssues, setGameIssues ] = useState<Array<IGameIssue>>();
+  const [ gameIssues, setGameIssues ] = useState<Array<IGamePageIssue>>();
   const [ activeIssueName, setActiveIssueName ] = useState<string>();
   const [ chosenDeck, setChosenDeck ] = useState<Array<string>>();
   const [ chosenSeq, setChosenSeq ] = useState<Array<number>>();
   const [ cardPot, setCardPot ] = useState('');
   const [ activeCard, setActiveCard ] = useState<string>('');
   const [ dealer, setDealer ] = useState<IUser>();
-  const [springTitle, setSpringTitle] = useState('')
+  const [ springTitle, setSpringTitle ] = useState('');
 
   const onIssueClick = (issueName: string) => {
     state.socket.emit('changeActiveIssue', { roomId: lobby, issueName });
   };
 
-  const changeActiveIssue = (issueName: string) => {
-    if (gameIssues) {
-      const foundIssue = gameIssues.find(
-        (issue) => issue.issueName === issueName,
-      );
-      if (foundIssue) {
-        setActiveIssueName(foundIssue.issueName);
-        setActiveCard('');
-      }
-    }
+  const changeActiveIssue = (message:{issueName: string, gameIssues: Array<IGamePageIssue>}) => {
+    console.log('change', message.gameIssues);
+    console.log(message);
+    setActiveIssueName(message.issueName);
+    setActiveCard('');
+    setGameIssues(message.gameIssues)
+
+    // if (gameIssues) {
+    //   let foundIssue = gameIssues.find(
+    //     (issue) => issue.issue.issueName === message.issue.issueName,
+    //   );
+    //   if (foundIssue) {
+    //     setActiveIssueName(foundIssue.issue.issueName);
+    //     setActiveCard('');
+    //   }
+    //   const issueIndex = gameIssues.findIndex(
+    //     (issue) => issue.issue.issueName === message.issue.issueName,
+    //   );
+    //   const newIssues = [ ...gameIssues ];
+    //   newIssues[issueIndex] = message;
+    //   setGameIssues(newIssues);
+    // }
   };
 
   const onGameCardClick = (cardName: string, cardNumber: number) => {
@@ -60,14 +76,14 @@ export const GamePage = () => {
     if (data.users) {
       setUsers(data.users);
     }
-
     const dealer = data.users.find((user) => user.dealer);
     setDealer(dealer);
-    console.log('gameDealer', dealer.username);
-
     const gameData = await apiStartGame(lobby);
+
+    console.log('DATA', gameData);
+
     setGameIssues(gameData.issues);
-    setActiveIssueName(gameData.issues[0].issueName);
+    setActiveIssueName(gameData.issues[0].issue.issueName);
     setSpringTitle(gameData.spring);
 
     const seq = gameData.card.sequence;
@@ -99,27 +115,32 @@ export const GamePage = () => {
       roomId: lobby,
       issueName: activeIssueName,
     });
-    state.socket.on('gameIssue', (message) => {
-      console.log(message);
-    });
+    // state.socket.on('gameIssue', (message) => {
+    //   const issueIndex = gameIssues.findIndex(
+    //     (issue) => issue.issue.issueName === message.issue.issueName,
+    //   );
+    //   const newIssues = [ ...gameIssues ];
+    //   newIssues[issueIndex] = message;
+    //   setGameIssues(newIssues);
+    // });
   };
 
   useEffect(() => {
     initData();
   }, []);
 
-  useEffect(
-    () => {
-      state.socket.on('activeIssueChanged', (message) => {
+  useEffect(() => {
+    state.socket.on('activeIssueChanged', (message) => {
+      console.log('activeIssueChanged SOCKET');
+      console.log(message);
+
+      changeActiveIssue(message);
+    });
+    return () =>
+      state.socket.off('activeIssuechanged', (message) => {
         changeActiveIssue(message);
       });
-      return () =>
-        state.socket.off('activeIssuechanged', (message) => {
-          changeActiveIssue(message);
-        });
-    },
-    [ gameIssues ],
-  );
+  }, []);
 
   return (
     <Grid container className={classes.container}>

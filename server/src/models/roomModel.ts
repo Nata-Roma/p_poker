@@ -5,6 +5,7 @@ import {
   IGameIssue,
   IPlayerChoice,
   IUserData,
+  IGameSettingsFromClient,
 } from './interfaces';
 
 class Room {
@@ -111,7 +112,7 @@ class Room {
     return issue;
   };
 
-  gameInit = (client: IGameSettings) => {
+  gameInit = (client: IGameSettingsFromClient) => {
     const players = this.users.map((user) => {
       if (user.userRole === 'member') {
         return user.id;
@@ -125,8 +126,12 @@ class Room {
     return this.game.getGameInitData();
   };
 
-  calculateIssueScore = (issueName: string): IGameIssue | null => {
-    return this.game.calculateIssueScore(issueName)
+  calculateIssueScore = (issueName: string) => {
+    this.game.calculateIssueScore(issueName)
+  }
+
+  getGameIssues = (): Array<IGameIssue> => {
+    return this.game.getGameIssues()
   }
 }
 

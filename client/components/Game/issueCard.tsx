@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/Add';
 import ClearIcon from '@material-ui/icons/Clear';
 import { useStylesIssueCard } from '@styles/issueCard.style';
+import { Grid } from '@material-ui/core';
 
 interface IssueCardProps {
   issueName: string;
@@ -15,6 +16,7 @@ interface IssueCardProps {
   onIssueClick?: (issueName: string) => void;
   addIssue: boolean;
   onAddIssue?: () => void;
+  score: number;
 }
 
 export const IssueCard: FC<IssueCardProps> = ({
@@ -24,8 +26,10 @@ export const IssueCard: FC<IssueCardProps> = ({
   onIssueClick,
   addIssue,
   onAddIssue,
+  score,
 }) => {
   const classes = useStylesIssueCard();
+
   return (
     <Card
       className={
@@ -35,31 +39,55 @@ export const IssueCard: FC<IssueCardProps> = ({
           `${classes.root}`
         )
       }
-      onClick={!addIssue? () => onIssueClick(issueName): null}
+      onClick={!addIssue ? () => onIssueClick(issueName) : null}
     >
-      <CardContent>
-        <Typography
-          className={
-            activeIssueName === issueName ? (
-              `${classes.text} ${classes.activeCard}`
-            ) : (
-              classes.text
-            )
-          }
-          variant="h6"
-        >
-          {issueName === 'Create New Issue' ? issueName : `Issue: ${issueName}`}
-        </Typography>
-        {priority && (
+      <Grid container justifyContent="space-between" alignItems="flex-start">
+        <div className={classes.block}>
           <Typography
-            className={classes.title}
-            color="textSecondary"
-            variant="subtitle2"
+            className={
+              activeIssueName === issueName ? (
+                `${classes.text} ${classes.activeCard}`
+              ) : (
+                classes.text
+              )
+            }
+            variant="h6"
           >
-            Priority: {priority}
+            {issueName === 'Create New Issue' ? (
+              issueName
+            ) : (
+              `Issue: ${issueName}`
+            )}
           </Typography>
-        )}
-      </CardContent>
+          {priority && (
+            <Typography color="textSecondary" variant="subtitle2">
+              Priority: {priority}
+            </Typography>
+          )}
+        </div>
+        <div className={classes.block}>
+          {!(issueName === 'Create New Issue') && (
+            <>
+              <Typography
+                className={
+                  activeIssueName === issueName ? (
+                    `${classes.text} ${classes.activeCard}`
+                  ) : (
+                    classes.text
+                  )
+                }
+                variant="h6"
+                align="right"
+              >
+                Score
+              </Typography>
+              <Typography color="textSecondary" variant="h5" align="center">
+                {score ? score : '-'}
+              </Typography>
+            </>
+          )}
+        </div>
+      </Grid>
       {addIssue && (
         <CardActions>
           <Button size="large" onClick={onAddIssue}>

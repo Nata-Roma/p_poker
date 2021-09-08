@@ -3,15 +3,19 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 export const useStylesIssueCard = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      height: 63,
-      minHeight: 63,
-      maxHeight: 63,
+      height: 65,
+      minHeight: 65,
+      maxHeight: 65,
       width: 250,
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       marginBottom: theme.spacing(1),
       cursor: 'pointer',
+      padding: theme.spacing(1),
+    },
+    block: {
+      padding: 0,
     },
     title: {
       fontSize: 12,

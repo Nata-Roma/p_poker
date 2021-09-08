@@ -30,13 +30,6 @@ export interface IGameCard {
   cardChange: boolean;
 }
 
-export interface IGameSettings {
-  spring: string;
-  issues: Array<IIssue>;
-  timer: IGameTimer;
-  card: IGameCard;
-}
-
 export interface IGamePlayer {
   player: string | IUserData;
   choice: number;
@@ -44,8 +37,7 @@ export interface IGamePlayer {
 
 export interface IGameIssueScore {
   choice: number;
-  playerQuantity: number;
-  totalPlayers: number
+  ratio: number;
 }
 
 export interface IPlayerChoice {
@@ -58,4 +50,18 @@ export interface IGameIssue {
   issue: IIssue;
   players: Array<IGamePlayer>;
   score: Array<IGameIssueScore>;
+  totalScore: number;
+}
+
+export interface IGameSettingsFromClient {
+  spring: string;
+  issues: Array<IIssue>;
+  timer: IGameTimer;
+  card: IGameCard;
+}
+export interface IGameSettings {
+  spring: string;
+  issues: Array<IGameIssue>;
+  timer: IGameTimer;
+  card: IGameCard;
 }

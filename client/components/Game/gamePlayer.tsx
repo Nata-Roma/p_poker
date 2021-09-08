@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState, useContext } from 'react';
-import useStylesGame from '@styles/game.style';
 import { Typography, Grid, Box, Button } from '@material-ui/core';
-import { IGameIssue, IUser } from 'utils/interfaces';
+import {  IGamePageIssue, IUser } from 'utils/interfaces';
 
 import AppContext from 'store/store';
 import { UserCard } from 'Cards/userCard';
@@ -12,7 +11,7 @@ import useStylesGamePart from '@styles/gamePart.style';
 
 interface GameDealerProps {
   dealer: IUser;
-  gameIssues: Array<IGameIssue>;
+  gameIssues: Array<IGamePageIssue>;
   activeIssueName: string;
 }
 
@@ -22,7 +21,7 @@ export const GamePlayer: FC<GameDealerProps> = ({
   activeIssueName,
 }) => {
   const classes = useStylesGamePart();
-  const [ issues, setIssues ] = useState<Array<IGameIssue>>();
+  const [ issues, setIssues ] = useState<Array<IGamePageIssue>>();
   const router = useRouter();
   const { lobby } = router.query;
   const { state } = useContext(AppContext);
@@ -40,8 +39,10 @@ export const GamePlayer: FC<GameDealerProps> = ({
 
   useEffect(
     () => {
+      console.log('DEALER',gameIssues);
+      
       setIssues(gameIssues);
-      const newTitle = gameIssues.map((item) => item.issueName).join(', ');
+      const newTitle = gameIssues.map((item) => item.issue.issueName).join(', ');
       setTitle(newTitle);
     },
     [ gameIssues ],
