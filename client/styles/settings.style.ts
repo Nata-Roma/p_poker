@@ -7,6 +7,9 @@ export const useStylesSettingsGame = makeStyles((theme: Theme) =>
     },
     gameName: {
       fontSize: '18px',
+      alignSelf: 'center',
+      padding: '0 20px',
+      fontWeight: 400
     },
     switch: {
       marginLeft:'0'

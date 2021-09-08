@@ -3,8 +3,9 @@ import useStylesScoreList from '@styles/scoreList.style';
 import React, { FC } from 'react';
 import { roles } from 'utils/configs';
 import { IUser } from 'utils/interfaces';
-import { UserGameCard } from './userGameCard';
 import { ScoreCard } from './scoreCard';
+import { UserGameCard } from './userGameCard';
+
 
 interface ScoreListProps {
   users: Array<IUser>;
@@ -18,7 +19,7 @@ export const ScoreList: FC<ScoreListProps> = ({ users }) => {
       <Grid
         container
         item
-        spacing={2}
+        spacing={1}
         justifyContent="space-around"
         className={classes.heading}
       >
