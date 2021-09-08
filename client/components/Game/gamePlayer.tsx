@@ -13,15 +13,19 @@ import useStylesGamePart from '@styles/gamePart.style';
 interface GameDealerProps {
   dealer: IUser;
   gameIssues: Array<IGameIssue>;
+  activeIssueName: string;
 }
 
-export const GamePlayer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
+export const GamePlayer: FC<GameDealerProps> = ({
+  dealer,
+  gameIssues,
+  activeIssueName,
+}) => {
   const classes = useStylesGamePart();
   const [ issues, setIssues ] = useState<Array<IGameIssue>>();
   const router = useRouter();
   const { lobby } = router.query;
   const { state } = useContext(AppContext);
-  const [ activeIssueName, setActiveIssueName ] = useState<string>();
   const [ title, setTitle ] = useState<string>();
 
   const onIssueClick = (issueName: string) => {};
@@ -37,12 +41,12 @@ export const GamePlayer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
   useEffect(
     () => {
       setIssues(gameIssues);
-      setActiveIssueName(gameIssues[0].issueName);
       const newTitle = gameIssues.map((item) => item.issueName).join(', ');
       setTitle(newTitle);
     },
     [ gameIssues ],
   );
+
   return (
     <>
       <Typography variant="h6" align="center" gutterBottom>

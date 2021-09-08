@@ -64,10 +64,19 @@ const socketServer = (httpServer) => {
     });
 
     socket.on('gameCardChoice', (message) => {
-      const { roomId, player, choice } = message;
-      console.log(choice);
-      
+      const { roomId, playerChoice } = message;
+      roomContoller.setGameUserChoice(roomId, playerChoice);
+    });
 
+    socket.on('changeActiveIssue', (message) => {
+      const { roomId, issueName } = message;
+      io.in(roomId).emit('activeIssueChanged', issueName);
+    });
+
+    socket.on('calcScore', (message) => {
+      const { roomId, issueName } = message;
+      const gameIssue = roomContoller.calculateIssueScore(roomId, issueName);
+      socket.emit('gameIssue', gameIssue);
     });
 
     // socket.on('disconnect', (message) => {

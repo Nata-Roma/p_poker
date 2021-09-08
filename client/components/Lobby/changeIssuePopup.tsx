@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useContext } from "react";
+import React, { ChangeEvent, FC } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -13,50 +13,51 @@ import {
   NativeSelect,
 } from "@material-ui/core";
 import { useStylesCreateIssuePopup } from "@styles/createIssuePopup.style";
-import { CreateIssuePopupProps } from "utils/interfaces";
+import { ChangeIssueProps } from "utils/interfaces";
 
-const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate }) => {
+const ChangeIssuePopup: FC<ChangeIssueProps> = ({
+  issueChange,
+  setIssueChange,
+  onIssueChange,
+}) => {
   const classes = useStylesCreateIssuePopup();
-  const [priority, setPriority] = React.useState('low');
-  const [issueName, setIssueName] = React.useState('');
-  const [open, setOpen] = React.useState(false);
+  const[priority, setPriority] = React.useState('low');
+  const[issueName, setIssueName] = React.useState('');
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const createHandleClose = () => {
-    setOpen(false);
-    onIssueCreate({
+  const changeIssue = () => {
+    setIssueChange(false);
+    onIssueChange({
       issueName,
       priority,
-    })
+    });
     setIssueName('');
   };
 
   const handleClose = () => {
-    setOpen(false);
-  }
+    setIssueChange(false);
+    setIssueName('');
+  };
 
   const handleChangePriority = (e: ChangeEvent<HTMLSelectElement>) => {
     setPriority(e.target.value);
-  }
+  };
 
   const onChangeIssueName = (e: ChangeEvent<HTMLInputElement>) => {
     setIssueName(e.target.value);
-  }
+  };
+
+  const disabled = issueName.length < 3;
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleClickOpen} className={classes.btn}>
-        Create new Issue
-      </Button>
       <Dialog
-        open={open}
+        open={issueChange}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title" style={{textAlign:'center'}}>Create Issue</DialogTitle>
+        <DialogTitle id="form-dialog-title" style={{ textAlign: "center" }}>
+          Change Issue
+        </DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -88,20 +89,31 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate }) => {
         <DialogActions>
           <Grid container spacing={2}>
             <Grid item xs={6}>
-            <Button onClick={createHandleClose} color="primary" variant="contained" fullWidth>
-            Create
-          </Button>
+              <Button
+                onClick={changeIssue}
+                disabled={disabled}
+                color="primary"
+                variant="contained"
+                fullWidth
+              >
+                Save
+              </Button>
             </Grid>
             <Grid item xs={6}>
-            <Button onClick={handleClose} color="primary" variant="outlined" fullWidth>
-            Cancel
-          </Button>
+              <Button
+                onClick={handleClose}
+                color="primary"
+                variant="outlined"
+                fullWidth
+              >
+                Cancel
+              </Button>
             </Grid>
           </Grid>
         </DialogActions>
       </Dialog>
     </div>
   );
-}
+};
 
-export default CreateIssuePopup;
+export default ChangeIssuePopup;
