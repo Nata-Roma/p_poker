@@ -27,6 +27,7 @@ const useStylesGame = makeStyles((theme: Theme) => createStyles({
     [theme.breakpoints.down(700)]: {
       height: '100%',
       paddingBottom: '20px',
+      minWidth: '100%'
     },
   },
   scorePartContainer: {
