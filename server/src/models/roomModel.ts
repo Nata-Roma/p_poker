@@ -124,6 +124,10 @@ class Room {
   getGameInitData = (): IGameSettings => {
     return this.game.getGameInitData();
   };
+
+  calculateIssueScore = (issueName: string): IGameIssue | null => {
+    return this.game.calculateIssueScore(issueName)
+  }
 }
 
 export default Room;

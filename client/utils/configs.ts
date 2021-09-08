@@ -74,6 +74,7 @@ export const gameSelectOptions = {
 };
 
 export const initGameSettings = {
+  spring: '',
   issues: [] as Array<IGameIssue>,
   timer: {
     isTimer: false,

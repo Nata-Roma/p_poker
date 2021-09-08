@@ -14,21 +14,26 @@ import { IssueCard } from './issueCard';
 interface GameDealerProps {
   dealer: IUser;
   gameIssues: Array<IGameIssue>;
+  onIssueClick: (issueName: string) => void;
+  activeIssueName: string;
+  calculateIssueScore: () => void;
+  springTitle: string;
 }
 
-export const GameDealer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
+export const GameDealer: FC<GameDealerProps> = ({
+  dealer,
+  gameIssues,
+  onIssueClick,
+  activeIssueName,
+  calculateIssueScore,
+  springTitle,
+}) => {
   const classes = useStylesGamePart();
   const [ issues, setIssues ] = useState<Array<IGameIssue>>();
   const router = useRouter();
   const { lobby } = router.query;
   const { state } = useContext(AppContext);
-  const [ activeIssueName, setActiveIssueName ] = useState<string>();
   const [ title, setTitle ] = useState<string>();
-
-  const onIssueClick = (issueName: string) => {
-    const foundIssue = issues.find((issue) => issue.issueName === issueName);
-    setActiveIssueName(foundIssue.issueName);
-  };
 
   const createIssue = () => {
     console.log('create issue');
@@ -45,7 +50,6 @@ export const GameDealer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
   useEffect(
     () => {
       setIssues(gameIssues);
-      setActiveIssueName(gameIssues[0].issueName);
       const newTitle = gameIssues.map((item) => item.issueName).join(', ');
       setTitle(newTitle);
     },
@@ -54,7 +58,8 @@ export const GameDealer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
   return (
     <>
       <Typography variant="h6" align="center" gutterBottom>
-        Spring: planning (issues: {title && `${title}`})
+        Spring: {springTitle && `${springTitle}`} planning (issues:{' '}
+        {title && `${title}`})
       </Typography>
 
       <Typography variant="subtitle2">Dealer:</Typography>
@@ -67,6 +72,17 @@ export const GameDealer: FC<GameDealerProps> = ({ dealer, gameIssues }) => {
                 observer={dealer.userRole === roles.observer ? true : false}
               />
             )}
+          </Grid>
+          <Grid item className={classes.mBottom}>
+            <Box boxShadow={2} mr={10}>
+              <Button
+                variant="outlined"
+                className={classes.btn}
+                onClick={calculateIssueScore}
+              >
+                Issue Score
+              </Button>
+            </Box>
           </Grid>
           <Grid item className={classes.mBottom}>
             <Box boxShadow={2} mr={10}>

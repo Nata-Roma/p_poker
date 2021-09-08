@@ -62,6 +62,7 @@ export interface IGameTimer {
 }
 
 export interface IGameSettings {
+  spring: string
   issues: Array<IGameIssue>;
   timer: IGameTimer;
   card: {

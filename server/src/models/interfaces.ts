@@ -31,6 +31,7 @@ export interface IGameCard {
 }
 
 export interface IGameSettings {
+  spring: string;
   issues: Array<IIssue>;
   timer: IGameTimer;
   card: IGameCard;
@@ -43,11 +44,12 @@ export interface IGamePlayer {
 
 export interface IGameIssueScore {
   choice: number;
-  score: number;
+  playerQuantity: number;
+  totalPlayers: number
 }
 
 export interface IPlayerChoice {
-  issue: IIssue;
+  issue: string;
   playerId: string;
   playerChoice: number;
 }

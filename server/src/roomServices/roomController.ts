@@ -79,7 +79,21 @@ class Rooms {
 
   setGameUserChoice = (roomId: string, userChoice: IPlayerChoice): void => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
-    room.setUserChoice(userChoice);
+    if (room) {
+      room.setUserChoice(userChoice);
+    }
+  };
+
+  calculateIssueScore = (
+    roomId: string,
+    issueName: string,
+  ): IGameIssue | null => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      const gameIssue = room.calculateIssueScore(issueName);
+      return gameIssue;
+    }
+    return null;
   };
 
   getGameIssue = (roomId: string, taskName: string): IGameIssue => {
