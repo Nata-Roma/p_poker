@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { Typography, Grid, Box, Button } from '@material-ui/core';
+import { Typography, Grid} from '@material-ui/core';
 import { IGamePageIssue, IGamePageIssueScore } from 'utils/interfaces';
 import useStylesGamePart from '@styles/gamePart.style';
 import { StaticticsCard } from './statisticsCard';
@@ -10,7 +10,6 @@ interface IssuesBlockProps {
   issues: Array<IGamePageIssue>;
   onIssueClick: (issueName: string) => void;
   activeIssueName: string;
-  // statistics: Array<IStatistics>;
 }
 
 export const IssuesBlock: FC<IssuesBlockProps> = ({

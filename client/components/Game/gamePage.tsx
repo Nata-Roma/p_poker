@@ -6,7 +6,7 @@ import { apiGetLobbyInfo, apiStartGame } from 'services/apiServices';
 import AppContext from 'store/store';
 import { IGamePageIssue, IStatistics, IUser } from 'utils/interfaces';
 import { GameCard } from '../../Cards/gameCard';
-import { cardDecks, roles, sequences } from 'utils/configs';
+import { cardDecks, nonVoted, roles, sequences } from 'utils/configs';
 import { GameDealer } from './gameDealer';
 import { GamePlayer } from './gamePlayer';
 import { ScoreList } from './scoreList';
@@ -191,7 +191,7 @@ export const GamePage = () => {
           cardPot && (
             <GameCard
               cardImg={cardPot}
-              cardNumber={999}
+              cardNumber={nonVoted}
               game={true}
               onGameCardClick={onGameCardClick}
               activeCard={activeCard}

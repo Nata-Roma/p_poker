@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { FC, useContext, useEffect, useState } from 'react';
 import { Button, Typography, Grid } from '@material-ui/core';
 
@@ -12,7 +11,6 @@ import IssueList from './issueList';
 import AppContext, { appStore } from 'store/store';
 import {
   IGameSettings,
-  IRoomData,
   IssueData,
   issuePrevNext,
   IUser,

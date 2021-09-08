@@ -7,6 +7,8 @@ import {
   IGameSettingsFromClient,
 } from './interfaces';
 
+export const nonVoted = 999;
+
 interface GameInitProps {
   playerIds: Array<string>;
   client: IGameSettingsFromClient;
@@ -100,11 +102,13 @@ class Game {
         };
       });
       gameIssue.score = score;
-      const totalScore = score.reduce(
-        (acc, item) => Math.max(acc, item.choice),
-        0,
-      );
-      gameIssue.totalScore = totalScore;
+      const totalScore = score.reduce((acc, item) => {
+        if (item.choice !== nonVoted) {
+          return acc + item.choice * item.ratio;
+        }
+        return acc;
+      }, 0);
+      gameIssue.totalScore = +(totalScore / 100).toFixed(2);
       console.log('amended issue', gameIssue);
     }
   };
@@ -133,8 +137,8 @@ class Game {
   };
 
   getGameIssues = (): Array<IGameIssue> => {
-    return this.issues
-  }
+    return this.issues;
+  };
 }
 
 export default Game;

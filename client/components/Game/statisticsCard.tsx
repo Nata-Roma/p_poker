@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { makeStyles, createStyles, Theme, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { IGamePageIssueScore } from 'utils/interfaces';
+import { nonVoted } from 'utils/configs';
 
 const useStylesStatisticsCard = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,7 +27,7 @@ export const StaticticsCard: FC<StatisticsCardProps> = ({ stat }) => {
       onClick={() => console.log(stat.choice)}
     >
       <div>
-        <Typography variant="h3" gutterBottom>{`${stat.choice}`}</Typography>
+        <Typography variant="h3" gutterBottom>{stat.choice === nonVoted ? '?' : `${stat.choice}`}</Typography>
         <Typography variant="h5">{`${stat.ratio}%`}</Typography>
       </div>
     </Button>
