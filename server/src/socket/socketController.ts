@@ -63,6 +63,13 @@ const socketServer = (httpServer) => {
       socket.to(message.roomId).emit('gameStarted');
     });
 
+    socket.on('gameCardChoice', (message) => {
+      const { roomId, player, choice } = message;
+      console.log(choice);
+      
+
+    });
+
     // socket.on('disconnect', (message) => {
     //   console.log('Got disconnect!');
     //   roomContoller.userDisconnect(socket.handshake.auth.username);

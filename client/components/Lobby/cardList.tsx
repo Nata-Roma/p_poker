@@ -1,6 +1,6 @@
 import { Grid, Typography } from '@material-ui/core';
 import { GameCard } from 'Cards/gameCard';
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 
 interface CardListProps {
   cardDeck: Array<string>;
@@ -20,7 +20,7 @@ export const CardList: FC<CardListProps> = ({ cardDeck, sequence, onAddCard, car
         {cardDeck &&
           sequence &&
           cardDeck.map((deck, i) => (
-            <Grid item key={deck} >
+            <Grid item key={deck}>
               <GameCard cardImg={deck} cardNumber={sequence[i]} />
             </Grid>
           ))}
