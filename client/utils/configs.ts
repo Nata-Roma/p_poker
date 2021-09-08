@@ -56,6 +56,7 @@ export const fibonacci_Seq = [ 1, 2, 3, 5, 8, 13, 21, 34, 55, 89 ];
 export const doubleNum_Seq = [ 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 ];
 
 export const maxCardNumber = 9;
+export const minCardNumber = 3;
 
 export const sequences = [
   {
@@ -85,6 +86,7 @@ export const initGameSettings = {
     cardDeck: cardDecks[0].name,
     sequence: sequences[0].name,
     cardNumber: 4,
+    cardNumberStart: 0,
     cardChange: false,
   },
 };

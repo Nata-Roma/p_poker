@@ -22,6 +22,7 @@ import {
   cardDecks,
   initGameSettings,
   maxCardNumber,
+  minCardNumber,
   roles,
   sequences,
 } from 'utils/configs';
@@ -47,6 +48,7 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   const [ cardPot, setCardPot ] = useState('');
 
   const onStartGameClick = async () => {
+    console.log(gameSettings);
     if (
       !gameSettings.issues.length ||
       !gameSettings.card.cardNumber ||
@@ -182,13 +184,24 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
   };
 
   const onAddCard = () => {
-    setGameSettings((prev) => {
-      const card = { ...prev.card };
-      if (card.cardNumber < maxCardNumber) {
-        card.cardNumber++;
-      }
-      return { ...prev, card: card };
-    });
+    
+    setGameSettings(prev => {
+      const card = {...prev.card};
+        if (card.cardNumber < maxCardNumber) {
+        card.cardNumber++;   
+        }
+      return {...prev, card: card}
+    });    
+  };
+
+  const onRemoveCard = () => {
+    setGameSettings(prev => {
+      const card = {...prev.card};
+      if (card.cardNumber > minCardNumber ) {
+        card.cardNumber--;        
+      } 
+      return {...prev, card: card}
+    });  
   };
 
   const onRoomLeave = () => {
@@ -222,15 +235,15 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     () => {
       setChosenSeq(
         Array.from(
-          { length: gameSettings.card.cardNumber },
+          { length: (gameSettings.card.cardNumber) },
           (_, i) => sequences[0].sequence[i],
         ),
       );
 
       setChosenDeck(
         Array.from(
-          { length: gameSettings.card.cardNumber },
-          (_, i) => cardDecks[0].deck[i],
+          { length: (gameSettings.card.cardNumber) },
+          (_, i) =>  cardDecks[0].deck[i],
         ),
       );
     },
@@ -323,6 +336,7 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
           cardDeck={chosenDeck}
           sequence={chosenSeq}
           onAddCard={onAddCard}
+          onRemoveCard={onRemoveCard}
           cardPot={cardPot}
         />
       </Grid>

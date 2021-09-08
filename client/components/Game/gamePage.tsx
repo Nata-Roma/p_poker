@@ -6,7 +6,7 @@ import { apiGetLobbyInfo, apiStartGame } from 'services/apiServices';
 import AppContext from 'store/store';
 import { IGameIssue, IUser } from 'utils/interfaces';
 import { GameCard } from '../../Cards/gameCard';
-import { ScoreList } from './scoreList';
+import { ScoreList } from './ScoreList';
 import { cardDecks, roles, sequences } from 'utils/configs';
 import { GameDealer } from './gameDealer';
 import { GamePlayer } from './gamePlayer';

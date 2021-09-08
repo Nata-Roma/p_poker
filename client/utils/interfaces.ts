@@ -69,6 +69,7 @@ export interface IGameSettings {
     cardDeck: string;
     sequence: string;
     cardNumber: number;
+    cardNumberStart: number;
     cardChange: boolean;
   };
 }

@@ -6,7 +6,10 @@ import { FC, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import clsx from 'clsx';
 import { useStylesGameCard } from '@styles/gameCard.style';
+import { maxCardNumber, minCardNumber } from 'utils/configs';
 
 const cardSize = {
   width: 130,
@@ -19,6 +22,8 @@ interface GameCardProps {
   game?: boolean;
   empty?: boolean;
   onAddCard?: () => void;
+  onRemoveCard?: () => void;
+  deckLength?: number;
   onGameCardClick?: (cardName: string, cardNumber: number) => void
   activeCard?: string
 }
@@ -27,8 +32,10 @@ export const GameCard: FC<GameCardProps> = ({
   cardImg,
   cardNumber,
   onAddCard,
+  onRemoveCard,
   game = false,
   empty = false,
+  deckLength,
   onGameCardClick,
   activeCard
 }) => {
@@ -40,16 +47,17 @@ export const GameCard: FC<GameCardProps> = ({
   };
 
   return (
-    <Card className={classes.root}>
-      <Grid container direction="column">
-        <Grid item container justifyContent="space-between" alignItems="center">
-          <Grid item>
+    <Card className={classes.root} >
+      <Grid container direction="column" className={clsx(empty && classes.paddingForButtons)}> 
+      { !empty && 
+        <Grid item container justifyContent="space-between" alignItems="center">    
+            <Grid item>
             <CardHeader
               className={classes.cardHeader}
               avatar={
                 <Avatar
                   aria-label="card number"
-                  className={`${classes.avatar} ${classes.avatarRoot}`}
+                  className={clsx(classes.avatar, classes.avatarRoot)}
                 >
                   <Typography color="textPrimary" variant="body1">
                     {cardNumber}
@@ -58,13 +66,14 @@ export const GameCard: FC<GameCardProps> = ({
               }
             />
           </Grid>
+          
           <Grid item>
             <CardHeader
               className={classes.cardHeader}
               avatar={
                 <Avatar
                   aria-label="card number"
-                  className={`${classes.avatar} ${classes.avatarRoot}`}
+                  className={clsx(classes.avatar, classes.avatarRoot)}
                 >
                   <Typography color="textPrimary" variant="body1">
                     {cardNumber}
@@ -74,6 +83,7 @@ export const GameCard: FC<GameCardProps> = ({
             />
           </Grid>
         </Grid>
+      }
         <Grid item className={classes.cardContainer} onClick={game ? () => onGameCardClick(cardImg, cardNumber): () => {}}>
           <CardMedia
             className={classes.media}
@@ -100,10 +110,16 @@ export const GameCard: FC<GameCardProps> = ({
           {!game &&
           empty && (
             <div className={classes.cardCover}>
-              <AddCircleIcon
-                className={classes.emptyCardIcon}
+              <Grid container justifyContent="center">
+              <AddCircleIcon                
+                className={clsx(classes.emptyCardIcon, deckLength === maxCardNumber && classes.disabledCardIcon)}
                 onClick={onAddCard}
               />
+              <RemoveCircleIcon                
+                className={clsx(classes.emptyCardIcon, deckLength === minCardNumber && classes.disabledCardIcon)}
+                onClick={onRemoveCard}
+              />
+              </Grid>
             </div>
           )}
         </Grid>

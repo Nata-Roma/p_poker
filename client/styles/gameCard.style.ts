@@ -29,6 +29,9 @@ export const useStylesGameCard = (props) =>
       cardHeader: {
         padding: theme.spacing(0, 0.5),
       },
+      paddingForButtons: {
+        paddingTop: '19px'
+      },
       cardContainer: {
         width: 'calc(100%)',
         height: props.ratio * props.width,
@@ -64,6 +67,9 @@ export const useStylesGameCard = (props) =>
         fontSize: '5rem',
         color: theme.palette.primary.main,
         cursor: 'pointer',
+      },
+      disabledCardIcon: {
+        color: theme.palette.grey[500],
       }
     }),
   );

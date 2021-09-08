@@ -1,16 +1,17 @@
 import { Grid, Typography } from '@material-ui/core';
 import { GameCard } from 'Cards/gameCard';
-import { FC, useEffect, useState } from 'react';
-import { cardDecks, sequences } from 'utils/configs';
+import { FC } from 'react';
 
 interface CardListProps {
   cardDeck: Array<string>;
   sequence: Array<number>;
   onAddCard: () => void
-  cardPot: string
+  cardPot: string;
+  onRemoveCard: () => void;  
 }
 
-export const CardList: FC<CardListProps> = ({ cardDeck, sequence, onAddCard, cardPot }) => {
+
+export const CardList: FC<CardListProps> = ({ cardDeck, sequence, onAddCard, cardPot, onRemoveCard }) => {
   return (
     <>
       <Typography variant="subtitle1">Add card</Typography>
@@ -23,7 +24,7 @@ export const CardList: FC<CardListProps> = ({ cardDeck, sequence, onAddCard, car
               <GameCard cardImg={deck} cardNumber={sequence[i]} />
             </Grid>
           ))}
-          <GameCard cardImg={''} cardNumber={null} empty={true} onAddCard={onAddCard} />
+          <GameCard cardImg={''} cardNumber={null} key={'null'} empty={true} onAddCard={onAddCard} onRemoveCard={onRemoveCard} deckLength={cardDeck && cardDeck.length}/>
       </Grid>
     </>
   );
