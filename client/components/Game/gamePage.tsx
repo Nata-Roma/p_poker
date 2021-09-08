@@ -25,6 +25,7 @@ export const GamePage = () => {
   const [ cardPot, setCardPot ] = useState('');
   const [ activeCard, setActiveCard ] = useState<string>('');
   const [ dealer, setDealer ] = useState<IUser>();
+  const [springTitle, setSpringTitle] = useState('')
 
   const onIssueClick = (issueName: string) => {
     state.socket.emit('changeActiveIssue', { roomId: lobby, issueName });
@@ -37,6 +38,7 @@ export const GamePage = () => {
       );
       if (foundIssue) {
         setActiveIssueName(foundIssue.issueName);
+        setActiveCard('');
       }
     }
   };
@@ -66,6 +68,7 @@ export const GamePage = () => {
     const gameData = await apiStartGame(lobby);
     setGameIssues(gameData.issues);
     setActiveIssueName(gameData.issues[0].issueName);
+    setSpringTitle(gameData.spring);
 
     const seq = gameData.card.sequence;
     const currentSeq = sequences.find((item) => item.name === seq);
@@ -138,6 +141,7 @@ export const GamePage = () => {
             onIssueClick={onIssueClick}
             activeIssueName={activeIssueName}
             calculateIssueScore={calculateIssueScore}
+            springTitle={springTitle}
           />
         )}
         {!state.dealer &&

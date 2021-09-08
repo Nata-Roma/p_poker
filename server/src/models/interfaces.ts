@@ -31,6 +31,7 @@ export interface IGameCard {
 }
 
 export interface IGameSettings {
+  spring: string;
   issues: Array<IIssue>;
   timer: IGameTimer;
   card: IGameCard;

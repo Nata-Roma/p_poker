@@ -16,7 +16,8 @@ interface GameDealerProps {
   gameIssues: Array<IGameIssue>;
   onIssueClick: (issueName: string) => void;
   activeIssueName: string;
-  calculateIssueScore: () => void
+  calculateIssueScore: () => void;
+  springTitle: string;
 }
 
 export const GameDealer: FC<GameDealerProps> = ({
@@ -25,6 +26,7 @@ export const GameDealer: FC<GameDealerProps> = ({
   onIssueClick,
   activeIssueName,
   calculateIssueScore,
+  springTitle,
 }) => {
   const classes = useStylesGamePart();
   const [ issues, setIssues ] = useState<Array<IGameIssue>>();
@@ -56,7 +58,8 @@ export const GameDealer: FC<GameDealerProps> = ({
   return (
     <>
       <Typography variant="h6" align="center" gutterBottom>
-        Spring: planning (issues: {title && `${title}`})
+        Spring: {springTitle && `${springTitle}`} planning (issues:{' '}
+        {title && `${title}`})
       </Typography>
 
       <Typography variant="subtitle2">Dealer:</Typography>

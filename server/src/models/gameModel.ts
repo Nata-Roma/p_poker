@@ -13,6 +13,7 @@ interface GameInitProps {
 
 class Game {
   private id: string;
+  private spring: string = '';
   private issues: Array<IGameIssue> = [];
   private card: IGameCard = null;
   private timer: IGameTimer = null;
@@ -34,6 +35,7 @@ class Game {
       };
       this.issues.push(newIssue);
     });
+    this.spring = props.client.spring;
     this.card = { ...props.client.card };
     this.timer = { ...props.client.timer };
   };
@@ -44,6 +46,7 @@ class Game {
 
   getGameInitData = (): IGameSettings => {
     const gameData = {
+      spring: this.spring,
       timer: { ...this.timer },
       card: { ...this.card },
       issues: this.issues.map((issue) => issue.issue),
