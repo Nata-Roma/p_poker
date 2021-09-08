@@ -27,7 +27,7 @@ export interface IGameCard {
   cardDeck: string;
   sequence: string;
   cardNumber: number;
-  cardChange: boolean;
+  cardTurn: boolean;
 }
 
 export interface IGamePlayer {

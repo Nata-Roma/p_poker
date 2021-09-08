@@ -136,6 +136,27 @@ class Rooms {
     }
     return null;
   };
+
+  getCardTurnStatus = (roomId: string): boolean => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      return room.getCardTurnStatus();
+    }
+  };
+
+  checkVoting = (
+    roomId: string,
+    issueName: string,
+  ): Array<IGameIssue> | null => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      return room.checkVoting(issueName);
+    }
+  };
+
+  gameOver = (roomId: string) => {
+    this.rooms = this.rooms.filter((room) => room.getRoomId() !== roomId);
+  };
 }
 
 const roomContoller = new Rooms();
