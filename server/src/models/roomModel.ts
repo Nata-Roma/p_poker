@@ -127,12 +127,20 @@ class Room {
   };
 
   calculateIssueScore = (issueName: string) => {
-    this.game.calculateIssueScore(issueName)
-  }
+    this.game.calculateIssueScore(issueName);
+  };
 
   getGameIssues = (): Array<IGameIssue> => {
-    return this.game.getGameIssues()
-  }
+    return this.game.getGameIssues();
+  };
+
+  getCardTurnStatus = (): boolean => {
+    return this.game.getCardTurnStatus();
+  };
+
+  checkVoting = (issueName: string): Array<IGameIssue> | null => {
+    return this.game.checkVoting(issueName);
+  };
 }
 
 export default Room;

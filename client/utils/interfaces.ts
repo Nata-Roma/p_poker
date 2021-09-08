@@ -66,7 +66,7 @@ interface IGameCard {
   sequence: string;
   cardNumber: number;
   cardNumberStart: number;
-  cardChange: boolean;
+  cardTurn: boolean;
 }
 export interface IGameSettings {
   spring: string;

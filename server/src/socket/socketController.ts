@@ -32,16 +32,12 @@ const socketServer = (httpServer) => {
       const { roomId, userId } = message;
       console.log('Socket REconnected', roomId, userId);
 
-      // socket.join(roomId);
-      // roomContoller.joinUserToRoom(roomId, userId);
       const user = roomContoller.getRoomUser(roomId, userId);
       socket.emit('reconnectToLobby', user);
     });
 
     socket.on('sendMessage', (data) => {
-      console.log(data);
       const { roomId, userId, message } = data;
-      console.log(roomId, userId, message);
 
       if (roomId && userId && message) {
         roomContoller.addMessagetoRoomChat(roomId, userId, message);
@@ -66,6 +62,23 @@ const socketServer = (httpServer) => {
     socket.on('gameCardChoice', (message) => {
       const { roomId, playerChoice } = message;
       roomContoller.setGameUserChoice(roomId, playerChoice);
+      const checkVotes = roomContoller.getCardTurnStatus(roomId);
+      if (checkVotes) {
+        const voteFinish = roomContoller.checkVoting(
+          roomId,
+          playerChoice.issue,
+        );
+        if (voteFinish) {
+          console.log('VOTING FINISHED');
+          roomContoller.calculateIssueScore(roomId, playerChoice.issue);
+          const gameIssues = roomContoller.getGameIssues(roomId);
+          
+          io.in(roomId).emit('activeIssueChanged', {
+            issueName: playerChoice.issue,
+            gameIssues,
+          });
+        }
+      }
     });
 
     socket.on('changeActiveIssue', (message) => {
@@ -78,9 +91,18 @@ const socketServer = (httpServer) => {
       const { roomId, issueName } = message;
       roomContoller.calculateIssueScore(roomId, issueName);
       const gameIssues = roomContoller.getGameIssues(roomId);
-      console.log('ISSUES', gameIssues);
       io.in(roomId).emit('activeIssueChanged', { issueName, gameIssues });
     });
+
+    socket.on('leaveGame', message  => {
+      const {roomId} = message;
+      roomContoller.gameOver(roomId);
+      io.in(roomId).emit('gameOver', 'The end');
+    })
+
+    socket.on('gameOverFinish', (message) => {
+      socket.leave(message.roomId);
+    })
 
     // socket.on('disconnect', (message) => {
     //   console.log('Got disconnect!');

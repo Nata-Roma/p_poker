@@ -26,14 +26,14 @@ class Game {
   }
 
   gameInit = (props: GameInitProps): void => {
-    const players = props.playerIds.map((player) => ({
-      player: player,
-      choice: 0,
-    }));
     props.client.issues.forEach((issue) => {
+      const players = props.playerIds.map((player) => ({
+        player: player,
+        choice: 0,
+      }));
       const newIssue = {
         issue: { ...issue },
-        players: [ ...players ],
+        players: players,
         score: [],
         totalScore: 0,
       };
@@ -109,7 +109,6 @@ class Game {
         return acc;
       }, 0);
       gameIssue.totalScore = +(totalScore / 100).toFixed(2);
-      console.log('amended issue', gameIssue);
     }
   };
 
@@ -138,6 +137,22 @@ class Game {
 
   getGameIssues = (): Array<IGameIssue> => {
     return this.issues;
+  };
+
+  checkVoting = (issueName: string): Array<IGameIssue> | null => {
+    const gameIssue = this.issues.find(
+      (issue) => issue.issue.issueName === issueName,
+    );
+
+    if (gameIssue) {
+      const unvoted = gameIssue.players.filter((player) => !player.choice);
+      if (!unvoted.length) return this.issues;
+      return null;
+    }
+  };
+
+  getCardTurnStatus = (): boolean => {
+    return this.card.cardTurn;
   };
 }
 

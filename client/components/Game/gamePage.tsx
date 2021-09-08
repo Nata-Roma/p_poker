@@ -41,22 +41,6 @@ export const GamePage = () => {
     setActiveIssueName(message.issueName);
     setActiveCard('');
     setGameIssues(message.gameIssues)
-
-    // if (gameIssues) {
-    //   let foundIssue = gameIssues.find(
-    //     (issue) => issue.issue.issueName === message.issue.issueName,
-    //   );
-    //   if (foundIssue) {
-    //     setActiveIssueName(foundIssue.issue.issueName);
-    //     setActiveCard('');
-    //   }
-    //   const issueIndex = gameIssues.findIndex(
-    //     (issue) => issue.issue.issueName === message.issue.issueName,
-    //   );
-    //   const newIssues = [ ...gameIssues ];
-    //   newIssues[issueIndex] = message;
-    //   setGameIssues(newIssues);
-    // }
   };
 
   const onGameCardClick = (cardName: string, cardNumber: number) => {
@@ -136,6 +120,7 @@ export const GamePage = () => {
 
       changeActiveIssue(message);
     });
+    
     return () =>
       state.socket.off('activeIssuechanged', (message) => {
         changeActiveIssue(message);
