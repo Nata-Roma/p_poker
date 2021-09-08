@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { Button, Typography, Grid } from '@material-ui/core';
 
 import useStylesLobbyPart from '@styles/lobbyPart.style';
@@ -14,6 +14,7 @@ import {
   IssueData,
   issuePrevNext,
   IUser,
+  LobbyPartProps,
 } from 'utils/interfaces';
 import { ObserverList } from './observerList';
 import {
@@ -27,11 +28,7 @@ import {
 import { CardList } from './cardList';
 import { apiCreateGame } from 'services/apiServices';
 
-interface LobbyPartProps {
-  users: Array<IUser>;
-}
-
-export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
+export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
   const classes = useStylesLobbyPart();
   const { state } = useContext(AppContext);
   const router = useRouter();
@@ -259,6 +256,10 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
     [ chosenDeck ],
   );
 
+  const onRemoveUser = (user: IUser) => {
+    onRemove(user);
+  }
+
   return (
     <Grid
       container
@@ -308,10 +309,10 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users }) => {
         </Button>
       </Grid>
       <Grid item container>
-        {userArr && <MemberList users={userArr} />}
+        {userArr && <MemberList users={userArr} onRemoveUser={onRemoveUser}/>}
       </Grid>
       <Grid item container>
-        {userArr && <ObserverList users={userArr} />}
+        {userArr && <ObserverList users={userArr} onRemoveUser={onRemoveUser} />}
       </Grid>
       <Grid item container>
         <IssueList

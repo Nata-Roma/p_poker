@@ -28,26 +28,24 @@ export const users = [
 interface MemberListProps {
   users: Array<IUser>;
   from?: string;
+  onRemoveUser?: (user: IUser) => void;
 }
 
-export const MemberList: FC<MemberListProps> = ({ users }) => {
+export const MemberList: FC<MemberListProps> = ({ users, onRemoveUser }) => {
   const classes = useStylesMemberList();
+  const isMember = users.filter((user) => !user.dealer).some((user) => user.userRole === roles.member);
 
-
-  let title = <div />;
-  if (users.length) {
-    title = (
-      <Typography variant="h4" align="center" gutterBottom>
-        Members:
-      </Typography>
-    );
+  const onRemoveUserFromMembers = (user: IUser) => {
+    onRemoveUser(user);
   }
 
   return (
     <div className={classes.container}>
+      {isMember ? (
         <Typography variant="h4" align="center" gutterBottom>
           Members:
         </Typography>
+      ) : null}
       <Grid container spacing={2} className={classes.root}>
         {users &&
           users.map(
@@ -55,9 +53,9 @@ export const MemberList: FC<MemberListProps> = ({ users }) => {
               !user.dealer &&
               user.userRole === roles.member && (
                 <Grid item key={user.username}>
-                  <UserCard user={user} observer={false} />
+                  <UserCard user={user} observer={false} onRemoveUser={onRemoveUserFromMembers}/>
                 </Grid>
-              ),
+              )
           )}
       </Grid>
     </div>

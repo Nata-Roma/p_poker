@@ -1,20 +1,25 @@
 import { Typography } from '@material-ui/core';
 import BlockIcon from '@material-ui/icons/Block';
 import useStylesUserCard from '@styles/userCard.style';
-import { IUser } from 'utils/interfaces';
+import { FC } from 'react';
+import { UserCardProps } from 'utils/interfaces';
 
-interface UserCardProps {
-  user: IUser;
-  observer: boolean;
-  score?: boolean;
-}
-
-export const UserCard = ({ user, observer, score }: UserCardProps) => {
+export const UserCard:FC<UserCardProps> = ({ user, observer, score, onRemoveUser }) => {
   const classes = useStylesUserCard();
+
+  const onKickUser = () => {
+    onRemoveUser(user);
+  };
 
   return (
     <div className={classes.container}>
-      <div className={observer ? `${classes.avatar} ${classes.avatarObserver}` : classes.avatar}>
+      <div
+        className={
+          observer
+            ? `${classes.avatar} ${classes.avatarObserver}`
+            : classes.avatar
+        }
+      >
         {user.avatar && (
           <div
             className={classes.avatarImg}
@@ -28,8 +33,12 @@ export const UserCard = ({ user, observer, score }: UserCardProps) => {
           </>
         )}
       </div>
-      <Typography variant="h5">{user.username}{' '}{user.userSurname}</Typography>
-      <BlockIcon fontSize={score ? "medium" : "large"} />
+      <Typography variant="h5">
+        {user.username} {user.userSurname}
+      </Typography>
+      {!user.dealer ? (
+        <BlockIcon fontSize={score ? "medium" : "large"} onClick={onKickUser} style={{cursor: "pointer"}}/>
+      ) : null}
     </div>
   );
 };

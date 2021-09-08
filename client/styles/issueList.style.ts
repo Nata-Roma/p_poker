@@ -11,10 +11,12 @@ export const useStylesIssueList = makeStyles((theme: Theme) =>
     },
     deleteButton: {
       width: '190px',
-      marginLeft: '10px'
     },
     btn: {
       width: '190px',
     },
+    gap: {
+      gap: '10px'
+    }
   }),
 );

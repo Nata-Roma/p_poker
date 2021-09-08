@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from "react";
+import React, { FC, useState } from "react";
 import CreateIcon from '@material-ui/icons/Create';
 import CheckIcon from '@material-ui/icons/Check';
 import { Typography, TextField, Grid } from "@material-ui/core";
@@ -25,7 +25,6 @@ const NameGame: FC = () => {
           <Typography variant="h6" align="left" gutterBottom>
             Spring:
           </Typography>     
-         
           <Typography className={classes.gameName} variant="subtitle2" gutterBottom onClick={activateEditMode} >
             {name || 'enter spring number'}
           </Typography>

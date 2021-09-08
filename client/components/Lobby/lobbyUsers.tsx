@@ -1,20 +1,16 @@
 import { useRouter } from 'next/router';
-import { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { Button, Typography, Grid } from '@material-ui/core';
 
 import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'Cards/userCard';
-import AppContext, { appStore } from 'store/store';
-import { IUser } from 'utils/interfaces';
+import AppContext from 'store/store';
+import { IUser, LobbyPartProps } from 'utils/interfaces';
 import { ObserverList } from './observerList';
 import { roles } from 'utils/configs';
 
-interface LobbyPartProps {
-  users: Array<IUser>;
-}
-
-export const LobbyUser: FC<LobbyPartProps> = ({ users }) => {
+export const LobbyUser: FC<LobbyPartProps> = ({ users, onRemove }) => {
   const classes = useStylesLobbyPart();
   const { state } = useContext(AppContext);
   const router = useRouter();
@@ -52,6 +48,11 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users }) => {
     },
     [ userArr ],
   );
+
+  const onRemoveUser = (user: IUser) => {
+    onRemove(user);
+    console.log(user)
+  }
 
   return (
     <Grid
@@ -93,10 +94,10 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users }) => {
         </Button>
       </Grid>
       <Grid item container>
-        {userArr && <MemberList users={userArr} />}
+        {userArr && <MemberList users={userArr} onRemoveUser={onRemoveUser} />}
       </Grid>
       <Grid item container>
-        {userArr && <ObserverList users={userArr} />}
+        {userArr && <ObserverList users={userArr} onRemoveUser={onRemoveUser} />}
       </Grid>
     </Grid>
   );

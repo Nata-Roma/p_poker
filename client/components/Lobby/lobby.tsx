@@ -19,6 +19,7 @@ import appStorage from 'utils/storage';
 import { userCreate } from 'utils/userCreate';
 import { LobbyDealer } from './lobbyDealer';
 import { LobbyUser } from './lobbyUsers';
+import KickPlayerPopup from './kickPlayerPopup';
 
 interface LobbyProps {
   lobbyInfo: IApiGetLobbyInfo;
@@ -28,6 +29,8 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   const classes = useStylesLobby();
   const [ chatMessages, setChatMessages ] = useState<Array<IChatMessage>>();
   const [ users, setUsers ] = useState<Array<IUser>>();
+  const [ isOpenKickUser, setIsOpenKickUser ] = useState(false);
+  const [ deletedUser, setDeletedUser ] = useState<IUser | null>(null);
   const { state, dispatch } = useContext(AppContext);
   const router = useRouter();
 
@@ -100,11 +103,22 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
     }
   }, []);
 
+  const onRemove = (user: IUser) => {
+    setIsOpenKickUser(true);
+    setDeletedUser(user)
+    console.log(user)
+  }
+
+  const onOpenPopUp = (isOpen: boolean) => {
+    setIsOpenKickUser(isOpen);
+  }
+
   return (
     <div className={state.dealer ? classes.containerDealer : classes.containerUser}>
       <Grid container style={{ height: '100%' }}>
-        {state.dealer && users && <LobbyDealer users={users} />}
-        {!state.dealer && users && <LobbyUser users={users} />}
+        {state.dealer && users && <LobbyDealer users={users} onRemove={onRemove}/>}
+        {!state.dealer && users && <LobbyUser users={users} onRemove={onRemove}/>}
+        {deletedUser && <KickPlayerPopup isOpenKickUser={isOpenKickUser} onOpenPopUp={onOpenPopUp} deletedUser={deletedUser}/>}
         <Grid item xs={12} md={3} sm={5} className={classes.chatPartContainer}>
           {chatMessages && <Chat chatMessages={chatMessages} />}
           {!chatMessages && <Chat chatMessages={chatMessages} />}
