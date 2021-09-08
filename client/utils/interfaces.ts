@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from 'react';
 
 export interface IUser {
   username: string;
@@ -62,7 +62,7 @@ export interface IGameTimer {
 }
 
 export interface IGameSettings {
-  spring: string
+  spring: string;
   issues: Array<IGameIssue>;
   timer: IGameTimer;
   card: {
@@ -88,10 +88,22 @@ export interface IGamePageIssueScore {
   choice: number;
   score: number;
 }
+
+export interface IGameIssueScoreFromServer {
+  choice: number;
+  playerQuantity: number;
+  totalPlayers: number
+}
 export interface IGamePageIssue {
   issue: IGameIssue;
   players: Array<IGamePagePlayer>;
   score: Array<IGamePageIssueScore>;
+}
+
+export interface IGameIssueFromServer {
+  issue: IGameIssue;
+  players: Array<IGamePagePlayer>;
+  score: Array<IGameIssueScoreFromServer>;
 }
 
 export interface CreateIssuePopupProps {
@@ -115,4 +127,9 @@ export interface issuePrevNext {
   prevValue: string;
   nextValue: string;
   priority: string;
+}
+
+export interface IStatistics {
+  choice: number;
+  ratio: number;
 }

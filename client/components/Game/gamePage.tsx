@@ -4,13 +4,17 @@ import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import { apiGetLobbyInfo, apiStartGame } from 'services/apiServices';
 import AppContext from 'store/store';
-import { IGameIssue, IUser } from 'utils/interfaces';
+import {
+  IGameIssue,
+  IGameIssueFromServer,
+  IStatistics,
+  IUser,
+} from 'utils/interfaces';
 import { GameCard } from '../../Cards/gameCard';
-import { ScoreList } from './ScoreList';
+import { ScoreList } from './scoreList';
 import { cardDecks, roles, sequences } from 'utils/configs';
 import { GameDealer } from './gameDealer';
 import { GamePlayer } from './gamePlayer';
-import { Socket } from 'socket.io-client';
 
 export const GamePage = () => {
   const classes = useStylesGame();
@@ -25,20 +29,30 @@ export const GamePage = () => {
   const [ cardPot, setCardPot ] = useState('');
   const [ activeCard, setActiveCard ] = useState<string>('');
   const [ dealer, setDealer ] = useState<IUser>();
-  const [springTitle, setSpringTitle] = useState('')
+  const [ springTitle, setSpringTitle ] = useState('');
+  const [ statistics, setStatistics ] = useState<Array<IStatistics>>();
 
   const onIssueClick = (issueName: string) => {
     state.socket.emit('changeActiveIssue', { roomId: lobby, issueName });
   };
 
-  const changeActiveIssue = (issueName: string) => {
+  const changeActiveIssue = (message: IGameIssueFromServer) => {
     if (gameIssues) {
       const foundIssue = gameIssues.find(
-        (issue) => issue.issueName === issueName,
+        (issue) => issue.issueName === message.issue.issueName,
       );
       if (foundIssue) {
         setActiveIssueName(foundIssue.issueName);
         setActiveCard('');
+        const stat = message.score.map((item) => {
+          const ratio = (item.playerQuantity / item.totalPlayers * 100).toFixed(2);
+          const score = {
+            choice: item.choice,
+            ratio: +ratio,
+          };
+          return score;
+        });
+        setStatistics(stat);
       }
     }
   };
@@ -100,6 +114,15 @@ export const GamePage = () => {
       issueName: activeIssueName,
     });
     state.socket.on('gameIssue', (message) => {
+      const stat = message.score.map((item) => {
+        const ratio = (item.playerQuantity / item.totalPlayers * 100).toFixed(2);
+        const score = {
+          choice: item.choice,
+          ratio: +ratio,
+        };
+        return score;
+      });
+      setStatistics(stat);
       console.log(message);
     });
   };
@@ -142,6 +165,7 @@ export const GamePage = () => {
             activeIssueName={activeIssueName}
             calculateIssueScore={calculateIssueScore}
             springTitle={springTitle}
+            statistics={statistics}
           />
         )}
         {!state.dealer &&

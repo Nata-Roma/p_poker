@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { FC, useEffect, useState, useContext } from 'react';
 import useStylesGame from '@styles/game.style';
 import { Typography, Grid, Box, Button } from '@material-ui/core';
-import { IGameIssue, IUser } from 'utils/interfaces';
+import { IGameIssue, IStatistics, IUser } from 'utils/interfaces';
 
 import AppContext from 'store/store';
 import { UserCard } from 'Cards/userCard';
@@ -10,6 +10,8 @@ import { roles } from 'utils/configs';
 import { IssueCards } from './issueCards';
 import useStylesGamePart from '@styles/gamePart.style';
 import { IssueCard } from './issueCard';
+import { StaticticsCard } from './statisticsCard';
+import { nanoid } from 'nanoid';
 
 interface GameDealerProps {
   dealer: IUser;
@@ -18,6 +20,7 @@ interface GameDealerProps {
   activeIssueName: string;
   calculateIssueScore: () => void;
   springTitle: string;
+  statistics: Array<IStatistics>;
 }
 
 export const GameDealer: FC<GameDealerProps> = ({
@@ -27,6 +30,7 @@ export const GameDealer: FC<GameDealerProps> = ({
   activeIssueName,
   calculateIssueScore,
   springTitle,
+  statistics,
 }) => {
   const classes = useStylesGamePart();
   const [ issues, setIssues ] = useState<Array<IGameIssue>>();
@@ -56,7 +60,7 @@ export const GameDealer: FC<GameDealerProps> = ({
     [ gameIssues ],
   );
   return (
-    <>
+    <div>
       <Typography variant="h6" align="center" gutterBottom>
         Spring: {springTitle && `${springTitle}`} planning (issues:{' '}
         {title && `${title}`})
@@ -98,6 +102,7 @@ export const GameDealer: FC<GameDealerProps> = ({
         </Grid>
         <Grid container item className={classes.mBottom}>
           <div className={classes.issuesContainer}>
+            <Typography variant="h5">Issues:</Typography>
             {issues && (
               <IssueCards
                 issues={issues}
@@ -112,9 +117,12 @@ export const GameDealer: FC<GameDealerProps> = ({
               onAddIssue={createIssue}
             />
           </div>
-          Statistics
+          <div>
+            <Typography variant="h5">Statistics:</Typography>
+            {statistics && statistics.map(stat => <StaticticsCard key={nanoid()} stat={stat} />) }
+          </div>
         </Grid>
       </Grid>
-    </>
+    </div>
   );
 };

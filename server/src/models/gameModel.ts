@@ -55,17 +55,25 @@ class Game {
   };
 
   setPlayerChoice = (playerChoice: IPlayerChoice): void => {
+    console.log('Set CHOICE', playerChoice);
+    
     const issueFound = this.issues.find(
       (issue) => issue.issue.issueName === playerChoice.issue,
     );
+    console.log('ISSUE FOUND', issueFound);
+    
     if (issueFound) {
       const playerFound = issueFound.players.find(
         (player) => player.player === playerChoice.playerId,
       );
+      console.log('PLAYER FOUND', playerFound);
+      
       if (playerFound) {
         playerFound.choice = playerChoice.playerChoice;
       }
     }
+    console.log('all ussues', this.issues);
+    
   };
 
   calculateIssueScore = (issueName: string): IGameIssue | null => {

@@ -70,7 +70,8 @@ const socketServer = (httpServer) => {
 
     socket.on('changeActiveIssue', (message) => {
       const { roomId, issueName } = message;
-      io.in(roomId).emit('activeIssueChanged', issueName);
+      const gameIssue = roomContoller.getGameIssue(roomId, issueName);
+      io.in(roomId).emit('activeIssueChanged', gameIssue);
     });
 
     socket.on('calcScore', (message) => {
