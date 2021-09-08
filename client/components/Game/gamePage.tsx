@@ -10,6 +10,7 @@ import { ScoreList } from './scoreList';
 import { cardDecks, roles, sequences } from 'utils/configs';
 import { GameDealer } from './gameDealer';
 import { GamePlayer } from './gamePlayer';
+import { Socket } from 'socket.io-client';
 
 export const GamePage = () => {
   const classes = useStylesGame();
@@ -18,18 +19,37 @@ export const GamePage = () => {
   const router = useRouter();
   const { lobby } = router.query;
   const [ gameIssues, setGameIssues ] = useState<Array<IGameIssue>>();
+  const [ activeIssueName, setActiveIssueName ] = useState<string>();
   const [ chosenDeck, setChosenDeck ] = useState<Array<string>>();
   const [ chosenSeq, setChosenSeq ] = useState<Array<number>>();
   const [ cardPot, setCardPot ] = useState('');
   const [ activeCard, setActiveCard ] = useState<string>('');
   const [ dealer, setDealer ] = useState<IUser>();
 
+  const onIssueClick = (issueName: string) => {
+    state.socket.emit('changeActiveIssue', { roomId: lobby, issueName });
+  };
+
+  const changeActiveIssue = (issueName: string) => {
+    if (gameIssues) {
+      const foundIssue = gameIssues.find(
+        (issue) => issue.issueName === issueName,
+      );
+      if (foundIssue) {
+        setActiveIssueName(foundIssue.issueName);
+      }
+    }
+  };
+
   const onGameCardClick = (cardName: string, cardNumber: number) => {
     setActiveCard(cardName);
     state.socket.emit('gameCardChoice', {
       roomId: lobby,
-      player: state.userId,
-      choice: cardNumber,
+      playerChoice: {
+        playerId: state.userId,
+        playerChoice: cardNumber,
+        issue: activeIssueName,
+      },
     });
   };
 
@@ -45,6 +65,7 @@ export const GamePage = () => {
 
     const gameData = await apiStartGame(lobby);
     setGameIssues(gameData.issues);
+    setActiveIssueName(gameData.issues[0].issueName);
 
     const seq = gameData.card.sequence;
     const currentSeq = sequences.find((item) => item.name === seq);
@@ -70,9 +91,32 @@ export const GamePage = () => {
     }
   };
 
+  const calculateIssueScore = () => {
+    state.socket.emit('calcScore', {
+      roomId: lobby,
+      issueName: activeIssueName,
+    });
+    state.socket.on('gameIssue', (message) => {
+      console.log(message);
+    });
+  };
+
   useEffect(() => {
     initData();
   }, []);
+
+  useEffect(
+    () => {
+      state.socket.on('activeIssueChanged', (message) => {
+        changeActiveIssue(message);
+      });
+      return () =>
+        state.socket.off('activeIssuechanged', (message) => {
+          changeActiveIssue(message);
+        });
+    },
+    [ gameIssues ],
+  );
 
   return (
     <Grid container className={classes.container}>
@@ -87,9 +131,23 @@ export const GamePage = () => {
         className={classes.gamePartContainer}
       >
         {state.dealer &&
-        gameIssues && <GameDealer dealer={dealer} gameIssues={gameIssues} />}
+        gameIssues && (
+          <GameDealer
+            dealer={dealer}
+            gameIssues={gameIssues}
+            onIssueClick={onIssueClick}
+            activeIssueName={activeIssueName}
+            calculateIssueScore={calculateIssueScore}
+          />
+        )}
         {!state.dealer &&
-        gameIssues && <GamePlayer dealer={dealer} gameIssues={gameIssues} />}
+        gameIssues && (
+          <GamePlayer
+            dealer={dealer}
+            gameIssues={gameIssues}
+            activeIssueName={activeIssueName}
+          />
+        )}
         <Grid container item>
           {state.userRole === roles.member &&
             chosenDeck &&

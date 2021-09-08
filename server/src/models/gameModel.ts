@@ -29,17 +29,13 @@ class Game {
     props.client.issues.forEach((issue) => {
       const newIssue = {
         issue: { ...issue },
-        players: { ...players },
+        players: [ ...players ],
         score: [],
       };
       this.issues.push(newIssue);
     });
     this.card = { ...props.client.card };
     this.timer = { ...props.client.timer };
-    console.log('INIT GAME');
-    console.log(this.issues);
-    console.log(this.card);
-    console.log(this.timer);
   };
 
   getGameId = (): string => {
@@ -57,7 +53,7 @@ class Game {
 
   setPlayerChoice = (playerChoice: IPlayerChoice): void => {
     const issueFound = this.issues.find(
-      (issue) => issue.issue === playerChoice.issue,
+      (issue) => issue.issue.issueName === playerChoice.issue,
     );
     if (issueFound) {
       const playerFound = issueFound.players.find(
@@ -67,6 +63,31 @@ class Game {
         playerFound.choice = playerChoice.playerChoice;
       }
     }
+  };
+
+  calculateIssueScore = (issueName: string): IGameIssue | null => {
+    const gameIssue = this.issues.find(
+      (issue) => issue.issue.issueName === issueName,
+    );
+    if (gameIssue) {
+      const issueScore = gameIssue.players.reduce((arr, player) => {
+        const choiceFound = arr.find((item) => item.choice === player.choice);
+        if (choiceFound) {
+          choiceFound.playerQuantity += 1;
+        } else {
+          const newScore = {
+            choice: player.choice,
+            playerQuantity: 1,
+            totalPlayers: gameIssue.players.length,
+          };
+          arr.push(newScore);
+        }
+        return arr;
+      }, []);
+      gameIssue.score = issueScore;
+    }
+    if (gameIssue.score.length) return gameIssue;
+    return null;
   };
 
   getGameIssue = (issueName: string): IGameIssue | null => {
