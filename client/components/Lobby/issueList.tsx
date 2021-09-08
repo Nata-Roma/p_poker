@@ -38,11 +38,12 @@ const IssueList: FC<IssueListProps> = ({
   }
 
   return (
-    <Grid item container spacing={2} justifyContent="center">
+    <Grid item container spacing={2} justifyContent="center" >
       <Typography variant="h4" align="center" gutterBottom>
         Issues:
       </Typography>
       <Grid container item alignItems="center">
+        <Grid container item xs={4}>
         <FormControl className={classes.formControl}>
           <InputLabel id="select-issue">Issues:</InputLabel>
           <Select
@@ -62,7 +63,8 @@ const IssueList: FC<IssueListProps> = ({
           </Select>
           <FormHelperText>select an issue to edit</FormHelperText>
         </FormControl>
-
+        </Grid>
+        <Grid container item justifyContent="flex-start" className={classes.gap}>
         <CreateIssuePopup onIssueCreate={onIssueCreate} />
         <Button
           color="primary"
@@ -72,6 +74,7 @@ const IssueList: FC<IssueListProps> = ({
         >
           Delete Issue
         </Button>
+        </Grid>
         <ChangeIssuePopup issueChange={issueChange} onIssueChange={onIssueChange} setIssueChange={setIssueChange}/>
       </Grid>
     </Grid>
