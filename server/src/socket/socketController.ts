@@ -70,14 +70,16 @@ const socketServer = (httpServer) => {
 
     socket.on('changeActiveIssue', (message) => {
       const { roomId, issueName } = message;
-      const gameIssue = roomContoller.getGameIssue(roomId, issueName);
-      io.in(roomId).emit('activeIssueChanged', gameIssue);
+      const gameIssues = roomContoller.getGameIssues(roomId);
+      io.in(roomId).emit('activeIssueChanged', { issueName, gameIssues });
     });
 
     socket.on('calcScore', (message) => {
       const { roomId, issueName } = message;
-      const gameIssue = roomContoller.calculateIssueScore(roomId, issueName);
-      socket.emit('gameIssue', gameIssue);
+      roomContoller.calculateIssueScore(roomId, issueName);
+      const gameIssues = roomContoller.getGameIssues(roomId);
+      console.log('ISSUES', gameIssues);
+      io.in(roomId).emit('activeIssueChanged', { issueName, gameIssues });
     });
 
     // socket.on('disconnect', (message) => {

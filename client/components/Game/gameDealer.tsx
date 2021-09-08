@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState, useContext } from 'react';
-import useStylesGame from '@styles/game.style';
 import { Typography, Grid, Box, Button } from '@material-ui/core';
-import { IGameIssue, IStatistics, IUser } from 'utils/interfaces';
+import { IGamePageIssue, IStatistics, IUser } from 'utils/interfaces';
 
 import AppContext from 'store/store';
 import { UserCard } from 'Cards/userCard';
@@ -12,15 +11,15 @@ import useStylesGamePart from '@styles/gamePart.style';
 import { IssueCard } from './issueCard';
 import { StaticticsCard } from './statisticsCard';
 import { nanoid } from 'nanoid';
+import { IssuesBlock } from './issuesBlock';
 
 interface GameDealerProps {
   dealer: IUser;
-  gameIssues: Array<IGameIssue>;
+  gameIssues: Array<IGamePageIssue>;
   onIssueClick: (issueName: string) => void;
   activeIssueName: string;
   calculateIssueScore: () => void;
   springTitle: string;
-  statistics: Array<IStatistics>;
 }
 
 export const GameDealer: FC<GameDealerProps> = ({
@@ -30,18 +29,13 @@ export const GameDealer: FC<GameDealerProps> = ({
   activeIssueName,
   calculateIssueScore,
   springTitle,
-  statistics,
 }) => {
   const classes = useStylesGamePart();
-  const [ issues, setIssues ] = useState<Array<IGameIssue>>();
+  const [ issues, setIssues ] = useState<Array<IGamePageIssue>>();
   const router = useRouter();
   const { lobby } = router.query;
   const { state } = useContext(AppContext);
   const [ title, setTitle ] = useState<string>();
-
-  const createIssue = () => {
-    console.log('create issue');
-  };
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -54,11 +48,14 @@ export const GameDealer: FC<GameDealerProps> = ({
   useEffect(
     () => {
       setIssues(gameIssues);
-      const newTitle = gameIssues.map((item) => item.issueName).join(', ');
+      const newTitle = gameIssues
+        .map((item) => item.issue.issueName)
+        .join(', ');
       setTitle(newTitle);
     },
     [ gameIssues ],
   );
+
   return (
     <div>
       <Typography variant="h6" align="center" gutterBottom>
@@ -100,28 +97,13 @@ export const GameDealer: FC<GameDealerProps> = ({
             </Box>
           </Grid>
         </Grid>
-        <Grid container item className={classes.mBottom}>
-          <div className={classes.issuesContainer}>
-            <Typography variant="h5">Issues:</Typography>
-            {issues && (
-              <IssueCards
-                issues={issues}
-                activeIssueName={activeIssueName}
-                onIssueClick={onIssueClick}
-              />
-            )}
-            <IssueCard
-              issueName="Create New Issue"
-              priority=""
-              addIssue={true}
-              onAddIssue={createIssue}
-            />
-          </div>
-          <div>
-            <Typography variant="h5">Statistics:</Typography>
-            {statistics && statistics.map(stat => <StaticticsCard key={nanoid()} stat={stat} />) }
-          </div>
-        </Grid>
+        {gameIssues && (
+          <IssuesBlock
+            issues={gameIssues}
+            activeIssueName={activeIssueName}
+            onIssueClick={onIssueClick}
+          />
+        )}
       </Grid>
     </div>
   );

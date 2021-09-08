@@ -2,6 +2,7 @@ import axios from 'axios';
 import { BASE_URL } from 'utils/apiConfig';
 import {
   IApiGetLobbyInfo,
+  IApiStartGame,
   IChatMessage,
   IGameSettings,
   IUser,
@@ -32,7 +33,7 @@ export const apiGetRooms = async () => {
   return rooms.data;
 };
 
-export const apiStartGame = async (room: string | Array<string>) => {
+export const apiStartGame = async (room: string | Array<string>): Promise<IApiStartGame| null> => {
   // For now it is GET request. Will be converted to POST
   if (typeof room === 'string') {
     const gameInitData = await axios({

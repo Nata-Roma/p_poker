@@ -61,17 +61,18 @@ export interface IGameTimer {
   seconds: number;
 }
 
+interface IGameCard {
+  cardDeck: string;
+  sequence: string;
+  cardNumber: number;
+  cardNumberStart: number;
+  cardChange: boolean;
+}
 export interface IGameSettings {
   spring: string;
   issues: Array<IGameIssue>;
   timer: IGameTimer;
-  card: {
-    cardDeck: string;
-    sequence: string;
-    cardNumber: number;
-    cardNumberStart: number;
-    cardChange: boolean;
-  };
+  card: IGameCard;
 }
 
 export interface IGameCardOption {
@@ -86,24 +87,22 @@ export interface IGamePagePlayer {
 
 export interface IGamePageIssueScore {
   choice: number;
-  score: number;
+  ratio: number;
 }
 
-export interface IGameIssueScoreFromServer {
-  choice: number;
-  playerQuantity: number;
-  totalPlayers: number
-}
 export interface IGamePageIssue {
   issue: IGameIssue;
   players: Array<IGamePagePlayer>;
   score: Array<IGamePageIssueScore>;
+  totalScore: number;
 }
 
-export interface IGameIssueFromServer {
-  issue: IGameIssue;
-  players: Array<IGamePagePlayer>;
-  score: Array<IGameIssueScoreFromServer>;
+export interface IApiStartGame {
+  spring: '';
+  card: IGameCard;
+  issues: Array<IGamePageIssue>;
+  players: IGamePagePlayer;
+  timer: IGameTimer;
 }
 
 export interface CreateIssuePopupProps {

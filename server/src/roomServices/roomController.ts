@@ -4,6 +4,7 @@ import {
   IGameIssue,
   IPlayerChoice,
   IUserData,
+  IGameSettingsFromClient,
 } from '../models/interfaces';
 import Room from '../models/roomModel';
 
@@ -84,16 +85,11 @@ class Rooms {
     }
   };
 
-  calculateIssueScore = (
-    roomId: string,
-    issueName: string,
-  ): IGameIssue | null => {
+  calculateIssueScore = (roomId: string, issueName: string) => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     if (room) {
-      const gameIssue = room.calculateIssueScore(issueName);
-      return gameIssue;
+      room.calculateIssueScore(issueName);
     }
-    return null;
   };
 
   getGameIssue = (roomId: string, taskName: string): IGameIssue => {
@@ -102,7 +98,13 @@ class Rooms {
     return gameTask;
   };
 
-  gameInit = (roomId: string, client: IGameSettings): void => {
+  getGameIssues = (roomId: string): Array<IGameIssue> => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    const gameIssues = room.getGameIssues();
+    return gameIssues;
+  };
+
+  gameInit = (roomId: string, client: IGameSettingsFromClient): void => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     if (room) {
       room.gameInit(client);

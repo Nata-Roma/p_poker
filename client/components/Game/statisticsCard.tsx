@@ -1,8 +1,7 @@
 import { FC } from 'react';
 import { makeStyles, createStyles, Theme, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { IStatistics } from 'utils/interfaces';
+import { IGamePageIssueScore } from 'utils/interfaces';
 
 const useStylesStatisticsCard = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,7 +13,7 @@ const useStylesStatisticsCard = makeStyles((theme: Theme) =>
 );
 
 interface StatisticsCardProps {
-  stat: IStatistics;
+  stat: IGamePageIssueScore;
 }
 
 export const StaticticsCard: FC<StatisticsCardProps> = ({ stat }) => {
