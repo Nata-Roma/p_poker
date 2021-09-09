@@ -17,8 +17,6 @@ import { useStylesCreateIssuePopup } from "@styles/createIssuePopup.style";
 import { ChangeIssueProps } from "utils/interfaces";
 
 const ChangeIssuePopup: FC<ChangeIssueProps> = ({
-  issueChange,
-  setIssueChange,
   onIssueChange,
 }) => {
   const classes = useStylesCreateIssuePopup();
@@ -27,7 +25,6 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
   const [open, setOpen] = React.useState(false);
 
   const changeIssue = () => {
-    // setIssueChange(false);
     setOpen(false);
     onIssueChange({
       issueName,
@@ -37,7 +34,6 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
   };
 
   const handleClose = () => {
-    // setIssueChange(false);
     setOpen(false);
     setIssueName('');
   };
