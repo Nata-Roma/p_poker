@@ -8,6 +8,7 @@ createStyles({
     alignItems: 'center',
     padding: theme.spacing(1),
     width: '90%',
+    maxWidth: 250,
     maxHeight: '56px',
     boxShadow: '1px 1px 5px rgba(0, 0, 0, 0.3)'
   },

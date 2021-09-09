@@ -10,6 +10,7 @@ import { cardDecks, nonVoted, roles, sequences } from 'utils/configs';
 import { GameDealer } from './gameDealer';
 import { GamePlayer } from './gamePlayer';
 import { ScoreList } from './scoreList';
+import { ObserverList } from './observerList';
 
 export interface IActiveIssue {
   issueName: string;
@@ -189,6 +190,7 @@ export const GamePage = () => {
         className={classes.scorePartContainer}
       >
         {users && <ScoreList users={users} issues={gameIssues} activeIssueName={activeIssueName} />}
+        {users && <ObserverList users={users} />}
       </Grid>
     </Grid>
   );

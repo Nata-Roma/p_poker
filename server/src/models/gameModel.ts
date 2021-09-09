@@ -5,6 +5,7 @@ import {
   IGameTimer,
   IPlayerChoice,
   IGameSettingsFromClient,
+  IGamePlayer,
 } from './interfaces';
 
 export const nonVoted = 999;
@@ -27,17 +28,25 @@ class Game {
 
   gameInit = (props: GameInitProps): void => {
     props.client.issues.forEach((issue) => {
-      const players = props.playerIds.map((player) => ({
-        player: player,
-        choice: 0,
-      }));
-      const newIssue = {
-        issue: { ...issue },
-        players: players,
-        score: [],
-        totalScore: 0,
-      };
-      this.issues.push(newIssue);
+      const players = [] as Array<IGamePlayer>
+      props.playerIds.forEach((player) => {
+        if (player) {
+          const newPlayer = {
+            player: player,
+            choice: 0,
+          };
+          players.push(newPlayer);
+        }
+      });
+      if (players.length) {
+        const newIssue = {
+          issue: { ...issue },
+          players: players,
+          score: [],
+          totalScore: 0,
+        };
+        this.issues.push(newIssue);
+      }
     });
     this.spring = props.client.spring;
     this.card = { ...props.client.card };
