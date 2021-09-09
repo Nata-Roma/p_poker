@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState, useContext } from 'react';
 import { Typography, Grid, Box, Button } from '@material-ui/core';
-import {  IGamePageIssue, IUser } from 'utils/interfaces';
+import { IGamePageIssue, IUser } from 'utils/interfaces';
 
 import AppContext from 'store/store';
 import { UserCard } from 'Cards/userCard';
@@ -37,13 +37,32 @@ export const GamePlayer: FC<GameDealerProps> = ({
     router.push('/');
   };
 
+  const gameFinish = (message: string) => {
+    console.log('gameOver', message);
+    state.socket.emit('gameOverFinish', { roomId: lobby });
+    router.push('/');
+  };
+
   useEffect(
     () => {
-      const newTitle = gameIssues.map((item) => item.issue.issueName).join(', ');
+      const newTitle = gameIssues
+        .map((item) => item.issue.issueName)
+        .join(', ');
       setTitle(newTitle);
     },
     [ gameIssues ],
   );
+
+  useEffect(() => {
+    state.socket.on('gameOver', (message) => {
+      gameFinish(message);
+    });
+    return () => {
+      state.socket.off('gameOver', (message) => {
+        gameFinish(message);
+      });
+    };
+  }, []);
 
   return (
     <>
