@@ -51,7 +51,6 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
         (!gameSettings.timer.minutes || !gameSettings.timer.seconds))
     )
       return null;
-    console.log(gameSettings);
     const create = await apiCreateGame(lobby, gameSettings);
     setGameSettings(initGameSettings);
     console.log(create);
@@ -179,66 +178,69 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
   };
 
   const onAddCard = () => {
-    
-    setGameSettings(prev => {
-      const card = {...prev.card};
-        if (card.cardNumber < maxCardNumber) {
-        card.cardNumber++;   
-        }
-      return {...prev, card: card}
-    });    
+    setGameSettings((prev) => {
+      const card = { ...prev.card };
+      if (card.cardNumber < maxCardNumber) {
+        card.cardNumber++;
+      }
+      return { ...prev, card: card };
+    });
   };
 
   const onRemoveCard = () => {
-    setGameSettings(prev => {
-      const card = {...prev.card};
-      if (card.cardNumber > minCardNumber ) {
-        card.cardNumber--;        
-      } 
-      return {...prev, card: card}
-    });  
+    setGameSettings((prev) => {
+      const card = { ...prev.card };
+      if (card.cardNumber > minCardNumber) {
+        card.cardNumber--;
+      }
+      return { ...prev, card: card };
+    });
   };
 
   const onRoomLeave = () => {
-    state.socket.emit('leaveRoom', {
+    state.socket.emit('leaveGame', {
       roomId: lobby,
       userId: state.userId,
     });
+  };
+
+  const gameFinish = (message: string) => {
+    console.log('gameOver', message);
+    state.socket.emit('gameOverFinish', { roomId: lobby });
     router.push('/');
   };
 
   useEffect(() => {
-    state.socket.on('userJoined', (message) => {
-      setUserArr(message);
-      console.log('Lobby Dealer join user', message);
+    state.socket.on('gameOver', (message) => {
+      gameFinish(message);
     });
-
-    state.socket.on('userLeft', (message) => {
-      setUserArr(message);
-      console.log('Lobby user left', message);
-    });
+    return () => {
+      state.socket.off('gameOver', (message) => {
+        gameFinish(message);
+      });
+    };
   }, []);
 
   useEffect(
     () => {
-      const dealer = userArr.find((user) => user.dealer);
+      const dealer = users?.find((user) => user.dealer);
       setDealer(dealer);
     },
-    [ userArr ],
+    [ users ],
   );
   useEffect(
     () => {
       setChosenSeq(
         Array.from(
-          { length: (gameSettings.card.cardNumber) },
+          { length: gameSettings.card.cardNumber },
           (_, i) => sequences[0].sequence[i],
         ),
       );
 
       setChosenDeck(
         Array.from(
-          { length: (gameSettings.card.cardNumber) },
-          (_, i) =>  cardDecks[0].deck[i],
+          { length: gameSettings.card.cardNumber },
+          (_, i) => cardDecks[0].deck[i],
         ),
       );
     },
@@ -258,7 +260,7 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
 
   const onRemoveUser = (user: IUser) => {
     onRemove(user);
-  }
+  };
 
   return (
     <Grid
@@ -309,10 +311,12 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
         </Button>
       </Grid>
       <Grid item container>
-        {userArr && <MemberList users={userArr} onRemoveUser={onRemoveUser}/>}
+        {users && <MemberList users={users} onRemoveUser={onRemoveUser} />}
       </Grid>
       <Grid item container>
-        {userArr && <ObserverList users={userArr} onRemoveUser={onRemoveUser} />}
+        {users && (
+          <ObserverList users={users} onRemoveUser={onRemoveUser} />
+        )}
       </Grid>
       <Grid item container>
         <IssueList

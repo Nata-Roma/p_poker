@@ -1,10 +1,15 @@
 import { Grid } from '@material-ui/core';
 import useStylesGame from '@styles/game.style';
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { apiGetLobbyInfo, apiStartGame } from 'services/apiServices';
 import AppContext from 'store/store';
-import { IGamePageIssue, IStatistics, IUser } from 'utils/interfaces';
+import {
+  IApiStartGame,
+  IGamePageIssue,
+  IStatistics,
+  IUser,
+} from 'utils/interfaces';
 import { GameCard } from '../../Cards/gameCard';
 import { cardDecks, nonVoted, roles, sequences } from 'utils/configs';
 import { GameDealer } from './gameDealer';
@@ -17,7 +22,12 @@ export interface IActiveIssue {
   score: number;
 }
 
-export const GamePage = () => {
+interface GamePageProps {
+  gameData: IApiStartGame;
+  userData: Array<IUser>;
+}
+
+export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
   const classes = useStylesGame();
   const [ users, setUsers ] = useState<Array<IUser>>();
   const { state } = useContext(AppContext);
@@ -32,6 +42,11 @@ export const GamePage = () => {
   const [ dealer, setDealer ] = useState<IUser>();
   const [ springTitle, setSpringTitle ] = useState('');
 
+  const onUserJoinLeave = (users: Array<IUser>) => {
+    setUsers(users);
+    console.log('Lobby Dealer join/left user');
+  };
+
   const onIssueClick = (issueName: string) => {
     state.socket.emit('changeActiveIssue', { roomId: lobby, issueName });
   };
@@ -40,8 +55,6 @@ export const GamePage = () => {
     issueName: string;
     gameIssues: Array<IGamePageIssue>;
   }) => {
-    console.log('change', message.gameIssues);
-    console.log(message);
     setActiveIssueName(message.issueName);
     setActiveCard('');
     setGameIssues(message.gameIssues);
@@ -60,15 +73,11 @@ export const GamePage = () => {
   };
 
   const initData = async () => {
-    const data = await apiGetLobbyInfo(lobby);
-    if (data.users) {
-      setUsers(data.users);
+    if (userData) {
+      setUsers(userData);
     }
-    const dealer = data.users.find((user) => user.dealer);
+    const dealer = userData.find((user) => user.dealer);
     setDealer(dealer);
-    const gameData = await apiStartGame(lobby);
-
-    console.log('DATA', gameData);
 
     setGameIssues(gameData.issues);
     setActiveIssueName(gameData.issues[0].issue.issueName);
@@ -107,13 +116,27 @@ export const GamePage = () => {
 
   useEffect(() => {
     initData();
+    state.socket.on('userJoined', (message) => {
+      onUserJoinLeave(message);
+    });
+
+    state.socket.on('userLeft', (message) => {
+      onUserJoinLeave(message);
+    });
+
+    return () => {
+      state.socket.off('userJoined', (message) => {
+        onUserJoinLeave(message);
+      });
+
+      state.socket.off('userLeft', (message) => {
+        onUserJoinLeave(message);
+      });
+    };
   }, []);
 
   useEffect(() => {
     state.socket.on('activeIssueChanged', (message) => {
-      console.log('activeIssueChanged SOCKET');
-      console.log(message);
-
       changeActiveIssue(message);
     });
 
@@ -189,7 +212,13 @@ export const GamePage = () => {
         xs={4}
         className={classes.scorePartContainer}
       >
-        {users && <ScoreList users={users} issues={gameIssues} activeIssueName={activeIssueName} />}
+        {users && (
+          <ScoreList
+            users={users}
+            issues={gameIssues}
+            activeIssueName={activeIssueName}
+          />
+        )}
         {users && <ObserverList users={users} />}
       </Grid>
     </Grid>

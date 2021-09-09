@@ -34,6 +34,11 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   const { state, dispatch } = useContext(AppContext);
   const router = useRouter();
 
+  const onUserJoinLeave = (users: Array<IUser>) => {
+    setUsers(users);
+    console.log('Lobby Dealer join/left user');
+  };
+
   const initData = async () => {
     const data = await apiGetLobbyInfo(router.query.lobby);
 
@@ -57,8 +62,8 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   });
 
   const onLobbyEntrance = () => {
-    console.log('USER Avatar', state.avatar,);
-    
+    console.log('USER Avatar', state.avatar);
+
     const message = userCreate(
       router.query.lobby,
       state.username,
@@ -101,24 +106,52 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
     } else {
       onLobbyEntrance();
     }
+
+    state.socket.on('userJoined', (message) => {
+      onUserJoinLeave(message);
+    });
+
+    state.socket.on('userLeft', (message) => {
+      onUserJoinLeave(message);
+    });
+
+    return () => {
+      state.socket.off('userJoined', (message) => {
+        onUserJoinLeave(message);
+      });
+
+      state.socket.off('userLeft', (message) => {
+        onUserJoinLeave(message);
+      });
+    };
   }, []);
 
   const onRemove = (user: IUser) => {
     setIsOpenKickUser(true);
-    setDeletedUser(user)
-    console.log(user)
-  }
+    setDeletedUser(user);
+    console.log(user);
+  };
 
   const onOpenPopUp = (isOpen: boolean) => {
     setIsOpenKickUser(isOpen);
-  }
+  };
 
   return (
-    <div className={state.dealer ? classes.containerDealer : classes.containerUser}>
+    <div
+      className={state.dealer ? classes.containerDealer : classes.containerUser}
+    >
       <Grid container style={{ height: '100%' }}>
-        {state.dealer && users && <LobbyDealer users={users} onRemove={onRemove}/>}
-        {!state.dealer && users && <LobbyUser users={users} onRemove={onRemove}/>}
-        {deletedUser && <KickPlayerPopup isOpenKickUser={isOpenKickUser} onOpenPopUp={onOpenPopUp} deletedUser={deletedUser}/>}
+        {state.dealer &&
+        users && <LobbyDealer users={users} onRemove={onRemove} />}
+        {!state.dealer &&
+        users && <LobbyUser users={users} onRemove={onRemove} />}
+        {deletedUser && (
+          <KickPlayerPopup
+            isOpenKickUser={isOpenKickUser}
+            onOpenPopUp={onOpenPopUp}
+            deletedUser={deletedUser}
+          />
+        )}
         <Grid item xs={12} md={3} sm={5} className={classes.chatPartContainer}>
           {chatMessages && <Chat chatMessages={chatMessages} />}
           {!chatMessages && <Chat chatMessages={chatMessages} />}
