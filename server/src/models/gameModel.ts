@@ -6,6 +6,7 @@ import {
   IPlayerChoice,
   IGameSettingsFromClient,
   IGamePlayer,
+  IIssue,
 } from './interfaces';
 
 export const nonVoted = 999;
@@ -28,7 +29,7 @@ class Game {
 
   gameInit = (props: GameInitProps): void => {
     props.client.issues.forEach((issue) => {
-      const players = [] as Array<IGamePlayer>
+      const players = [] as Array<IGamePlayer>;
       props.playerIds.forEach((player) => {
         if (player) {
           const newPlayer = {
@@ -162,6 +163,28 @@ class Game {
 
   getCardTurnStatus = (): boolean => {
     return this.card.cardTurn;
+  };
+
+  addNewIssue = (issue: IIssue, playerIds: Array<string>): void => {
+    const players = [] as Array<IGamePlayer>;
+    playerIds.forEach((player) => {
+      if (player) {
+        const newPlayer = {
+          player: player,
+          choice: 0,
+        };
+        players.push(newPlayer);
+      }
+    });
+    if (players.length) {
+      const newIssue = {
+        issue: issue,
+        players: players,
+        score: [],
+        totalScore: 0,
+      };
+      this.issues.push(newIssue);
+    }
   };
 }
 

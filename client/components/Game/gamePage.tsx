@@ -114,6 +114,10 @@ export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
     });
   };
 
+  const newIssueAdded = (newIssue: Array<IGamePageIssue>) => {
+    setGameIssues(newIssue);
+  };
+
   useEffect(() => {
     initData();
     state.socket.on('userJoined', (message) => {
@@ -124,6 +128,10 @@ export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
       onUserJoinLeave(message);
     });
 
+    state.socket.on('newGameIssue', (message) => {
+      newIssueAdded(message);
+    });
+
     return () => {
       state.socket.off('userJoined', (message) => {
         onUserJoinLeave(message);
@@ -131,6 +139,10 @@ export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
 
       state.socket.off('userLeft', (message) => {
         onUserJoinLeave(message);
+      });
+
+      state.socket.off('newGameIssue', (message) => {
+        newIssueAdded(message);
       });
     };
   }, []);

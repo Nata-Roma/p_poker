@@ -60,6 +60,7 @@ export const GameDealer: FC<GameDealerProps> = ({
 
   const onIssueCreate = (newIssue: IGameIssue) => {
     console.log(newIssue);
+    state.socket.emit('addNewGameIssue', {roomId: lobby, newIssue})
     onAddCloseIssue();
   };
 
