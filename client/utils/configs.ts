@@ -57,7 +57,7 @@ export const doubleNum_Seq = [ 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 ];
 
 export const maxCardNumber = 9;
 export const minCardNumber = 3;
-export const nonVoted = 999;
+export const nonVoted = 999; //if pot used or player do not want / cannot vote at all
 
 export const sequences = [
   {

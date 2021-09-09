@@ -1,11 +1,13 @@
 import { Typography } from '@material-ui/core';
 import BlockIcon from '@material-ui/icons/Block';
 import useStylesUserCard from '@styles/userCard.style';
+import clsx from 'clsx';
 import { FC } from 'react';
 import { UserCardProps } from 'utils/interfaces';
 
 export const UserCard:FC<UserCardProps> = ({ user, observer, score, onRemoveUser }) => {
   const classes = useStylesUserCard();
+  const observerRole = clsx(classes.avatar, observer && classes.avatarObserver)
 
   const onKickUser = () => {
     onRemoveUser(user);
@@ -14,11 +16,7 @@ export const UserCard:FC<UserCardProps> = ({ user, observer, score, onRemoveUser
   return (
     <div className={classes.container}>
       <div
-        className={
-          observer
-            ? `${classes.avatar} ${classes.avatarObserver}`
-            : classes.avatar
-        }
+        className={observerRole}
       >
         {user.avatar && (
           <div
