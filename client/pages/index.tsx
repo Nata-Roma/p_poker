@@ -33,7 +33,6 @@ interface HomePageProps {
 // }
 
 const HomePage = ({ rooms }: HomePageProps) => {
-  console.log(rooms);
   
   return (
     <div>

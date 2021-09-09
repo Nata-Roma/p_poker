@@ -26,20 +26,26 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users, onRemove }) => {
     router.push('/');
   };
 
-  state.socket.on('userJoined', (message) => {
-    setUserArr(message);
-    console.log('Lobby Users join user', message);
-  });
+  // state.socket.on('userJoined', (message) => {
+  //   setUserArr(message);
+  //   console.log('Lobby Users join user', message);
+  // });
 
-  state.socket.on('userLeft', (message) => {
-    setUserArr(message);
-    console.log('Lobby user left', message);
-  });
+  // state.socket.on('userLeft', (message) => {
+  //   setUserArr(message);
+  //   console.log('Lobby user left', message);
+  // });
 
-  state.socket.on('gameStarted', (message) => {
+  const gameStart = () => {
     router.push(`/${lobby}/game`);
-    console.log('Go to Game Page', message);
-  });
+    console.log('Go to Game Page');
+  };
+
+  const gameFinish = (message: string) => {
+    console.log('gameOver', message);
+    state.socket.emit('gameOverFinish', { roomId: lobby });
+    router.push('/');
+  };
 
   useEffect(
     () => {
@@ -49,10 +55,28 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users, onRemove }) => {
     [ userArr ],
   );
 
+  useEffect(() => {
+    state.socket.on('gameOver', (message) => {
+      gameFinish(message);
+    });
+    state.socket.on('gameStarted', (message) => {
+      gameStart();
+    });
+
+    return () => {
+      state.socket.off('gameOver', (message) => {
+        gameFinish(message);
+      });
+      state.socket.off('gameStarted', (message) => {
+        gameStart();
+      });
+    };
+  });
+
   const onRemoveUser = (user: IUser) => {
     onRemove(user);
-    console.log(user)
-  }
+    console.log(user);
+  };
 
   return (
     <Grid
@@ -94,10 +118,12 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users, onRemove }) => {
         </Button>
       </Grid>
       <Grid item container>
-        {userArr && <MemberList users={userArr} onRemoveUser={onRemoveUser} />}
+        {users && <MemberList users={users} onRemoveUser={onRemoveUser} />}
       </Grid>
       <Grid item container>
-        {userArr && <ObserverList users={userArr} onRemoveUser={onRemoveUser} />}
+        {users && (
+          <ObserverList users={users} onRemoveUser={onRemoveUser} />
+        )}
       </Grid>
     </Grid>
   );

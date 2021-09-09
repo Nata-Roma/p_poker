@@ -48,12 +48,12 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   const [ loading, setLoading ] = useState(false);
   const { state, dispatch } = useContext(AppContext);
 
-  state.socket.on('connect', () => {});
+  
 
-  state.socket.on('roomList', (message) => {
-    setRoomList(message);
-  });
-
+  const onRoomList = (rooms: Array<string>) => {
+    setRoomList(rooms);
+  }
+  
   const goToLobby = (id: string) => {
     const userId = appStorage.getSession();
     dispatch(setUserId(userId));
@@ -152,6 +152,20 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       state.socket.auth.userId = session;
     }
     state.socket.disconnect().connect();
+
+    state.socket.on('roomList', (message) => {
+      onRoomList(message)
+    });
+
+    state.socket.on('connect', () => {});
+
+    return () => {
+      state.socket.off('roomList', (message) => {
+        onRoomList(message)
+      });
+
+      state.socket.off('connect', () => {});
+    }
   }, []);
 
   return (
