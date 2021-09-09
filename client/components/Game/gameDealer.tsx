@@ -33,10 +33,15 @@ export const GameDealer: FC<GameDealerProps> = ({
   const [ title, setTitle ] = useState<string>();
 
   const onRoomLeave = () => {
-    state.socket.emit('leaveRoom', {
+    state.socket.emit('leaveGame', {
       roomId: lobby,
       userId: state.userId,
     });
+  };
+
+  const gameFinish = (message: string) => {
+    console.log('gameOver', message);
+    state.socket.emit('gameOverFinish', { roomId: lobby });
     router.push('/');
   };
 
@@ -50,16 +55,16 @@ export const GameDealer: FC<GameDealerProps> = ({
     [ gameIssues ],
   );
 
-  // useEffect(() => {
-  //   state.socket.on('gameOver', (message => {
-  //     console.log('gameOver');
-  //   }))
-  //   return () => {
-  //     state.socket.off('gameOver', (message => {
-  //       console.log('gameOver');
-  //     }))
-  //   }
-  // })
+  useEffect(() => {
+    state.socket.on('gameOver', (message) => {
+      gameFinish(message);
+    });
+    return () => {
+      state.socket.off('gameOver', (message) => {
+        gameFinish(message);
+      });
+    };
+  }, []);
 
   return (
     <div>

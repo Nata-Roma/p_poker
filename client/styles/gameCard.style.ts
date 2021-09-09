@@ -37,6 +37,7 @@ export const useStylesGameCard = (props) =>
         height: props.ratio * props.width,
         position: 'relative',
         borderRadius: 10,
+        backgroundColor: '#eee'
       },
       cardCover: {
         width: '100%',
@@ -64,9 +65,10 @@ export const useStylesGameCard = (props) =>
         height: '100%',
       },
       emptyCardIcon: {
-        fontSize: '5rem',
+        fontSize: '4rem',
         color: theme.palette.primary.main,
         cursor: 'pointer',
+        marginBottom: theme.spacing(1),
       },
       disabledCardIcon: {
         color: theme.palette.grey[500],

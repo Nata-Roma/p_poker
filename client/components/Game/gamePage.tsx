@@ -35,12 +35,15 @@ export const GamePage = () => {
     state.socket.emit('changeActiveIssue', { roomId: lobby, issueName });
   };
 
-  const changeActiveIssue = (message:{issueName: string, gameIssues: Array<IGamePageIssue>}) => {
+  const changeActiveIssue = (message: {
+    issueName: string;
+    gameIssues: Array<IGamePageIssue>;
+  }) => {
     console.log('change', message.gameIssues);
     console.log(message);
     setActiveIssueName(message.issueName);
     setActiveCard('');
-    setGameIssues(message.gameIssues)
+    setGameIssues(message.gameIssues);
   };
 
   const onGameCardClick = (cardName: string, cardNumber: number) => {
@@ -99,14 +102,6 @@ export const GamePage = () => {
       roomId: lobby,
       issueName: activeIssueName,
     });
-    // state.socket.on('gameIssue', (message) => {
-    //   const issueIndex = gameIssues.findIndex(
-    //     (issue) => issue.issue.issueName === message.issue.issueName,
-    //   );
-    //   const newIssues = [ ...gameIssues ];
-    //   newIssues[issueIndex] = message;
-    //   setGameIssues(newIssues);
-    // });
   };
 
   useEffect(() => {
@@ -120,7 +115,7 @@ export const GamePage = () => {
 
       changeActiveIssue(message);
     });
-    
+
     return () =>
       state.socket.off('activeIssuechanged', (message) => {
         changeActiveIssue(message);
@@ -193,7 +188,7 @@ export const GamePage = () => {
         xs={4}
         className={classes.scorePartContainer}
       >
-        {users && <ScoreList users={users} />}
+        {users && <ScoreList users={users} issues={gameIssues} activeIssueName={activeIssueName} />}
       </Grid>
     </Grid>
   );

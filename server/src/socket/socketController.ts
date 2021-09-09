@@ -72,7 +72,7 @@ const socketServer = (httpServer) => {
           console.log('VOTING FINISHED');
           roomContoller.calculateIssueScore(roomId, playerChoice.issue);
           const gameIssues = roomContoller.getGameIssues(roomId);
-          
+
           io.in(roomId).emit('activeIssueChanged', {
             issueName: playerChoice.issue,
             gameIssues,
@@ -94,15 +94,15 @@ const socketServer = (httpServer) => {
       io.in(roomId).emit('activeIssueChanged', { issueName, gameIssues });
     });
 
-    socket.on('leaveGame', message  => {
-      const {roomId} = message;
+    socket.on('leaveGame', (message) => {
+      const { roomId } = message;
       roomContoller.gameOver(roomId);
       io.in(roomId).emit('gameOver', 'The end');
-    })
+    });
 
     socket.on('gameOverFinish', (message) => {
       socket.leave(message.roomId);
-    })
+    });
 
     // socket.on('disconnect', (message) => {
     //   console.log('Got disconnect!');

@@ -1,18 +1,28 @@
 import { Typography } from '@material-ui/core';
 import useStylesScoreCard from '@styles/scoreCard.style';
 import React, { useState } from 'react';
-import { IUser } from 'utils/interfaces';
+import { nonVoted } from 'utils/configs';
+import { IGamePagePlayer } from 'utils/interfaces';
 
 interface UserCardProps {
-  user: IUser;
+  player: IGamePagePlayer;
 }
 
-export const ScoreCard = ({ user }: UserCardProps) => {
+export const ScoreCard = ({ player }: UserCardProps) => {
   const classes = useStylesScoreCard();
-  const [ score, setScore ] = useState('10 SP');
+
   return (
     <div className={classes.container}>
-      <Typography variant="h5">{score}</Typography>
+      {player && (
+        <Typography variant="h5">
+          {player.choice === nonVoted || player.choice === 0 ? (
+            'unknown'
+          ) : (
+            `${player.choice} points`
+          )}
+        </Typography>
+      )}
+      {!player && <Typography variant="h5">unknown</Typography>}
     </div>
   );
 };

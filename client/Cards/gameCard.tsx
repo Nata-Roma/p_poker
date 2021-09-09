@@ -110,7 +110,7 @@ export const GameCard: FC<GameCardProps> = ({
           {!game &&
           empty && (
             <div className={classes.cardCover}>
-              <Grid container justifyContent="center">
+              <Grid container direction='column' alignItems='center'>
               <AddCircleIcon                
                 className={clsx(classes.emptyCardIcon, deckLength === maxCardNumber && classes.disabledCardIcon)}
                 onClick={onAddCard}

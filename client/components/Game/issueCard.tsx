@@ -8,6 +8,7 @@ import AddIcon from '@material-ui/icons/Add';
 import ClearIcon from '@material-ui/icons/Clear';
 import { useStylesIssueCard } from '@styles/issueCard.style';
 import { Grid } from '@material-ui/core';
+import clsx from 'clsx';
 
 interface IssueCardProps {
   issueName: string;
@@ -29,28 +30,18 @@ export const IssueCard: FC<IssueCardProps> = ({
   score,
 }) => {
   const classes = useStylesIssueCard();
+  const activeCard = clsx(classes.root, activeIssueName === issueName && classes.activeCard)
+  const activeText = clsx(classes.text, activeIssueName === issueName && classes.activeCard)
 
   return (
     <Card
-      className={
-        activeIssueName === issueName ? (
-          `${classes.root} ${classes.activeCard}`
-        ) : (
-          `${classes.root}`
-        )
-      }
+      className={activeCard}
       onClick={!addIssue ? () => onIssueClick(issueName) : null}
     >
       <Grid container justifyContent="space-between" alignItems="flex-start">
         <div className={classes.block}>
           <Typography
-            className={
-              activeIssueName === issueName ? (
-                `${classes.text} ${classes.activeCard}`
-              ) : (
-                classes.text
-              )
-            }
+            className={activeText}
             variant="h6"
           >
             {issueName === 'Create New Issue' ? (
@@ -69,13 +60,7 @@ export const IssueCard: FC<IssueCardProps> = ({
           {!(issueName === 'Create New Issue') && (
             <>
               <Typography
-                className={
-                  activeIssueName === issueName ? (
-                    `${classes.text} ${classes.activeCard}`
-                  ) : (
-                    classes.text
-                  )
-                }
+                className={activeText}
                 variant="h6"
                 align="right"
               >

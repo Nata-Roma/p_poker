@@ -1,18 +1,41 @@
 import { Grid, Typography } from '@material-ui/core';
 import useStylesScoreList from '@styles/scoreList.style';
-import React, { FC } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { roles } from 'utils/configs';
-import { IUser } from 'utils/interfaces';
+import { IGamePageIssue, IGamePagePlayer, IUser } from 'utils/interfaces';
 import { ScoreCard } from './scoreCard';
 import { UserGameCard } from './userGameCard';
-
+import AppContext from 'store/store';
 
 interface ScoreListProps {
   users: Array<IUser>;
+  issues: Array<IGamePageIssue>;
+  activeIssueName: string;
 }
 
-export const ScoreList: FC<ScoreListProps> = ({ users }) => {
+export const ScoreList: FC<ScoreListProps> = ({
+  users,
+  issues,
+  activeIssueName,
+}) => {
   const classes = useStylesScoreList();
+  const [ currentIssuePlayers, setCurrentIssuePlayers ] = useState<
+    Array<IGamePagePlayer>
+  >();
+  const { state } = useContext(AppContext);
+
+  useEffect(
+    () => {
+      const newIssue = issues?.find(
+        (issue) => issue.issue.issueName === activeIssueName,
+      );
+      if(newIssue) {
+        setCurrentIssuePlayers(newIssue.players);
+      }
+      
+    },
+    [ issues ],
+  );
 
   return (
     <div className={classes.container}>
@@ -31,9 +54,11 @@ export const ScoreList: FC<ScoreListProps> = ({ users }) => {
         </Typography>
       </Grid>
       {users &&
-        users.map(
-          (user) =>
-            !user.dealer &&
+        users.map((user) => {
+          const player = currentIssuePlayers?.find(
+            (pl) => pl.player === user.id,
+          );
+          return (
             user.userRole === roles.member && (
               <Grid
                 container
@@ -43,7 +68,7 @@ export const ScoreList: FC<ScoreListProps> = ({ users }) => {
                 key={user.id}
               >
                 <Grid item xl={6} xs={6} container justifyContent="center">
-                  <ScoreCard user={user} />
+                  <ScoreCard player={player} />
                 </Grid>
                 <Grid
                   item
@@ -56,8 +81,9 @@ export const ScoreList: FC<ScoreListProps> = ({ users }) => {
                   <UserGameCard user={user} observer={false} score={true} />
                 </Grid>
               </Grid>
-            ),
-        )}
+            )
+          );
+        })}
     </div>
   );
 };
