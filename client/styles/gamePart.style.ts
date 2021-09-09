@@ -49,6 +49,42 @@ const useStylesGamePart = makeStyles((theme: Theme) => ({
   statContainer: {
     paddingLeft: theme.spacing(1),
     paddingBottom: theme.spacing(2),
+  },
+  timerContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    // padding: theme.spacing(2),
+  },
+  timerContainerWrapper: {
+    padding: theme.spacing(2)
+  },
+  timeContainer: {
+    padding: theme.spacing(5),
+  },
+  timerBox: {
+    width: '148px',
+    height: '53px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: '4px'
+  },
+  timerText: {
+    fontSize: '34px',
+    fontWeight: 500
+  },
+  timerColon: {
+    fontSize: '20px',
+    fontWeight: 400,
+    padding: theme.spacing(1), 
+  },
+  btnTimer: {
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.secondary.dark,
+    fontSize: '17px',
+    marginTop: 'auto'
   }
 }));
 

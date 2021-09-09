@@ -81,6 +81,7 @@ export const GameDealer: FC<GameDealerProps> = ({
               <UserCard
                 user={dealer}
                 observer={dealer.userRole === roles.observer ? true : false}
+                onKickUser={() => {}}
               />
             )}
           </Grid>

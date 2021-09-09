@@ -9,6 +9,9 @@ import {
   IGamePageIssue,
   IStatistics,
   IUser,
+  ITimerState,
+  IActiveIssue,
+  GamePageProps
 } from 'utils/interfaces';
 import { GameCard } from '../../Cards/gameCard';
 import { cardDecks, nonVoted, roles, sequences } from 'utils/configs';
@@ -17,15 +20,7 @@ import { GamePlayer } from './gamePlayer';
 import { ScoreList } from './scoreList';
 import { ObserverList } from './observerList';
 
-export interface IActiveIssue {
-  issueName: string;
-  score: number;
-}
 
-interface GamePageProps {
-  gameData: IApiStartGame;
-  userData: Array<IUser>;
-}
 
 export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
   const classes = useStylesGame();
@@ -41,6 +36,7 @@ export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
   const [ activeCard, setActiveCard ] = useState<string>('');
   const [ dealer, setDealer ] = useState<IUser>();
   const [ springTitle, setSpringTitle ] = useState('');
+  const [ timer, setTimer ] = useState<ITimerState>({ minutes: 0, seconds: 0});
 
   const onUserJoinLeave = (users: Array<IUser>) => {
     setUsers(users);
@@ -82,6 +78,9 @@ export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
     setGameIssues(gameData.issues);
     setActiveIssueName(gameData.issues[0].issue.issueName);
     setSpringTitle(gameData.spring);
+    if(gameData.timer.isTimer) {
+      setTimer({ minutes: gameData.timer.minutes, seconds: gameData.timer.seconds});
+    }
 
     const seq = gameData.card.sequence;
     const currentSeq = sequences.find((item) => item.name === seq);
@@ -106,7 +105,7 @@ export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
       setCardPot(currentDeck.deck[currentDeck.deck.length - 1]);
     }
   };
-
+  console.log('timer', timer);
   const calculateIssueScore = () => {
     state.socket.emit('calcScore', {
       roomId: lobby,
@@ -175,6 +174,7 @@ export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
             dealer={dealer}
             gameIssues={gameIssues}
             activeIssueName={activeIssueName}
+            timer={timer}
           />
         )}
         <Grid container item>
