@@ -49,7 +49,7 @@ const socketServer = (httpServer) => {
     socket.on('leaveRoom', (message) => {
       console.log('SOCKET LEAVE', message);
       const { roomId, userId } = message;
-      socket.leave(message.roomId);
+      socket.leave(roomId);
       roomContoller.leaveUserFromRoom(roomId, userId);
       const users = roomContoller.getRoomUsers(roomId);
       socket.to(roomId).emit('userLeft', users);
@@ -103,6 +103,17 @@ const socketServer = (httpServer) => {
     socket.on('gameOverFinish', (message) => {
       socket.leave(message.roomId);
     });
+
+    socket.on('kickPlayerFromLobby', (message) => {
+      const { roomId, userId } = message;
+      socket.to(roomId).emit('userToBeKickedOff', userId);
+    });
+
+    // socket.on('userKickOff', (message) => {
+    //   const { roomId, userId } = message;
+    //   roomContoller.leaveUserFromRoom(roomId, userId);
+    //   socket.to(roomId).emit('userToBeKickedOff', userId);
+    // });
 
     // socket.on('disconnect', (message) => {
     //   console.log('Got disconnect!');

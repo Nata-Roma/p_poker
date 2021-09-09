@@ -29,32 +29,14 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   const classes = useStylesLobby();
   const [ chatMessages, setChatMessages ] = useState<Array<IChatMessage>>();
   const [ users, setUsers ] = useState<Array<IUser>>();
-  const [ isOpenKickUser, setIsOpenKickUser ] = useState(false);
-  const [ deletedUser, setDeletedUser ] = useState<IUser | null>(null);
   const { state, dispatch } = useContext(AppContext);
   const router = useRouter();
+  const { lobby } = router.query;
 
   const onUserJoinLeave = (users: Array<IUser>) => {
     setUsers(users);
     console.log('Lobby Dealer join/left user');
   };
-
-  const initData = async () => {
-    const data = await apiGetLobbyInfo(router.query.lobby);
-
-    if (data.chat.length) {
-      console.log('we have a chat!', data.chat);
-
-      setChatMessages(data.chat);
-    }
-    if (data.users) {
-      setUsers(data.users);
-    }
-  };
-
-  // state.socket.on('userJoined', (message) => {
-  //   setUsers(message);
-  // });
 
   state.socket.on('disconnected', () => {
     console.log('Disconnected!!!');
@@ -65,7 +47,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
     console.log('USER Avatar', state.avatar);
 
     const message = userCreate(
-      router.query.lobby,
+      lobby,
       state.username,
       state.userSurname,
       state.avatar,
@@ -77,13 +59,24 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   };
 
   const onLobbyReconnect = (user: IUser) => {
-    dispatch(setRoomId(router.query.lobby));
+    dispatch(setRoomId(lobby));
     dispatch(setUserId(user.id));
     dispatch(setUsername(user.username));
     dispatch(setUserSurname(user.userSurname));
     dispatch(setUserAvatar(user.avatar));
     dispatch(setUserRole(user.userRole));
     dispatch(setDealer(user.dealer));
+  };
+
+  const kickOffUser = (userId: string) => {
+    const userFound = state.userId === userId;
+    if (userFound) {
+      state.socket.emit('leaveRoom', {
+        roomId: lobby,
+        userId,
+      });
+      router.push('/');
+    }
   };
 
   useEffect(() => {
@@ -96,7 +89,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
 
     if (!state.username) {
       state.socket.emit('userRoomReconnect', {
-        roomId: router.query.lobby,
+        roomId: lobby,
         userId: appStorage.getSession(),
       });
       state.socket.on('reconnectToLobby', (message: IUser) => {
@@ -115,6 +108,10 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       onUserJoinLeave(message);
     });
 
+    state.socket.on('userToBeKickedOff', (message) => {
+      kickOffUser(message);
+    });
+
     return () => {
       state.socket.off('userJoined', (message) => {
         onUserJoinLeave(message);
@@ -123,35 +120,28 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       state.socket.off('userLeft', (message) => {
         onUserJoinLeave(message);
       });
+
+      state.socket.off('userToBeKickedOff', (message) => {
+        kickOffUser(message);
+      });
+  
     };
   }, []);
-
-  const onRemove = (user: IUser) => {
-    setIsOpenKickUser(true);
-    setDeletedUser(user);
-    console.log(user);
-  };
-
-  const onOpenPopUp = (isOpen: boolean) => {
-    setIsOpenKickUser(isOpen);
-  };
 
   return (
     <div
       className={state.dealer ? classes.containerDealer : classes.containerUser}
     >
       <Grid container style={{ height: '100%' }}>
-        {state.dealer &&
-        users && <LobbyDealer users={users} onRemove={onRemove} />}
-        {!state.dealer &&
-        users && <LobbyUser users={users} onRemove={onRemove} />}
-        {deletedUser && (
+        {state.dealer && users && <LobbyDealer users={users} />}
+        {!state.dealer && users && <LobbyUser users={users} />}
+        {/* {deletedUser && (
           <KickPlayerPopup
             isOpenKickUser={isOpenKickUser}
             onOpenPopUp={onOpenPopUp}
             deletedUser={deletedUser}
           />
-        )}
+        )} */}
         <Grid item xs={12} md={3} sm={5} className={classes.chatPartContainer}>
           {chatMessages && <Chat chatMessages={chatMessages} />}
           {!chatMessages && <Chat chatMessages={chatMessages} />}

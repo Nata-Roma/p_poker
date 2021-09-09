@@ -14,7 +14,6 @@ import {
   IssueData,
   issuePrevNext,
   IUser,
-  LobbyPartProps,
 } from 'utils/interfaces';
 import { ObserverList } from './observerList';
 import {
@@ -27,20 +26,26 @@ import {
 } from 'utils/configs';
 import { CardList } from './cardList';
 import { apiCreateGame } from 'services/apiServices';
+import KickPlayerPopup from './kickPlayerPopup';
 
-export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
+export interface LobbyDealerProps {
+  users: Array<IUser>;
+}
+
+export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
   const classes = useStylesLobbyPart();
   const { state } = useContext(AppContext);
   const router = useRouter();
   const { lobby } = router.query;
   const [ dealer, setDealer ] = useState<IUser>();
-  const [ userArr, setUserArr ] = useState<Array<IUser>>(users);
+  const [ isOpenKickUser, setIsOpenKickUser ] = useState(false);
   const [ gameSettings, setGameSettings ] = useState<IGameSettings>(
     initGameSettings,
   );
   const [ chosenDeck, setChosenDeck ] = useState<Array<string>>();
   const [ chosenSeq, setChosenSeq ] = useState<Array<number>>();
   const [ cardPot, setCardPot ] = useState('');
+  const [kickOffUser, setKickOffUser] = useState<IUser>();
 
   const onStartGameClick = async () => {
     console.log(gameSettings);
@@ -204,6 +209,13 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
     });
   };
 
+  const onDeleteUser = (user: IUser) => {
+    state.socket.emit('kickPlayerFromLobby', {
+      roomId: lobby,
+      userId: user.id,
+    });
+  }
+
   const gameFinish = (message: string) => {
     console.log('gameOver', message);
     state.socket.emit('gameOverFinish', { roomId: lobby });
@@ -258,8 +270,9 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
     [ chosenDeck ],
   );
 
-  const onRemoveUser = (user: IUser) => {
-    onRemove(user);
+  const onKickUser = (user: IUser) => {
+    setIsOpenKickUser(true);
+    setKickOffUser(user)
   };
 
   return (
@@ -285,6 +298,7 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
           <UserCard
             user={dealer}
             observer={dealer.userRole === roles.observer ? true : false}
+            onKickUser={onKickUser}
           />
         )}
       </Grid>
@@ -311,11 +325,11 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
         </Button>
       </Grid>
       <Grid item container>
-        {users && <MemberList users={users} onRemoveUser={onRemoveUser} />}
+        {users && <MemberList users={users} onKickUser={onKickUser} />}
       </Grid>
       <Grid item container>
         {users && (
-          <ObserverList users={users} onRemoveUser={onRemoveUser} />
+          <ObserverList users={users} onKickUser={onKickUser} />
         )}
       </Grid>
       <Grid item container>
@@ -343,6 +357,12 @@ export const LobbyDealer: FC<LobbyPartProps> = ({ users, onRemove }) => {
           cardPot={cardPot}
         />
       </Grid>
+      <KickPlayerPopup
+        isOpenKickUser={isOpenKickUser}
+        onClosePopUp={(isOpen: boolean) => setIsOpenKickUser(isOpen)}
+        user={kickOffUser}
+        onDeleteUser={onDeleteUser}
+      />
     </Grid>
   );
 };
