@@ -117,7 +117,6 @@ class Room {
       if (user.userRole === 'member') {
         return user.id;
       }
-      return null;
     });
     this.game.gameInit({ playerIds: players, client });
   };

@@ -8,7 +8,7 @@ const useStylesStatisticsCard = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       width: 115,
-      margin: theme.spacing(0, 0.5),
+      marginRight: theme.spacing(0, 1),
     },
   }),
 );

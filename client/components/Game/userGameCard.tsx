@@ -1,6 +1,7 @@
 import { Typography } from '@material-ui/core';
 import BlockIcon from '@material-ui/icons/Block';
 import useStylesUserGameCard from '@styles/userGameCard.style';
+import clsx from 'clsx';
 import { FC } from 'react';
 import { IUser } from 'utils/interfaces';
 
@@ -12,10 +13,11 @@ interface UserGameCardProps {
 
 export const UserGameCard: FC<UserGameCardProps> = ({ user, observer, score }) => {
   const classes = useStylesUserGameCard();
+  const observerView = clsx(classes.avatar, observer && classes.avatarObserver);
 
   return (
     <div className={classes.container}>
-      <div className={observer ? `${classes.avatar} ${classes.avatarObserver}` : classes.avatar}>
+      <div className={observerView}>
         {user.avatar && (
           <div
             className={classes.avatarImg}

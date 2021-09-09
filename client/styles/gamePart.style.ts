@@ -2,12 +2,12 @@ import { makeStyles, Theme } from '@material-ui/core';
 
 const useStylesGamePart = makeStyles((theme: Theme) => ({
   container: {
-    padding: '10px 10px 0',
+    padding: theme.spacing(2),
     height: '100%',
     boxShadow: '1px 0 3px rgba(0, 0, 0, 0.3)',
     [theme.breakpoints.down(700)]: {
       height: '100%',
-      paddingBottom: '20px',
+      paddingBottom: theme.spacing(2),
     },
   },
   btn: {
@@ -17,11 +17,12 @@ const useStylesGamePart = makeStyles((theme: Theme) => ({
     marginBottom: '20px',
   },
   issuesContainer: {
-    maxHeight: '30vh',
+    maxHeight: '40vh',
     width: 270,
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 0,
+    marginBottom: theme.spacing(2),
     overflowY: 'auto',
     '&::-webkit-scrollbar': {
       width: '8px',
@@ -45,6 +46,10 @@ const useStylesGamePart = makeStyles((theme: Theme) => ({
       maxHeight: '30vh',
     },
   },
+  statContainer: {
+    paddingLeft: theme.spacing(1),
+    paddingBottom: theme.spacing(2),
+  }
 }));
 
 export default useStylesGamePart;

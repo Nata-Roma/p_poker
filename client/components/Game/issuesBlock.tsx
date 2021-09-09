@@ -60,8 +60,8 @@ export const IssuesBlock: FC<IssuesBlockProps> = ({
           score={0}
         />
       </div>
-      <div>
-        <Typography variant="h5">Statistics:</Typography>
+      <div className={classes.statContainer}>
+        <Typography variant="h5" gutterBottom>Statistics:</Typography>
         {stat &&
           stat.map((item) => <StaticticsCard key={nanoid()} stat={item} />)}
       </div>

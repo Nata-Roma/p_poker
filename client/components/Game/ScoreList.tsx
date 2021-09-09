@@ -50,7 +50,7 @@ export const ScoreList: FC<ScoreListProps> = ({
           Scores:
         </Typography>
         <Typography variant="h6" align="center" gutterBottom>
-          Members:
+          Players:
         </Typography>
       </Grid>
       {users &&
@@ -66,6 +66,7 @@ export const ScoreList: FC<ScoreListProps> = ({
                 justifyContent="space-evenly"
                 alignItems="center"
                 key={user.id}
+                className={classes.playerContainer}
               >
                 <Grid item xl={6} xs={6} container justifyContent="center">
                   <ScoreCard player={player} />
