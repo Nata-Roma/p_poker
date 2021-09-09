@@ -12,6 +12,7 @@ import {
   InputLabel,
   NativeSelect,
 } from "@material-ui/core";
+import CreateIcon from '@material-ui/icons/Create';
 import { useStylesCreateIssuePopup } from "@styles/createIssuePopup.style";
 import { ChangeIssueProps } from "utils/interfaces";
 
@@ -23,9 +24,11 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
   const classes = useStylesCreateIssuePopup();
   const[priority, setPriority] = React.useState('low');
   const[issueName, setIssueName] = React.useState('');
+  const [open, setOpen] = React.useState(false);
 
   const changeIssue = () => {
-    setIssueChange(false);
+    // setIssueChange(false);
+    setOpen(false);
     onIssueChange({
       issueName,
       priority,
@@ -34,7 +37,8 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
   };
 
   const handleClose = () => {
-    setIssueChange(false);
+    // setIssueChange(false);
+    setOpen(false);
     setIssueName('');
   };
 
@@ -46,12 +50,17 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
     setIssueName(e.target.value);
   };
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
   const disabled = issueName.length < 3;
 
   return (
     <div>
+      <CreateIcon color="primary"  className={classes.btn} onClick={handleClickOpen} />
       <Dialog
-        open={issueChange}
+        open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >

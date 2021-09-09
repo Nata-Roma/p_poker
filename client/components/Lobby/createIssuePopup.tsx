@@ -12,6 +12,7 @@ import {
   InputLabel,
   NativeSelect,
 } from "@material-ui/core";
+import AddIcon from '@material-ui/icons/Add';
 import { useStylesCreateIssuePopup } from "@styles/createIssuePopup.style";
 import { CreateIssuePopupProps } from "utils/interfaces";
 
@@ -48,9 +49,9 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate }) => {
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleClickOpen} className={classes.btn}>
+      <AddIcon color="primary" onClick={handleClickOpen} className={classes.btn}>
         Create new Issue
-      </Button>
+      </AddIcon>
       <Dialog
         open={open}
         onClose={handleClose}

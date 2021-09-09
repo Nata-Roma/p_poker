@@ -94,6 +94,25 @@ const GameSettings: FC<GameSettingsProps> = ({
               gutterBottom
               className={classes.settingsLabel}
             >
+              Automatically let in all new participants if the game has already started:
+            </Typography>
+          </Grid>
+          <Grid item xl={6} xs={6}>
+            <Switch
+              color="primary"
+              // value={}
+              onChange={(e) => console.log(e)}
+            />
+          </Grid>
+        </Grid>
+        <Grid item container spacing={2}>
+          <Grid item xl={6} xs={6}>
+            <Typography
+              variant="subtitle1"
+              align="left"
+              gutterBottom
+              className={classes.settingsLabel}
+            >
               Number Sequence:
             </Typography>
           </Grid>
