@@ -32,7 +32,7 @@ export const UserGameCard: FC<UserGameCardProps> = ({ user, observer, score }) =
         )}
       </div>
       <Typography variant="body1">{user.username}{' '}{user.userSurname}</Typography>
-      <BlockIcon fontSize={score ? "medium" : "large"} />
+      {/* <BlockIcon fontSize={score ? "medium" : "large"} /> */}
     </div>
   );
 };

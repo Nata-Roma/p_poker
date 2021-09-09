@@ -27,6 +27,16 @@ import {
 import { CardList } from './cardList';
 import { apiCreateGame } from 'services/apiServices';
 import KickPlayerPopup from './kickPlayerPopup';
+import {
+  issueChangeEdit,
+  issueCreate,
+  issueDelete,
+  selectCard,
+  selectCardDeck,
+  selectCardSequence,
+  timeChange,
+  timerChange,
+} from './lobbyDealerHelpers';
 
 export interface LobbyDealerProps {
   users: Array<IUser>;
@@ -45,7 +55,7 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
   const [ chosenDeck, setChosenDeck ] = useState<Array<string>>();
   const [ chosenSeq, setChosenSeq ] = useState<Array<number>>();
   const [ cardPot, setCardPot ] = useState('');
-  const [kickOffUser, setKickOffUser] = useState<IUser>();
+  const [ kickOffUser, setKickOffUser ] = useState<IUser>();
 
   const onStartGameClick = async () => {
     console.log(gameSettings);
@@ -65,105 +75,50 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
 
   const onIssueCreate = (issue: IssueData) => {
     setGameSettings((prev) => {
-      const issues = [ ...prev.issues ];
-      issues.push({
-        issueName: issue.issueName,
-        priority: issue.priority,
-      });
-      return {
-        ...prev,
-        issues: issues,
-      };
+      return issueCreate(prev, issue);
     });
   };
 
-  const onIssueDelete = (issue: string) => {
+  const onIssueDelete = (issueName: string) => {
     setGameSettings((prev) => {
-      const issues = prev.issues.filter(
-        (issueItem) => issueItem.issueName !== issue,
-      );
-      return {
-        ...prev,
-        issues: issues,
-      };
+      return issueDelete(prev, issueName);
     });
   };
 
   const onIssueChangeEdit = (changedIssue: issuePrevNext) => {
     setGameSettings((prev) => {
-      const filteredIssues = prev.issues.filter(
-        (issue) => issue.issueName !== changedIssue.prevValue,
-      );
-      filteredIssues.push({
-        issueName: changedIssue.nextValue,
-        priority: changedIssue.priority,
-      });
-      return {
-        ...prev,
-        issues: filteredIssues,
-      };
+      return issueChangeEdit(prev, changedIssue);
     });
   };
 
   const onTimerChange = (isTimer: boolean) => {
     setGameSettings((prev) => {
-      const timer = { ...prev.timer };
-      if (isTimer) {
-        timer.isTimer = true;
-      } else {
-        timer.isTimer = false;
-        timer.minutes = 0;
-        timer.seconds = 0;
-      }
-      return {
-        ...prev,
-        timer: timer,
-      };
+      return timerChange(prev, isTimer);
     });
   };
 
   const onTimeChange = (timerData: string, dimension: string) => {
     setGameSettings((prev) => {
-      const timer = { ...prev.timer };
-      if (timer.isTimer) {
-        timer[dimension] = +timerData;
-      }
-      return {
-        ...prev,
-        timer: timer,
-      };
+      return timeChange(prev, timerData, dimension);
     });
   };
 
   const onSelectClick = (choice: string, selectName: string) => {
     setGameSettings((prev) => {
-      const card = { ...prev.card };
-      card[selectName] = choice;
-      return {
-        ...prev,
-        card: card,
-      };
+      return selectCard(prev, choice, selectName);
     });
 
-    const seq = sequences.filter((item) => item.name === choice);
-    if (seq.length) {
-      setChosenSeq(
-        Array.from(
-          { length: gameSettings.card.cardNumber },
-          (_, i) => seq[0].sequence[i],
-        ),
-      );
+    const cardSequence = selectCardSequence(
+      gameSettings.card.cardNumber,
+      choice,
+    );
+    if (cardSequence && cardSequence.length) {
+      setChosenSeq(cardSequence);
     }
 
-    const deck = cardDecks.filter((item) => item.name === choice);
-
-    if (deck.length) {
-      setChosenDeck(
-        Array.from(
-          { length: gameSettings.card.cardNumber },
-          (_, i) => deck[0].deck[i],
-        ),
-      );
+    const cardDeck = selectCardDeck(gameSettings.card.cardNumber, choice);
+    if (cardDeck && cardDeck.length) {
+      setChosenDeck(cardDeck);
     }
   };
 
@@ -188,6 +143,17 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
       if (card.cardNumber < maxCardNumber) {
         card.cardNumber++;
       }
+
+      const cardSequence = selectCardSequence(card.cardNumber, card.sequence);
+      if (cardSequence && cardSequence.length) {
+        setChosenSeq(cardSequence);
+      }
+
+      const cardDeck = selectCardDeck(card.cardNumber, card.cardDeck);
+      if (cardDeck && cardDeck.length) {
+        setChosenDeck(cardDeck);
+      }
+
       return { ...prev, card: card };
     });
   };
@@ -198,6 +164,17 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
       if (card.cardNumber > minCardNumber) {
         card.cardNumber--;
       }
+
+      const cardSequence = selectCardSequence(card.cardNumber, card.sequence);
+      if (cardSequence && cardSequence.length) {
+        setChosenSeq(cardSequence);
+      }
+
+      const cardDeck = selectCardDeck(card.cardNumber, card.cardDeck);
+      if (cardDeck && cardDeck.length) {
+        setChosenDeck(cardDeck);
+      }
+
       return { ...prev, card: card };
     });
   };
@@ -209,12 +186,17 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
     });
   };
 
+  const onKickUser = (user: IUser) => {
+    setIsOpenKickUser(true);
+    setKickOffUser(user);
+  };
+
   const onDeleteUser = (user: IUser) => {
     state.socket.emit('kickPlayerFromLobby', {
       roomId: lobby,
       userId: user.id,
     });
-  }
+  };
 
   const gameFinish = (message: string) => {
     console.log('gameOver', message);
@@ -222,7 +204,28 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
     router.push('/');
   };
 
+  useEffect(
+    () => {
+      const dealer = users?.find((user) => user.dealer);
+      setDealer(dealer);
+    },
+    [ users ],
+  );
   useEffect(() => {
+    setChosenSeq(
+      Array.from(
+        { length: gameSettings.card.cardNumber },
+        (_, i) => sequences[0].sequence[i],
+      ),
+    );
+
+    setChosenDeck(
+      Array.from(
+        { length: gameSettings.card.cardNumber },
+        (_, i) => cardDecks[0].deck[i],
+      ),
+    );
+
     state.socket.on('gameOver', (message) => {
       gameFinish(message);
     });
@@ -235,32 +238,6 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
 
   useEffect(
     () => {
-      const dealer = users?.find((user) => user.dealer);
-      setDealer(dealer);
-    },
-    [ users ],
-  );
-  useEffect(
-    () => {
-      setChosenSeq(
-        Array.from(
-          { length: gameSettings.card.cardNumber },
-          (_, i) => sequences[0].sequence[i],
-        ),
-      );
-
-      setChosenDeck(
-        Array.from(
-          { length: gameSettings.card.cardNumber },
-          (_, i) => cardDecks[0].deck[i],
-        ),
-      );
-    },
-    [ gameSettings.card.cardNumber ],
-  );
-
-  useEffect(
-    () => {
       const deckName = initGameSettings.card.cardDeck;
       const deck = cardDecks.find((item) => item.name === deckName).deck;
       if (deck) {
@@ -269,11 +246,6 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
     },
     [ chosenDeck ],
   );
-
-  const onKickUser = (user: IUser) => {
-    setIsOpenKickUser(true);
-    setKickOffUser(user)
-  };
 
   return (
     <Grid
@@ -328,9 +300,7 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
         {users && <MemberList users={users} onKickUser={onKickUser} />}
       </Grid>
       <Grid item container>
-        {users && (
-          <ObserverList users={users} onKickUser={onKickUser} />
-        )}
+        {users && <ObserverList users={users} onKickUser={onKickUser} />}
       </Grid>
       <Grid item container>
         <IssueList
