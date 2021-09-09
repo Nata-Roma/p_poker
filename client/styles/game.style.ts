@@ -34,6 +34,7 @@ const useStylesGame = makeStyles((theme: Theme) => createStyles({
     minHeight: 'calc(100vh - 60px)',
     display: 'flex',
     flexDirection: 'column',
+    flexWrap: 'nowrap',
     alignItems: 'center',
     padding: theme.spacing(0, 1),
     boxShadow:'1px 0 3px rgba(0, 0, 0, 0.3)',
