@@ -3,7 +3,6 @@ import useStylesLobby from '@styles/lobby.style';
 import { Chat } from 'components/Chat/chat';
 import { useRouter } from 'next/router';
 import { FC, useContext, useEffect, useState } from 'react';
-import { apiGetLobbyInfo } from 'services/apiServices';
 import {
   setDealer,
   setRoomId,
@@ -19,7 +18,6 @@ import appStorage from 'utils/storage';
 import { userCreate } from 'utils/userCreate';
 import { LobbyDealer } from './lobbyDealer';
 import { LobbyUser } from './lobbyUsers';
-import KickPlayerPopup from './kickPlayerPopup';
 
 interface LobbyProps {
   lobbyInfo: IApiGetLobbyInfo;
@@ -44,7 +42,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   });
 
   const onLobbyEntrance = () => {
-    console.log('USER Avatar', state.avatar);
 
     const message = userCreate(
       lobby,
@@ -135,13 +132,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       <Grid container style={{ height: '100%' }}>
         {state.dealer && users && <LobbyDealer users={users} />}
         {!state.dealer && users && <LobbyUser users={users} />}
-        {/* {deletedUser && (
-          <KickPlayerPopup
-            isOpenKickUser={isOpenKickUser}
-            onOpenPopUp={onOpenPopUp}
-            deletedUser={deletedUser}
-          />
-        )} */}
         <Grid item xs={12} md={3} sm={5} className={classes.chatPartContainer}>
           {chatMessages && <Chat chatMessages={chatMessages} />}
           {!chatMessages && <Chat chatMessages={chatMessages} />}
