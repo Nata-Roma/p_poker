@@ -28,16 +28,14 @@ export const users = [
 interface MemberListProps {
   users: Array<IUser>;
   from?: string;
-  onRemoveUser?: (user: IUser) => void;
+  onKickUser: (user: IUser) => void;
 }
 
-export const MemberList: FC<MemberListProps> = ({ users, onRemoveUser }) => {
+export const MemberList: FC<MemberListProps> = ({ users, onKickUser }) => {
   const classes = useStylesMemberList();
-  const isMember = users.filter((user) => !user.dealer).some((user) => user.userRole === roles.member);
-
-  const onRemoveUserFromMembers = (user: IUser) => {
-    onRemoveUser(user);
-  }
+  const isMember = users
+    .filter((user) => !user.dealer)
+    .some((user) => user.userRole === roles.member);
 
   return (
     <div className={classes.container}>
@@ -53,9 +51,13 @@ export const MemberList: FC<MemberListProps> = ({ users, onRemoveUser }) => {
               !user.dealer &&
               user.userRole === roles.member && (
                 <Grid item key={user.username}>
-                  <UserCard user={user} observer={false} onRemoveUser={onRemoveUserFromMembers}/>
+                  <UserCard
+                    user={user}
+                    observer={false}
+                    onKickUser={onKickUser}
+                  />
                 </Grid>
-              )
+              ),
           )}
       </Grid>
     </div>

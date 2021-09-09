@@ -132,31 +132,3 @@ export interface IStatistics {
   choice: number;
   ratio: number;
 }
-
-export interface UserCardProps {
-  user: IUser;
-  observer: boolean;
-  score?: boolean;
-  onRemoveUser?: (user: IUser) => void;
-}
-
-export interface KickPlayerProps {
-  isOpenKickUser: boolean;
-  onOpenPopUp: (isOpen: boolean) => void;
-  deletedUser: IUser;
-}
-
-export interface ObserverListProps {
-  users: Array<IUser>;
-  onRemoveUser?: (user: IUser) => void;
-}
-
-export interface LobbyPartProps {
-  users: Array<IUser>;
-  onRemove:(user: IUser) => void;
-}
-
-export interface LobbyPartProps {
-  users: Array<IUser>;
-  onRemove:(user: IUser) => void;
-}

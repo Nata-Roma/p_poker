@@ -6,17 +6,24 @@ import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'Cards/userCard';
 import AppContext from 'store/store';
-import { IUser, LobbyPartProps } from 'utils/interfaces';
+import { IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
 import { roles } from 'utils/configs';
+import KickPlayerPopup from './kickPlayerPopup';
 
-export const LobbyUser: FC<LobbyPartProps> = ({ users, onRemove }) => {
+
+export interface LobbyUserProps {
+  users: Array<IUser>;
+}
+
+export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
   const classes = useStylesLobbyPart();
   const { state } = useContext(AppContext);
   const router = useRouter();
   const { lobby } = router.query;
   const [ dealer, setDealer ] = useState<IUser>();
-  const [ userArr, setUserArr ] = useState<Array<IUser>>(users);
+  const [ isOpenKickUser, setIsOpenKickUser ] = useState(false);
+  const [kickOffUser, setKickOffUser] = useState<IUser>();
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -25,6 +32,10 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users, onRemove }) => {
     });
     router.push('/');
   };
+
+  const onDeleteUser = (user: IUser) => {
+
+  }
 
   // state.socket.on('userJoined', (message) => {
   //   setUserArr(message);
@@ -49,10 +60,10 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users, onRemove }) => {
 
   useEffect(
     () => {
-      const dealer = userArr.find((user) => user.dealer);
+      const dealer = users?.find((user) => user.dealer);
       setDealer(dealer);
     },
-    [ userArr ],
+    [ users ],
   );
 
   useEffect(() => {
@@ -62,6 +73,7 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users, onRemove }) => {
     state.socket.on('gameStarted', (message) => {
       gameStart();
     });
+    
 
     return () => {
       state.socket.off('gameOver', (message) => {
@@ -71,11 +83,11 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users, onRemove }) => {
         gameStart();
       });
     };
-  });
+  }, []);
 
-  const onRemoveUser = (user: IUser) => {
-    onRemove(user);
-    console.log(user);
+  const onKickUser = (user: IUser) => {
+    setIsOpenKickUser(true);
+    setKickOffUser(user)
   };
 
   return (
@@ -100,6 +112,7 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users, onRemove }) => {
           <UserCard
             user={dealer}
             observer={dealer.userRole === roles.observer ? true : false}
+            onKickUser={onKickUser}
           />
         )}
       </Grid>
@@ -118,13 +131,19 @@ export const LobbyUser: FC<LobbyPartProps> = ({ users, onRemove }) => {
         </Button>
       </Grid>
       <Grid item container>
-        {users && <MemberList users={users} onRemoveUser={onRemoveUser} />}
+        {users && <MemberList users={users} onKickUser={onKickUser} />}
       </Grid>
       <Grid item container>
         {users && (
-          <ObserverList users={users} onRemoveUser={onRemoveUser} />
+          <ObserverList users={users} onKickUser={onKickUser} />
         )}
       </Grid>
+      <KickPlayerPopup
+        isOpenKickUser={isOpenKickUser}
+        onClosePopUp={(isOpen: boolean) => setIsOpenKickUser(isOpen)}
+        user={kickOffUser}
+        onDeleteUser={onDeleteUser}
+      />
     </Grid>
   );
 };

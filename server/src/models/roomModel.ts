@@ -27,19 +27,12 @@ class Room {
 
   joinUser = (user: IUserData): void => {
     const userFoundIndex = this.findUser(user.id);
-    console.log('userFoundIndexInCreate', userFoundIndex);
     if (userFoundIndex >= 0) {
-      console.log('index > 0');
-
       const leftPart = this.users.slice(0, userFoundIndex);
       leftPart.push(user);
       const rightPart = this.users.slice(userFoundIndex + 1);
       this.users = leftPart.concat(rightPart);
-      console.log('left', leftPart);
-      console.log('right', rightPart);
-      console.log('user', user);
     } else {
-      console.log('index < 0');
       this.users.push(user);
     }
   };
