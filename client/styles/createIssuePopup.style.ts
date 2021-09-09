@@ -22,6 +22,6 @@ export const useStylesCreateIssuePopup = makeStyles((theme) => ({
     width: "100%",
   },
   btn: {
-    width: "190px",
+    cursor: 'pointer',
   }
 }));

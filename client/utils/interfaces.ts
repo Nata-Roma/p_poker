@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from 'react';
-
 export interface IUser {
   username: string;
   userSurname: string;
@@ -117,9 +115,7 @@ export interface IssueListProps {
 }
 
 export interface ChangeIssueProps {
-  issueChange: boolean;
   onIssueChange: (changedIssue: IssueData) => void;
-  setIssueChange: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface issuePrevNext {
