@@ -1,6 +1,7 @@
 import { Grid } from '@material-ui/core';
 import useStylesLobby from '@styles/lobby.style';
 import { Chat } from 'components/Chat/chat';
+import { ErrorPopup } from 'components/Error/errorPopup';
 import { useRouter } from 'next/router';
 import { FC, useContext, useEffect, useState } from 'react';
 import {
@@ -76,12 +77,22 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
 
   useEffect(() => {
     if (lobbyInfo.error === 'no room') {
-      router.push('/');
+      <ErrorPopup
+        isOpen={true}
+        message={'No Room found'}
+        onClosePopup={router.push('/404')}
+      />;
+      // router.push('/404');
     } else {
       if (lobbyInfo.error === 'no users') {
         if (!state.dealer) {
           console.log('no users');
-          kickOffUser(state.userId);
+          <ErrorPopup
+            isOpen={true}
+            message={'No Room found'}
+            onClosePopup={kickOffUser(state.userId)}
+          />;
+          // kickOffUser(state.userId);
         }
       }
 
@@ -98,8 +109,12 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
           userId: appStorage.getSession(),
         });
         state.socket.on('reconnectToLobby', (message: IUser) => {
-          onLobbyReconnect(message);
-          onLobbyEntrance();
+          if (!state.username) {
+            router.push('/404');
+          } else {
+            onLobbyReconnect(message);
+            onLobbyEntrance();
+          }
         });
       } else {
         onLobbyEntrance();
