@@ -1,6 +1,6 @@
 import Lobby from 'components/Lobby/lobby';
 import { FC } from 'react';
-import { apiGetLobbyInfo } from 'services/apiServices';
+import { apiGetLobbyChats, apiGetLobbyUsers } from 'services/apiServices';
 import { IApiGetLobbyInfo } from 'utils/interfaces';
 
 interface LobbyPageProps {
@@ -17,15 +17,44 @@ const LobbyPage: FC<LobbyPageProps> = ({lobbyInfo}) => {
 
 
 export const getServerSideProps = async (context) => {
-  const { lobby } = context.params
+  const { lobby } = context.params;
 
-  const lobbyInfo = await apiGetLobbyInfo(lobby)
-
-  return {
-    props: {
-      lobbyInfo
-    },
-  };
+  try {
+    const users = await apiGetLobbyUsers(lobby);
+    const chat = await apiGetLobbyChats(lobby);
+    if(users.status === 200 && chat.status === 200) {
+      if( typeof users.data === 'string' ) {
+        return {
+          props: {
+            lobbyInfo: {
+              users: [],
+              chat: [],
+              error: 'no users'
+            }
+          }
+        }
+      }
+      return {
+        props: {
+          lobbyInfo: {
+            users: users.data,
+            chat: chat.data,
+            error: 'no errors'
+          }
+        }
+      }
+    }
+  } catch {
+    return {
+      props: {
+        lobbyInfo: {
+          users: [],
+          chat: [],
+          error: 'no room'
+        }
+      }
+    }
+  }
 };
 
 

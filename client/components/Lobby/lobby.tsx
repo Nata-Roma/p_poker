@@ -41,7 +41,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   });
 
   const onLobbyEntrance = () => {
-
     const message = userCreate(
       lobby,
       state.username,
@@ -76,6 +75,16 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   };
 
   useEffect(() => {
+    if (lobbyInfo.error === 'no room') {
+      router.push('/');
+    }
+    if (lobbyInfo.error === 'no users') {
+      if (!state.dealer) {
+        console.log('no users');
+        kickOffUser(state.userId);
+      }
+    }
+
     if (lobbyInfo.chat.length) {
       setChatMessages(lobbyInfo.chat);
     }
@@ -120,7 +129,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       state.socket.off('userToBeKickedOff', (message) => {
         kickOffUser(message);
       });
-  
     };
   }, []);
 

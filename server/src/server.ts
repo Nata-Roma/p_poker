@@ -26,26 +26,35 @@ app.post('/', (req, res) => {
 app.get('/rooms', (req, res) => {
   const rooms = roomContoller.getRoomIds();
   console.log('ROOMS', rooms);
-  res.json(rooms);
+  if (rooms.length) {
+    res.status(200).json(rooms);
+  } else {
+    res.status(404).json('No rooms found');
+  }
 });
 
 app.get('/chats/:room', (req, res) => {
   const room = req.params.room;
   console.log('ROOM request for chat', room);
-  if (room) {
-    const chat = roomContoller.getRoomChat(room);
-    res.json(chat);
-  } else res.json(null);
+  const chat = roomContoller.getRoomChat(room);
+  return res.status(200).json(chat);
 });
 
 app.get('/users/:room', (req, res) => {
   console.log('USERS request');
 
-  const room = req.params.room;
+  const roomId = req.params.room;
+  const room = roomContoller.getRoomId(roomId);
   if (room) {
-    const users = roomContoller.getRoomUsers(room);
-    res.json(users);
-  } else res.json(null);
+    const users = roomContoller.getRoomUsers(roomId);
+    if (users.length) {
+      res.status(200).json(users);
+    } else {
+      console.log('EMPTY ROOM');
+      // roomContoller.gameOver(room);
+      res.status(200).json('No users found');
+    }
+  } else res.status(404).json('No room found');
 });
 
 app.post('/rooms', (req, res) => {
@@ -55,9 +64,14 @@ app.post('/rooms', (req, res) => {
 });
 
 app.get('/gamestart/:room', (req, res) => {
-  const room = req.params.room;
-  const gameInitData = roomContoller.getGameInitData(room);
-  res.status(200).json(gameInitData);
+  const roomId = req.params.room;
+  const room = roomContoller.getRoomId(roomId);
+  if (room) {
+    const gameInitData = roomContoller.getGameInitData(room);
+    if (gameInitData) {
+      res.status(200).json(gameInitData);
+    } else res.status(200).json('No gameInitData');
+  } else res.status(404).json('No room found');
 });
 
 app.post('/gamestart/:room', (req, res) => {

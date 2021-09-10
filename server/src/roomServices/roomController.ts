@@ -29,10 +29,11 @@ class Rooms {
     return roomIds;
   };
 
-  getRoomId = (roomId: string): string => {
+  getRoomId = (roomId: string): string | null => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     console.log('get room by Id');
-    return roomId;
+    if(room) return roomId;
+    return null
   };
 
   getRoomUsers = (roomId: string): Array<IUserData> => {

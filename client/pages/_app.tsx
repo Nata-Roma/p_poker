@@ -12,6 +12,7 @@ import AppContext, { appStore } from 'store/store';
 import { useReducer } from 'react';
 import { appReducer } from 'store/reducer';
 import { Loader } from 'components/Loader/loader';
+import Error from "next/error";
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const [ state, dispatch ] = useReducer(appReducer, appStore);
@@ -53,6 +54,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         <AppContext.Provider value={{ state, dispatch }}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
+          {/* {pageProps.error ? <Error statusCode={pageProps.error.statusCode} title={pageProps.error.message} /> : } */}
           {isLoading ? <Loader /> : (
             <>
               <Component {...pageProps} />
