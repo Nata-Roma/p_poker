@@ -17,7 +17,7 @@ export const ObserverList: FC<ObserverListProps> = ({ users, onKickUser }) => {
   return (
     <div className={classes.container}>
       {isObserver ? (
-        <Typography variant="h4" align="center" gutterBottom>
+        <Typography variant="h5" gutterBottom className={classes.title}>
           Observers:
         </Typography>
       ) : null}

@@ -116,12 +116,7 @@ const socketServer = (httpServer) => {
       io.in(roomId).emit('newGameIssue', issues);
     });
 
-    // socket.on('userKickOff', (message) => {
-    //   const { roomId, userId } = message;
-    //   roomContoller.leaveUserFromRoom(roomId, userId);
-    //   socket.to(roomId).emit('userToBeKickedOff', userId);
-    // });
-
+    
     // socket.on('disconnect', (message) => {
     //   console.log('Got disconnect!');
     //   roomContoller.userDisconnect(socket.handshake.auth.username);

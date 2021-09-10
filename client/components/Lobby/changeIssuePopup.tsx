@@ -1,66 +1,72 @@
-import React, { ChangeEvent, FC } from "react";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Grid from "@material-ui/core/Grid";
+import { ChangeEvent, FC, useEffect, useState } from 'react';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Grid from '@material-ui/core/Grid';
 import {
   FormControl,
   FormHelperText,
   InputLabel,
   NativeSelect,
-} from "@material-ui/core";
+} from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
-import { useStylesCreateIssuePopup } from "@styles/createIssuePopup.style";
-import { ChangeIssueProps } from "utils/interfaces";
+import { useStylesCreateIssuePopup } from '@styles/createIssuePopup.style';
+import { IGameIssue } from 'utils/interfaces';
+
+export interface ChangeIssueProps {
+  onIssueChangeClick: (changedIssue: IGameIssue) => void;
+  issueSelected: IGameIssue;
+}
 
 const ChangeIssuePopup: FC<ChangeIssueProps> = ({
-  onIssueChange,
+  onIssueChangeClick,
+  issueSelected,
 }) => {
   const classes = useStylesCreateIssuePopup();
-  const[priority, setPriority] = React.useState('low');
-  const[issueName, setIssueName] = React.useState('');
-  const [open, setOpen] = React.useState(false);
+  const [ issue, setIssue ] = useState<IGameIssue>(issueSelected);
+  const [ open, setOpen ] = useState(false);
 
   const changeIssue = () => {
     setOpen(false);
-    onIssueChange({
-      issueName,
-      priority,
-    });
-    setIssueName('');
+    onIssueChangeClick(issue);
+    onClosePopup();
   };
 
-  const handleClose = () => {
+  const onClosePopup = () => {
     setOpen(false);
-    setIssueName('');
+    setIssue({ issueName: '', priority: '' });
   };
 
-  const handleChangePriority = (e: ChangeEvent<HTMLSelectElement>) => {
-    setPriority(e.target.value);
+  const onChangePriority = (e: ChangeEvent<HTMLSelectElement>) => {
+    setIssue((prev) => ({ ...prev, priority: e.target.value }));
   };
 
   const onChangeIssueName = (e: ChangeEvent<HTMLInputElement>) => {
-    setIssueName(e.target.value);
+    setIssue((prev) => ({ ...prev, issueName: e.target.value }));
   };
 
-  const handleClickOpen = () => {
+  const onOpenPopup = () => {
     setOpen(true);
   };
 
-  const disabled = issueName.length < 3;
+  const disabled = issue && issue.issueName.length < 1;
 
   return (
     <div>
-      <CreateIcon color="primary"  className={classes.btn} onClick={handleClickOpen} />
+      <CreateIcon
+        color="primary"
+        className={classes.btn}
+        onClick={onOpenPopup}
+      />
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={changeIssue}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title" style={{ textAlign: "center" }}>
+        <DialogTitle id="form-dialog-title" style={{ textAlign: 'center' }}>
           Change Issue
         </DialogTitle>
         <DialogContent>
@@ -70,7 +76,7 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
             id="name"
             label="Issue"
             fullWidth
-            value={issueName}
+            value={issue?.issueName}
             onChange={onChangeIssueName}
             required
           />
@@ -78,10 +84,10 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
             <InputLabel htmlFor="issue">Priority:</InputLabel>
             <NativeSelect
               fullWidth
-              value={priority}
-              onChange={handleChangePriority}
+              value={issue?.priority}
+              onChange={onChangePriority}
               inputProps={{
-                name: "issue",
+                name: 'issue',
               }}
             >
               <option value="low">Low</option>
@@ -106,7 +112,7 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
             </Grid>
             <Grid item xs={6}>
               <Button
-                onClick={handleClose}
+                onClick={changeIssue}
                 color="primary"
                 variant="outlined"
                 fullWidth
