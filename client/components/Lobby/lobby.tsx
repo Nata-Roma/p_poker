@@ -41,7 +41,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   });
 
   const onLobbyEntrance = () => {
-
     const message = userCreate(
       lobby,
       state.username,
@@ -76,52 +75,62 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   };
 
   useEffect(() => {
-    if (lobbyInfo.chat.length) {
-      setChatMessages(lobbyInfo.chat);
-    }
-    if (lobbyInfo.users) {
-      setUsers(lobbyInfo.users);
-    }
-
-    if (!state.username) {
-      state.socket.emit('userRoomReconnect', {
-        roomId: lobby,
-        userId: appStorage.getSession(),
-      });
-      state.socket.on('reconnectToLobby', (message: IUser) => {
-        onLobbyReconnect(message);
-        onLobbyEntrance();
-      });
+    if (lobbyInfo.error === 'no room') {
+      router.push('/');
     } else {
-      onLobbyEntrance();
-    }
+      if (lobbyInfo.error === 'no users') {
+        if (!state.dealer) {
+          console.log('no users');
+          kickOffUser(state.userId);
+        }
+      }
 
-    state.socket.on('userJoined', (message) => {
-      onUserJoinLeave(message);
-    });
+      if (lobbyInfo.chat.length) {
+        setChatMessages(lobbyInfo.chat);
+      }
+      if (lobbyInfo.users) {
+        setUsers(lobbyInfo.users);
+      }
 
-    state.socket.on('userLeft', (message) => {
-      onUserJoinLeave(message);
-    });
+      if (!state.username) {
+        state.socket.emit('userRoomReconnect', {
+          roomId: lobby,
+          userId: appStorage.getSession(),
+        });
+        state.socket.on('reconnectToLobby', (message: IUser) => {
+          onLobbyReconnect(message);
+          onLobbyEntrance();
+        });
+      } else {
+        onLobbyEntrance();
+      }
 
-    state.socket.on('userToBeKickedOff', (message) => {
-      kickOffUser(message);
-    });
-
-    return () => {
-      state.socket.off('userJoined', (message) => {
+      state.socket.on('userJoined', (message) => {
         onUserJoinLeave(message);
       });
 
-      state.socket.off('userLeft', (message) => {
+      state.socket.on('userLeft', (message) => {
         onUserJoinLeave(message);
       });
 
-      state.socket.off('userToBeKickedOff', (message) => {
+      state.socket.on('userToBeKickedOff', (message) => {
         kickOffUser(message);
       });
-  
-    };
+
+      return () => {
+        state.socket.off('userJoined', (message) => {
+          onUserJoinLeave(message);
+        });
+
+        state.socket.off('userLeft', (message) => {
+          onUserJoinLeave(message);
+        });
+
+        state.socket.off('userToBeKickedOff', (message) => {
+          kickOffUser(message);
+        });
+      };
+    }
   }, []);
 
   return (

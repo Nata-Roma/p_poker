@@ -1,28 +1,51 @@
 import { GamePage } from 'components/Game/gamePage';
-import { apiGetLobbyInfo, apiStartGame } from 'services/apiServices';
+import { FC } from 'react';
+import { apiGetLobbyUsers, apiStartGame } from 'services/apiServices';
 import { IApiStartGame, IUser } from 'utils/interfaces';
 
 interface GameProps {
   gameData: IApiStartGame,
   userData: Array<IUser>
+  errorStatus: string
 }
 
-const Game = ({gameData, userData}) => {
-  return <GamePage gameData={gameData} userData={userData} />;
+const Game: FC<GameProps> = ({gameData, userData, errorStatus}) => {
+  return <GamePage gameData={gameData} userData={userData} errorStatus={errorStatus} />;
 };
 
 export const getServerSideProps = async (context) => {
-  const { lobby } = context.params
+  const { lobby } = context.params;
 
-  const usersData = await apiGetLobbyInfo(lobby);
-  const gameData = await apiStartGame(lobby);
-
-  return {
-    props: {
-      userData: usersData.users,
-      gameData
-    },
-  };
+  try {
+    const userData = await apiGetLobbyUsers(lobby);
+    const gameData = await apiStartGame(lobby);
+    if(userData.status === 200 && gameData.status === 200) {
+      if( typeof userData.data === 'string' ) {
+        return {
+          props: {
+            userData: [],
+            gameData: [],
+            errorStatus: 'no users'
+          }
+        }
+      }
+      return {
+        props: {
+          userData: userData.data,
+          gameData: gameData.data,
+          errorStatus: 'no errors'
+        }
+      }
+    }
+  } catch {
+    return {
+      props: {
+        userData: [],
+        gameData: [],
+        errorStatus: 'no room'
+      }
+    }
+  }
 };
 
 export default Game;

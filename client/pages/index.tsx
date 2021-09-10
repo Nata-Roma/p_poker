@@ -42,13 +42,22 @@ const HomePage = ({ rooms }: HomePageProps) => {
 };
 
 export const getServerSideProps = async () => {
-  const rooms = await apiGetRooms()
-
-  return {
-    props: {
-      rooms: rooms
-    },
-  };
+  try {
+    const res = await apiGetRooms();
+    if( res.status === 200) {
+      return {
+        props: {
+          rooms: res.data
+        }
+      }
+    }
+  } catch {
+      return {
+        props: {
+          rooms: []
+        }
+      }
+    }
 };
 
 export default HomePage;

@@ -16,24 +16,30 @@ const socketServer = (httpServer) => {
     console.log('Socket userId', socket.handshake.auth.userId);
 
     socket.on('joinRoom', (message) => {
-      socket.join(message.roomId);
-      console.log('SOCKET JOIN');
       const { roomId, user } = message;
-      if (user.id) {
-        roomContoller.joinUserToRoom(roomId, user);
-        const rooms = roomContoller.getRoomIds();
-        const users = roomContoller.getRoomUsers(roomId);
-        socket.broadcast.emit('roomList', rooms);
-        io.in(roomId).emit('userJoined', users);
+      const room = roomContoller.getRoomId(roomId);
+      if (room) {
+        socket.join(message.roomId);
+        console.log('SOCKET JOIN');
+        if (user.id) {
+          roomContoller.joinUserToRoom(roomId, user);
+          const rooms = roomContoller.getRoomIds();
+          const users = roomContoller.getRoomUsers(roomId);
+          socket.broadcast.emit('roomList', rooms);
+          io.in(roomId).emit('userJoined', users);
+        }
       }
     });
 
     socket.on('userRoomReconnect', (message) => {
       const { roomId, userId } = message;
-      console.log('Socket REconnected', roomId, userId);
+      const room = roomContoller.getRoomId(roomId);
+      if (room) {
+        console.log('Socket REconnected', roomId, userId);
 
-      const user = roomContoller.getRoomUser(roomId, userId);
-      socket.emit('reconnectToLobby', user);
+        const user = roomContoller.getRoomUser(roomId, userId);
+        socket.emit('reconnectToLobby', user);
+      }
     });
 
     socket.on('sendMessage', (data) => {
@@ -47,12 +53,15 @@ const socketServer = (httpServer) => {
     });
 
     socket.on('leaveRoom', (message) => {
-      console.log('SOCKET LEAVE', message);
       const { roomId, userId } = message;
-      socket.leave(roomId);
-      roomContoller.leaveUserFromRoom(roomId, userId);
-      const users = roomContoller.getRoomUsers(roomId);
-      socket.to(roomId).emit('userLeft', users);
+      const room = roomContoller.getRoomId(roomId);
+      if (room) {
+        console.log('SOCKET LEAVE', message);
+        socket.leave(roomId);
+        roomContoller.leaveUserFromRoom(roomId, userId);
+        const users = roomContoller.getRoomUsers(roomId);
+        socket.to(roomId).emit('userLeft', users);
+      }
     });
 
     socket.on('startGame', (message) => {
@@ -116,7 +125,6 @@ const socketServer = (httpServer) => {
       io.in(roomId).emit('newGameIssue', issues);
     });
 
-    
     // socket.on('disconnect', (message) => {
     //   console.log('Got disconnect!');
     //   roomContoller.userDisconnect(socket.handshake.auth.username);

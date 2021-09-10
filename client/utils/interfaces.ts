@@ -42,6 +42,7 @@ export interface IChat {
 export interface IApiGetLobbyInfo {
   chat: Array<IChatMessage>;
   users: Array<IUser>;
+  error: string
 }
 export interface IssueData {
   issueName: string;
