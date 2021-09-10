@@ -109,13 +109,9 @@ export interface CreateIssuePopupProps {
 
 export interface IssueListProps {
   onIssueCreate: (issue: IGameIssue) => void;
-  onIssueDelete: (issue: string) => void;
-  onIssueChangeEdit: (issue: issuePrevNext) => void;
+  onIssueDelete: (issues: Array<IGameIssue>) => void;
+  onIssueEdit: (issues: Array<IGameIssue>) => void;
   issues: Array<IGameIssue>;
-}
-
-export interface ChangeIssueProps {
-  onIssueChange: (changedIssue: IssueData) => void;
 }
 
 export interface issuePrevNext {

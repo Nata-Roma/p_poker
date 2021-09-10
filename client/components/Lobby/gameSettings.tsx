@@ -44,7 +44,7 @@ const GameSettings: FC<GameSettingsProps> = ({
 
   return (
     <div style={{ width: '100%' }}>
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography variant="h5" align="center" gutterBottom className={classes.title}>
         Game Settings:
       </Typography>
       <Grid container spacing={2}>

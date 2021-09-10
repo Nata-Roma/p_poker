@@ -12,74 +12,99 @@ import ClearIcon from '@material-ui/icons/Clear';
 import { useStylesIssueList } from '@styles/issueList.style';
 import CreateIssuePopup from './createIssuePopup';
 import ChangeIssuePopup from './changeIssuePopup';
-import { IssueData, IssueListProps } from 'utils/interfaces';
+import { IGameIssue, IssueListProps } from 'utils/interfaces';
 
 const IssueList: FC<IssueListProps> = ({
   onIssueCreate,
   onIssueDelete,
-  onIssueChangeEdit,
+  onIssueEdit,
   issues,
 }) => {
   const classes = useStylesIssueList();
-  const[issueEdit, setIssueEdit ] = useState('');
-  const[issueChange, setIssueChange] = useState(false);
+  const [ issueSelected, setIssueSelected ] = useState<IGameIssue>();
 
-  const onIssueEdit = (e: ChangeEvent<HTMLSelectElement>) => {
-    setIssueEdit(e.target.value);
-    setIssueChange(true)
+  const onIssueSelect = (e: ChangeEvent<HTMLSelectElement>) => {
+    const issue = e.target.value;
+    const issueFound = issues.find((iss) => iss.issueName === issue);
+    if (issueFound) {
+      setIssueSelected(issueFound);
+    }
   };
 
-  const onIssueChange = (changedIssue: IssueData) => {
-    onIssueChangeEdit({
-      prevValue: issueEdit,
-      nextValue: changedIssue.issueName,
-      priority: changedIssue.priority
-    });
+  const onIssueChangeClick = (changedIssue: IGameIssue) => {
+    const issueIndex = issues.findIndex(
+      (issue) => issue.issueName === issueSelected.issueName,
+    );
+    const newIssues = [ ...issues ];
+    newIssues.splice(issueIndex, 1, changedIssue);
+    onIssueEdit(newIssues);
+    setIssueSelected({ issueName: '', priority: '' });
+  };
+
+  const onIssueDeleteClick = () => {
+    const issueIndex = issues.findIndex(
+      (issue) => issue.issueName === issueSelected.issueName,
+    );
+    const newIssues = [ ...issues ];
+    newIssues.splice(issueIndex, 1);
+    onIssueDelete(newIssues);
+    setIssueSelected({ issueName: '', priority: '' });
   }
 
   return (
-    <Grid item container spacing={2} justifyContent="center" >
-      <Typography variant="h4" align="center" gutterBottom>
+    <Grid item container spacing={2} justifyContent="center">
+      <Typography variant="h5" gutterBottom className={classes.title}>
         Issues:
       </Typography>
-      <Grid container item >
+      <Grid container item>
         <Grid container item className={classes.issueList}>
-        <FormControl className={classes.formControl}>
-          <InputLabel id="select-issue">Issues:</InputLabel>
-          <Select
-            labelId="select-issue"
-            value={issueEdit}
-            onChange={onIssueEdit}
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            {issues &&
-              issues.map((issue) => (
-                <MenuItem value={issue.issueName} key={issue.issueName}>
-                  {issue.issueName}
-                </MenuItem>
-              ))}
-          </Select>
-          <FormHelperText>select an issue to edit</FormHelperText>
-        </FormControl>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="select-issue">Issues:</InputLabel>
+            <Select
+              labelId="select-issue"
+              value={issueSelected && issueSelected.issueName ? issueSelected.issueName : ''}
+              onChange={onIssueSelect}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {issues &&
+                issues.map((issue) => (
+                  <MenuItem value={issue.issueName} key={issue.issueName}>
+                    {issue.issueName}
+                  </MenuItem>
+                ))}
+            </Select>
+            <FormHelperText>select an issue to edit</FormHelperText>
+          </FormControl>
         </Grid>
-      <Grid container item className={classes.gap} alignContent="center" xs={6}>
+        <Grid
+          container
+          item
+          className={classes.gap}
+          alignContent="center"
+          xs={6}
+        >
           <Grid item>
-          <CreateIssuePopup onIssueCreate={onIssueCreate} />
+            <CreateIssuePopup onIssueCreate={onIssueCreate} />
           </Grid>
           <Grid item>
-          <ClearIcon
-          color="error"
-          onClick={() => onIssueDelete(issueEdit)}
-          className={classes.deleteButton}
-        />
+            <ClearIcon
+              color="error"
+              onClick={onIssueDeleteClick}
+              className={classes.deleteButton}
+            />
           </Grid>
           <Grid item>
-          <ChangeIssuePopup issueChange={issueChange} onIssueChange={onIssueChange} setIssueChange={setIssueChange}/>
+            {issueSelected && issueSelected.issueName && (
+              <ChangeIssuePopup
+              onIssueChangeClick={onIssueChangeClick}
+                issueSelected={issueSelected}
+              />
+            )}
           </Grid>
         </Grid>
-        </Grid>
+      </Grid>
     </Grid>
   );
 };

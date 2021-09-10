@@ -1,5 +1,10 @@
 import { cardDecks, sequences } from 'utils/configs';
-import { IGameSettings, IssueData, issuePrevNext } from 'utils/interfaces';
+import {
+  IGameIssue,
+  IGameSettings,
+  IssueData,
+  issuePrevNext,
+} from 'utils/interfaces';
 
 export const issueCreate = (
   state: IGameSettings,
@@ -16,16 +21,13 @@ export const issueCreate = (
   };
 };
 
-export const issueDelete = (
+export const issueChanged = (
   state: IGameSettings,
-  issue: string,
+  newIssues: Array<IGameIssue>,
 ): IGameSettings => {
-  const issues = state.issues.filter(
-    (issueItem) => issueItem.issueName !== issue,
-  );
   return {
     ...state,
-    issues: issues,
+    issues: newIssues,
   };
 };
 

@@ -22,6 +22,12 @@ export const useStylesIssueList = makeStyles((theme: Theme) =>
     issueList: {
       flexGrow: 0,
       flexBasis: '16.666667%'
-    }
+    },
+    title: {
+      textAlign: 'left',
+      [theme.breakpoints.down('sm')]: {
+        textAlign: 'center',
+      },
+    },
   }),
 );

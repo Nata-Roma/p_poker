@@ -40,7 +40,7 @@ export const MemberList: FC<MemberListProps> = ({ users, onKickUser }) => {
   return (
     <div className={classes.container}>
       {isMember ? (
-        <Typography variant="h4" align="center" gutterBottom>
+        <Typography variant="h5" gutterBottom className={classes.title}>
           Members:
         </Typography>
       ) : null}
