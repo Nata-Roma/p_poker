@@ -109,6 +109,13 @@ const socketServer = (httpServer) => {
       socket.to(roomId).emit('userToBeKickedOff', userId);
     });
 
+    socket.on('addNewGameIssue', (message) => {
+      const { roomId, newIssue } = message;
+      roomContoller.addNewIssue(roomId, newIssue);
+      const issues = roomContoller.getGameIssues(roomId);
+      io.in(roomId).emit('newGameIssue', issues);
+    });
+
     // socket.on('userKickOff', (message) => {
     //   const { roomId, userId } = message;
     //   roomContoller.leaveUserFromRoom(roomId, userId);

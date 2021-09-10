@@ -6,6 +6,7 @@ import {
   IPlayerChoice,
   IUserData,
   IGameSettingsFromClient,
+  IIssue,
 } from './interfaces';
 
 class Room {
@@ -133,6 +134,15 @@ class Room {
   checkVoting = (issueName: string): Array<IGameIssue> | null => {
     return this.game.checkVoting(issueName);
   };
+
+  addNewIssue = (issue: IIssue): void => {
+    const playerIds = this.users.map((user) => {
+      if (user.userRole === 'member') {
+        return user.id;
+      }
+    });
+    this.game.addNewIssue(issue, playerIds)
+  }
 }
 
 export default Room;

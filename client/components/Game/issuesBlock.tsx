@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { Typography, Grid} from '@material-ui/core';
-import { IGamePageIssue, IGamePageIssueScore } from 'utils/interfaces';
+import { IGameIssue, IGamePageIssue, IGamePageIssueScore } from 'utils/interfaces';
 import useStylesGamePart from '@styles/gamePart.style';
 import { StaticticsCard } from './statisticsCard';
 import { nanoid } from 'nanoid';
@@ -10,19 +10,17 @@ interface IssuesBlockProps {
   issues: Array<IGamePageIssue>;
   onIssueClick: (issueName: string) => void;
   activeIssueName: string;
+  onAddIssue: () => void
 }
 
 export const IssuesBlock: FC<IssuesBlockProps> = ({
   issues,
   activeIssueName,
   onIssueClick,
+  onAddIssue
 }) => {
   const classes = useStylesGamePart();
   const [ stat, setStat ] = useState<Array<IGamePageIssueScore>>();
-
-  const createIssue = () => {
-    console.log('create issue');
-  };
 
   useEffect(
     () => {
@@ -56,7 +54,7 @@ export const IssuesBlock: FC<IssuesBlockProps> = ({
           issueName="Create New Issue"
           priority=""
           addIssue={true}
-          onAddIssue={createIssue}
+          onAddIssue={onAddIssue}
           score={0}
         />
       </div>
