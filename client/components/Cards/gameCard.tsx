@@ -85,11 +85,12 @@ export const GameCard: FC<GameCardProps> = ({
         </Grid>
       }
         <Grid item className={classes.cardContainer} onClick={game ? () => onGameCardClick(cardImg, cardNumber): () => {}}>
-          <CardMedia
+          {cardImg && <CardMedia
             className={classes.media}
             image={cardImg}
             title="Game Card"
-          />
+          />}
+          
           {game && (
             <div
               className={

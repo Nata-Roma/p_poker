@@ -4,7 +4,7 @@ import { Button, Typography, Grid } from '@material-ui/core';
 
 import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
-import { UserCard } from 'Cards/userCard';
+import { UserCard } from 'components/Cards/userCard';
 import NameGame from './nameGame';
 import GameSettings from './gameSettings';
 import IssueList from './issueList';
@@ -198,7 +198,6 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
   };
 
   const gameFinish = (message: string) => {
-    console.log('gameOver', message);
     state.socket.emit('gameOverFinish', { roomId: lobby });
     router.push('/');
   };

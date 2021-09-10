@@ -33,7 +33,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
 
   const onUserJoinLeave = (users: Array<IUser>) => {
     setUsers(users);
-    console.log('Lobby Dealer join/left user');
   };
 
   state.socket.on('disconnected', () => {
