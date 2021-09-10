@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@material-ui/core';
-import { GameCard } from 'Cards/gameCard';
+import { GameCard } from 'components/Cards/gameCard';
 import { FC } from 'react';
 import { nonVoted } from 'utils/configs';
 
@@ -22,7 +22,7 @@ export const CardList: FC<CardListProps> = ({
     <>
       <Typography variant="subtitle1">Add card</Typography>
       <Grid container>
-        <GameCard cardImg={cardPot} cardNumber={nonVoted} />
+        {cardPot && <GameCard cardImg={cardPot} cardNumber={nonVoted} />}
         {cardDeck &&
           sequence &&
           cardDeck.map((deck, i) => (

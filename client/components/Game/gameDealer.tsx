@@ -4,7 +4,7 @@ import { Typography, Grid, Box, Button } from '@material-ui/core';
 import { IGameIssue, IGamePageIssue, IUser } from 'utils/interfaces';
 
 import AppContext from 'store/store';
-import { UserCard } from 'Cards/userCard';
+import { UserCard } from 'components/Cards/userCard';
 import { roles } from 'utils/configs';
 import useStylesGamePart from '@styles/gamePart.style';
 import { IssuesBlock } from './issuesBlock';

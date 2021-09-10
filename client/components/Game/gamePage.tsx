@@ -10,7 +10,7 @@ import {
   IStatistics,
   IUser,
 } from 'utils/interfaces';
-import { GameCard } from '../../Cards/gameCard';
+import { GameCard } from '../Cards/gameCard';
 import { cardDecks, nonVoted, roles, sequences } from 'utils/configs';
 import { GameDealer } from './gameDealer';
 import { GamePlayer } from './gamePlayer';
