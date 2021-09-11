@@ -109,6 +109,12 @@ const socketServer = (httpServer) => {
       socket.to(roomId).emit('userToBeKickedOff', userId);
     });
 
+     socket.on('startTimer', (message) => {
+       console.log('TIMER IS STARTED');
+      const { roomId, userId } = message;     
+      socket.to(roomId).emit('timerStarted', userId);
+    });
+
     // socket.on('userKickOff', (message) => {
     //   const { roomId, userId } = message;
     //   roomContoller.leaveUserFromRoom(roomId, userId);

@@ -58,7 +58,8 @@ const useStylesGamePart = makeStyles((theme: Theme) => ({
     // padding: theme.spacing(2),
   },
   timerContainerWrapper: {
-    padding: theme.spacing(2)
+    paddingBottom: theme.spacing(3),
+    justifyContent: 'space-around'
   },
   timeContainer: {
     padding: theme.spacing(5),
@@ -72,7 +73,7 @@ const useStylesGamePart = makeStyles((theme: Theme) => ({
     borderRadius: '4px'
   },
   timerText: {
-    fontSize: '34px',
+    fontSize: '40px',
     fontWeight: 500
   },
   timerColon: {

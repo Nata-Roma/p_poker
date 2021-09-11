@@ -105,7 +105,7 @@ export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
       setCardPot(currentDeck.deck[currentDeck.deck.length - 1]);
     }
   };
-  console.log('timer', timer);
+
   const calculateIssueScore = () => {
     state.socket.emit('calcScore', {
       roomId: lobby,
@@ -144,7 +144,7 @@ export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
         changeActiveIssue(message);
       });
   }, []);
-
+  console.log('dealer from game page',  state.dealer);
   return (
     <Grid container className={classes.container}>
       <Grid
@@ -166,6 +166,7 @@ export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
             activeIssueName={activeIssueName}
             calculateIssueScore={calculateIssueScore}
             springTitle={springTitle}
+            timer={timer}
           />
         )}
         {!state.dealer &&

@@ -1,20 +1,20 @@
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState, useContext } from 'react';
-import { Typography, Grid, Box, Button, Card } from '@material-ui/core';
+import { Typography, Grid, Box, Button} from '@material-ui/core';
 import { IGamePageIssue, ITimerState, IUser } from 'utils/interfaces';
-import clsx from 'clsx';
 import AppContext from 'store/store';
 import { UserCard } from 'Cards/userCard';
 import { roles } from 'utils/configs';
 import { IssueCards } from './issueCards';
 import useStylesGamePart from '@styles/gamePart.style';
 import { IssuesBlock } from './issuesBlock';
+import { Timer } from './timer';
 
 interface GameDealerProps {
   dealer: IUser;
   gameIssues: Array<IGamePageIssue>;
   activeIssueName: string;
-  timer: ITimerState;
+  timer?: ITimerState;
 }
 
 export const GamePlayer: FC<GameDealerProps> = ({
@@ -65,7 +65,7 @@ export const GamePlayer: FC<GameDealerProps> = ({
       });
     };
   }, []);
-
+console.log('dealer', dealer);
   return (
     <>
       <Typography variant="h6" align="center" gutterBottom>
@@ -97,33 +97,7 @@ export const GamePlayer: FC<GameDealerProps> = ({
           </Grid>
         </Grid>
 
-        
-        <Grid container justifyContent="center" alignItems="center" className={classes.timerContainerWrapper}>        
-            <span className={classes.timerContainer}>
-              <div className={classes.timeContainer}>
-              <Box boxShadow={4} className={classes.timerBox}>
-              <Typography align="center" className={classes.timerText}> {timer.minutes}  </Typography>
-              <Typography align="center" className={classes.timerColon}>  :  </Typography>
-              <Typography align="center" className={classes.timerText}>  {timer.seconds} </Typography>
-              </Box>
-              </div>
-              <Button
-                    variant="contained"
-                    className={clsx(classes.btn, classes.btnTimer)}
-                    // onClick={onTimerStart}
-                  >
-                    Run Round
-              </Button>
-            </span>        
-          <Button
-                    variant="contained"
-                    className={clsx(classes.btn, classes.btnTimer)}
-                    // onClick={onTimerStart}
-                    
-                  >
-                   Next Issue
-              </Button>
-        </Grid>
+       { timer && <Timer timer={timer} dealer={dealer}/> }
 
 
         {/* <Grid container item className={classes.mBottom}>

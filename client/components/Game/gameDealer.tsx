@@ -1,13 +1,14 @@
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState, useContext } from 'react';
 import { Typography, Grid, Box, Button } from '@material-ui/core';
-import { IGamePageIssue, IUser } from 'utils/interfaces';
+import { IGamePageIssue, ITimerState, IUser } from 'utils/interfaces';
 
 import AppContext from 'store/store';
 import { UserCard } from 'Cards/userCard';
 import { roles } from 'utils/configs';
 import useStylesGamePart from '@styles/gamePart.style';
 import { IssuesBlock } from './issuesBlock';
+import { Timer } from './timer';
 
 interface GameDealerProps {
   dealer: IUser;
@@ -16,6 +17,7 @@ interface GameDealerProps {
   activeIssueName: string;
   calculateIssueScore: () => void;
   springTitle: string;
+  timer?: ITimerState;
 }
 
 export const GameDealer: FC<GameDealerProps> = ({
@@ -25,6 +27,7 @@ export const GameDealer: FC<GameDealerProps> = ({
   activeIssueName,
   calculateIssueScore,
   springTitle,
+  timer
 }) => {
   const classes = useStylesGamePart();
   const router = useRouter();
@@ -65,7 +68,8 @@ export const GameDealer: FC<GameDealerProps> = ({
       });
     };
   }, []);
-
+  console.log('dealer from gameDealer',  state.dealer);
+  
   return (
     <div>
       <Typography variant="h6" align="center" gutterBottom>
@@ -108,6 +112,7 @@ export const GameDealer: FC<GameDealerProps> = ({
             </Box>
           </Grid>
         </Grid>
+        { timer && <Timer timer={timer} dealer={dealer}/> }
         {gameIssues && (
           <IssuesBlock
             issues={gameIssues}
