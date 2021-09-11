@@ -15,8 +15,9 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import { useStylesCreateIssuePopup } from "@styles/createIssuePopup.style";
 import { CreateIssuePopupProps } from "utils/interfaces";
+import { checkValidateIssue, generateErrorName } from "./lobbyDealerHelpers";
 
-const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate }) => {
+const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate, issues }) => {
   const classes = useStylesCreateIssuePopup();
   const [priority, setPriority] = React.useState('low');
   const [issueName, setIssueName] = React.useState('');
@@ -47,6 +48,9 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate }) => {
     setIssueName(e.target.value);
   }
 
+  const disabled = checkValidateIssue(issueName, issues);
+  const errorInfo = generateErrorName(issueName, issues);
+
   return (
     <div>
       <AddIcon color="primary" onClick={handleClickOpen} className={classes.btn}>
@@ -68,6 +72,8 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate }) => {
             value={issueName}
             onChange={onChangeIssueName}
             required
+            error={disabled}
+            helperText={errorInfo}
           />
           <FormControl className={classes.select}>
             <InputLabel htmlFor="issue">Priority:</InputLabel>
@@ -89,7 +95,7 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate }) => {
         <DialogActions>
           <Grid container spacing={2}>
             <Grid item xs={6}>
-            <Button onClick={createHandleClose} color="primary" variant="contained" fullWidth>
+            <Button onClick={createHandleClose} color="primary" variant="contained" fullWidth disabled={disabled}>
             Create
           </Button>
             </Grid>

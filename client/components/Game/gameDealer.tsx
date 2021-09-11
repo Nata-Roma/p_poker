@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState, useContext } from 'react';
 import { Typography, Grid, Box, Button } from '@material-ui/core';
-import { IGameIssue, IGamePageIssue, IUser } from 'utils/interfaces';
+import { GameDealerProps, IGameIssue } from 'utils/interfaces';
 
 import AppContext from 'store/store';
 import { UserCard } from 'components/Cards/userCard';
@@ -9,15 +9,6 @@ import { roles } from 'utils/configs';
 import useStylesGamePart from '@styles/gamePart.style';
 import { IssuesBlock } from './issuesBlock';
 import { NewIssueGamePopup } from './newIssueGame';
-
-interface GameDealerProps {
-  dealer: IUser;
-  gameIssues: Array<IGamePageIssue>;
-  onIssueClick: (issueName: string) => void;
-  activeIssueName: string;
-  calculateIssueScore: () => void;
-  springTitle: string;
-}
 
 export const GameDealer: FC<GameDealerProps> = ({
   dealer,
@@ -135,7 +126,7 @@ export const GameDealer: FC<GameDealerProps> = ({
             onAddIssue= {onAddOpenIssue}
           />
         )}
-        <NewIssueGamePopup onIssueCreate={onIssueCreate} onAddCloseIssue={onAddCloseIssue} isOpen={isOpen} />
+        <NewIssueGamePopup onIssueCreate={onIssueCreate} onAddCloseIssue={onAddCloseIssue} isOpen={isOpen} issues={gameIssues.map((el) => ({issueName: el.issue.issueName, priority: el.issue.priority}))}/>
       </Grid>
     </div>
   );

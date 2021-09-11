@@ -14,16 +14,13 @@ import {
 } from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
 import { useStylesCreateIssuePopup } from '@styles/createIssuePopup.style';
-import { IGameIssue } from 'utils/interfaces';
-
-export interface ChangeIssueProps {
-  onIssueChangeClick: (changedIssue: IGameIssue) => void;
-  issueSelected: IGameIssue;
-}
+import { ChangeIssueProps, IGameIssue } from 'utils/interfaces';
+import { checkValidateIssue, generateErrorName } from './lobbyDealerHelpers';
 
 const ChangeIssuePopup: FC<ChangeIssueProps> = ({
   onIssueChangeClick,
   issueSelected,
+  issues
 }) => {
   const classes = useStylesCreateIssuePopup();
   const [ issue, setIssue ] = useState<IGameIssue>(issueSelected);
@@ -52,7 +49,8 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
     setOpen(true);
   };
 
-  const disabled = issue && issue.issueName.length < 1;
+  const disabled = checkValidateIssue(issue.issueName, issues);
+  const errorInfo = generateErrorName(issue.issueName, issues)
 
   return (
     <div>
@@ -79,6 +77,8 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
             value={issue?.issueName}
             onChange={onChangeIssueName}
             required
+            error={disabled}
+            helperText={errorInfo}
           />
           <FormControl className={classes.select}>
             <InputLabel htmlFor="issue">Priority:</InputLabel>

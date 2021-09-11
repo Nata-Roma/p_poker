@@ -106,6 +106,7 @@ export interface IApiStartGame {
 
 export interface CreateIssuePopupProps {
   onIssueCreate: (issue: IssueData) => void;
+  issues: Array<IGameIssue>;
 }
 
 export interface IssueListProps {
@@ -131,4 +132,26 @@ export interface UserCardProps {
   observer: boolean;
   score?: boolean;
   onKickUser: (user: IUser) => void;
+}
+
+export interface ChangeIssueProps {
+  onIssueChangeClick: (changedIssue: IGameIssue) => void;
+  issueSelected: IGameIssue;
+  issues: Array<IGameIssue>;
+}
+
+export interface NewIssueGamePopupProps {
+  onIssueCreate: (newIssue: IGameIssue) => void;
+  onAddCloseIssue: () => void;
+  isOpen: boolean;
+  issues: Array<IGameIssue>;
+}
+
+export interface GameDealerProps {
+  dealer: IUser;
+  gameIssues: Array<IGamePageIssue>;
+  onIssueClick: (issueName: string) => void;
+  activeIssueName: string;
+  calculateIssueScore: () => void;
+  springTitle: string;
 }

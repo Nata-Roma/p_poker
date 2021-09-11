@@ -86,7 +86,7 @@ const IssueList: FC<IssueListProps> = ({
           xs={6}
         >
           <Grid item>
-            <CreateIssuePopup onIssueCreate={onIssueCreate} />
+            <CreateIssuePopup onIssueCreate={onIssueCreate} issues={issues} />
           </Grid>
           <Grid item>
             <ClearIcon
@@ -100,6 +100,7 @@ const IssueList: FC<IssueListProps> = ({
               <ChangeIssuePopup
               onIssueChangeClick={onIssueChangeClick}
                 issueSelected={issueSelected}
+                issues={issues}
               />
             )}
           </Grid>

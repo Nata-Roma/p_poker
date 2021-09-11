@@ -125,3 +125,14 @@ export const selectCardDeck = (
 
   return chosenDeck;
 };
+
+export const checkValidateIssue = (name: string, issues: IssueData[]): boolean => {
+    const isValid = (issues && issues.some((issue) => issue.issueName === name)) || name.length < 1;
+    return isValid;
+}
+
+export const generateErrorName = (name: string, issues: IssueData[]): string => {
+  const errorLength = name.length < 1 && 'the name must be longer than 1 character';
+  const errorName = checkValidateIssue(name, issues) && 'there is an issue with this name, change the name';
+  return  errorLength || errorName;
+}
