@@ -125,3 +125,10 @@ export interface IStatistics {
   choice: number;
   ratio: number;
 }
+
+export interface UserCardProps {
+  user: IUser;
+  observer: boolean;
+  score?: boolean;
+  onKickUser: (user: IUser) => void;
+}
