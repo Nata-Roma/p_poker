@@ -51,7 +51,6 @@ app.get('/users/:room', (req, res) => {
       res.status(200).json(users);
     } else {
       console.log('EMPTY ROOM');
-      // roomContoller.gameOver(room);
       res.status(200).json('No users found');
     }
   } else res.status(404).json('No room found');
@@ -80,11 +79,6 @@ app.post('/gamestart/:room', (req, res) => {
   roomContoller.gameInit(room, req.body);
   res.status(201).json('created');
 });
-
-// app.post('/users', (req, res) => {
-//   console.log(req.body);
-//   res.status(201).json(req.body);
-// })
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`);

@@ -81,7 +81,7 @@ class Room {
     return -1;
   };
 
-  getGameId = () => {
+  getGameId = (): string => {
     return this.game.getGameId();
   };
 
@@ -107,7 +107,7 @@ class Room {
     return issue;
   };
 
-  gameInit = (client: IGameSettingsFromClient) => {
+  gameInit = (client: IGameSettingsFromClient): void => {
     const players = this.users.map((user) => {
       if (user.userRole === 'member') {
         return user.id;
@@ -120,7 +120,7 @@ class Room {
     return this.game.getGameInitData();
   };
 
-  calculateIssueScore = (issueName: string) => {
+  calculateIssueScore = (issueName: string): void => {
     this.game.calculateIssueScore(issueName);
   };
 

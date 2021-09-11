@@ -26,7 +26,7 @@ interface GameCardProps {
   deckLength?: number;
   onGameCardClick?: (cardName: string, cardNumber: number) => void
   activeCard?: string
-  voting: boolean
+  voting?: boolean
 }
 
 export const GameCard: FC<GameCardProps> = ({

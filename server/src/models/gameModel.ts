@@ -82,7 +82,7 @@ class Game {
     }
   };
 
-  calculateIssueScore = (issueName: string) => {
+  calculateIssueScore = (issueName: string): void => {
     const gameIssue = this.issues.find(
       (issue) => issue.issue.issueName === issueName,
     );
@@ -189,7 +189,7 @@ class Game {
 
   getTimer = (): IGameTimer => {
     return this.timer;
-  }
+  };
 }
 
 export default Game;
