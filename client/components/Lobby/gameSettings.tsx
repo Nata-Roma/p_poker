@@ -141,6 +141,8 @@ const GameSettings: FC<GameSettingsProps> = ({
           </Grid>
           <Grid container item xl={6} xs={6}>
             <TextField
+              error={timer.minutes > 3 ? true : false}
+              helperText={timer.minutes > 3 ? "Enter 3 or less" : ''} 
               type="number"
               label="minutes"
               className={classes.timerInput}
@@ -150,6 +152,8 @@ const GameSettings: FC<GameSettingsProps> = ({
               onChange={(e) => onTimeChange(e.target.value, e.target.name)}
             />
             <TextField
+              error={timer.minutes === 0 && timer.seconds < 10 ? true : false}
+              helperText={timer.minutes === 0 && timer.seconds < 10 ? "Enter 10 or more" : ''} 
               type="number"
               label="seconds"
               className={classes.timerInputRigth}
