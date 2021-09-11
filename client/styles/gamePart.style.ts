@@ -13,6 +13,10 @@ const useStylesGamePart = makeStyles((theme: Theme) => ({
   btn: {
     width: '190px',
   },
+  btnContainer: {
+    width: '190px',
+    marginRight: 80
+  },
   mBottom: {
     marginBottom: '20px',
   },
@@ -50,43 +54,6 @@ const useStylesGamePart = makeStyles((theme: Theme) => ({
     paddingLeft: theme.spacing(1),
     paddingBottom: theme.spacing(2),
   },
-  timerContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    // padding: theme.spacing(2),
-  },
-  timerContainerWrapper: {
-    paddingBottom: theme.spacing(3),
-    justifyContent: 'space-around'
-  },
-  timeContainer: {
-    padding: theme.spacing(5),
-  },
-  timerBox: {
-    width: '148px',
-    height: '53px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: '4px'
-  },
-  timerText: {
-    fontSize: '40px',
-    fontWeight: 500
-  },
-  timerColon: {
-    fontSize: '20px',
-    fontWeight: 400,
-    padding: theme.spacing(1), 
-  },
-  btnTimer: {
-    color: theme.palette.common.white,
-    backgroundColor: theme.palette.secondary.dark,
-    fontSize: '17px',
-    marginTop: 'auto'
-  }
 }));
 
 export default useStylesGamePart;

@@ -3,14 +3,18 @@ import useStylesGame from '@styles/game.style';
 import { useRouter } from 'next/router';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import AppContext from 'store/store';
-import { IApiStartGame, IGamePageIssue, IUser } from 'utils/interfaces';
+import {
+  IApiStartGame,
+  IGamePageIssue,
+  IGameTimer,
+  IUser,
+} from 'utils/interfaces';
 import { cardDecks, nonVoted, roles, sequences } from 'utils/configs';
 import { GameDealer } from './gameDealer';
 import { GamePlayer } from './gamePlayer';
 import { ScoreList } from './scoreList';
 import { ObserverList } from './observerList';
 import { GameCard } from 'components/Cards/gameCard';
-
 
 interface GamePageProps {
   gameData: IApiStartGame;
@@ -36,7 +40,10 @@ export const GamePage: FC<GamePageProps> = ({
   const [ activeCard, setActiveCard ] = useState<string>('');
   const [ dealer, setDealer ] = useState<IUser>();
   const [ springTitle, setSpringTitle ] = useState('');
-  const [ timer, setTimer ] = useState<ITimerState>({ minutes: 0, seconds: 0});
+  const [ timer, setTimer ] = useState<IGameTimer>();
+  const [ voting, setVoting ] = useState(false);
+  const [ result, setResult ] = useState(false);
+  const [ timeStarted, setTimeStarted ] = useState<number>();
 
   const onUserJoinLeave = (users: Array<IUser>) => {
     setUsers(users);
@@ -50,22 +57,43 @@ export const GamePage: FC<GamePageProps> = ({
   const changeActiveIssue = (message: {
     issueName: string;
     gameIssues: Array<IGamePageIssue>;
+    timer: IGameTimer
   }) => {
     setActiveIssueName(message.issueName);
     setActiveCard('');
     setGameIssues(message.gameIssues);
+    if (message.timer.isTimer) {
+      setTimer(message.timer);
+    }
+    setVoting(false);
+    setResult(false);
   };
 
+  const onTimerStop = () => {
+    console.log(('Timer Stop'));
+    if (timer.isTimer) {
+      setTimer({
+        isTimer: true,
+        time: 0,
+      });
+    }
+    setVoting(false);
+    setResult(true);
+  }
+
   const onGameCardClick = (cardName: string, cardNumber: number) => {
-    setActiveCard(cardName);
-    state.socket.emit('gameCardChoice', {
-      roomId: lobby,
-      playerChoice: {
-        playerId: state.userId,
-        playerChoice: cardNumber,
-        issue: activeIssueName,
-      },
-    });
+    if(voting) {
+      setActiveCard(cardName);
+      state.socket.emit('gameCardChoice', {
+        roomId: lobby,
+        playerChoice: {
+          playerId: state.userId,
+          playerChoice: cardNumber,
+          issue: activeIssueName,
+        },
+      });
+    }
+    
   };
 
   const initData = async () => {
@@ -78,8 +106,8 @@ export const GamePage: FC<GamePageProps> = ({
     setGameIssues(gameData.issues);
     setActiveIssueName(gameData.issues[0].issue.issueName);
     setSpringTitle(gameData.spring);
-    if(gameData.timer.isTimer) {
-      setTimer({ minutes: gameData.timer.minutes, seconds: gameData.timer.seconds});
+    if (gameData.timer.isTimer) {
+      setTimer(gameData.timer);
     }
 
     const seq = gameData.card.sequence;
@@ -117,6 +145,22 @@ export const GamePage: FC<GamePageProps> = ({
     setGameIssues(newIssue);
   };
 
+  const onStartVoting = () => {
+      setVoting(true);
+    if(!timer?.isTimer) {
+      setResult(true);
+    }
+    state.socket.emit('startVoting', {
+      roomId: lobby,
+    });
+  };
+
+  const onTimerStart = (message: {time: number, timer: IGameTimer, voting: boolean}) => {
+    setTimer(message.timer)
+    setTimeStarted(message.time);
+    setVoting(message.voting)
+  };
+
   useEffect(() => {
     if (errorStatus === 'no users' || errorStatus === 'no room') {
       router.push('/');
@@ -133,6 +177,10 @@ export const GamePage: FC<GamePageProps> = ({
       state.socket.on('newGameIssue', (message) => {
         newIssueAdded(message);
       });
+
+      state.socket.on('timerStarted', (message) => {
+        onTimerStart(message);
+      });
     }
 
     return () => {
@@ -147,6 +195,10 @@ export const GamePage: FC<GamePageProps> = ({
       state.socket.off('newGameIssue', (message) => {
         newIssueAdded(message);
       });
+
+      state.socket.off('timerStarted', (message) => {
+        onTimerStart(message);
+      });
     };
   }, []);
 
@@ -160,7 +212,7 @@ export const GamePage: FC<GamePageProps> = ({
         changeActiveIssue(message);
       });
   }, []);
-  console.log('dealer from game page',  state.dealer);
+
   return (
     <Grid container className={classes.container}>
       <Grid
@@ -183,6 +235,11 @@ export const GamePage: FC<GamePageProps> = ({
             calculateIssueScore={calculateIssueScore}
             springTitle={springTitle}
             timer={timer}
+            onStartVoting={onStartVoting}
+            voting={voting}
+            result={result}
+            timeStarted={timeStarted}
+            onTimerStop={onTimerStop}
           />
         )}
         {!state.dealer &&
@@ -192,6 +249,8 @@ export const GamePage: FC<GamePageProps> = ({
             gameIssues={gameIssues}
             activeIssueName={activeIssueName}
             timer={timer}
+            timeStarted={timeStarted}
+            onTimerStop={onTimerStop}
           />
         )}
         <Grid container item>
@@ -206,6 +265,7 @@ export const GamePage: FC<GamePageProps> = ({
                 game={true}
                 onGameCardClick={onGameCardClick}
                 activeCard={activeCard}
+                voting={voting}
               />
             ))}
           {state.userRole === roles.member &&
@@ -216,6 +276,7 @@ export const GamePage: FC<GamePageProps> = ({
               game={true}
               onGameCardClick={onGameCardClick}
               activeCard={activeCard}
+              voting={voting}
             />
           )}
         </Grid>

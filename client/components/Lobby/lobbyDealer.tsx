@@ -62,7 +62,8 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
       !gameSettings.issues.length ||
       !gameSettings.card.cardNumber ||
       (gameSettings.timer.isTimer &&
-        (!gameSettings.timer.minutes && !gameSettings.timer.seconds))
+        // (!gameSettings.timer.minutes && !gameSettings.timer.seconds))
+        (!gameSettings.timer.time))
     )
       return null;
     const create = await apiCreateGame(lobby, gameSettings);

@@ -93,14 +93,24 @@ const socketServer = (httpServer) => {
     socket.on('changeActiveIssue', (message) => {
       const { roomId, issueName } = message;
       const gameIssues = roomContoller.getGameIssues(roomId);
-      io.in(roomId).emit('activeIssueChanged', { issueName, gameIssues });
+      const timer = roomContoller.getTimer(roomId);
+      io.in(roomId).emit('activeIssueChanged', {
+        issueName,
+        gameIssues,
+        timer,
+      });
     });
 
     socket.on('calcScore', (message) => {
       const { roomId, issueName } = message;
       roomContoller.calculateIssueScore(roomId, issueName);
       const gameIssues = roomContoller.getGameIssues(roomId);
-      io.in(roomId).emit('activeIssueChanged', { issueName, gameIssues });
+      const timer = roomContoller.getTimer(roomId);
+      io.in(roomId).emit('activeIssueChanged', {
+        issueName,
+        gameIssues,
+        timer: { isTimer: timer.isTimer, time: 0 },
+      });
     });
 
     socket.on('leaveGame', (message) => {
@@ -118,10 +128,15 @@ const socketServer = (httpServer) => {
       socket.to(roomId).emit('userToBeKickedOff', userId);
     });
 
-     socket.on('startTimer', (message) => {
-       console.log('TIMER IS STARTED');
-      const { roomId, userId } = message;     
-      socket.to(roomId).emit('timerStarted', userId);
+    socket.on('startVoting', (message) => {
+      console.log('TIMER IS STARTED');
+      const { roomId } = message;
+      const timer = roomContoller.getTimer(roomId);
+      if (timer) {
+        io
+          .in(roomId)
+          .emit('timerStarted', { time: Date.now(), timer, voting: true });
+      }
     });
 
     // socket.on('userKickOff', (message) => {

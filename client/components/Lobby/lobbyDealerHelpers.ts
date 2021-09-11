@@ -57,13 +57,30 @@ export const timerChange = (
     timer.isTimer = true;
   } else {
     timer.isTimer = false;
-    timer.minutes = 0;
-    timer.seconds = 0;
+    timer.time = 0;
+    // timer.minutes = 0;
+    // timer.seconds = 0;
   }
   return {
     ...state,
     timer: timer,
   };
+};
+
+const timeToMinutes = (time: number) => {
+  return Math.floor(time / 1000 / 60);
+};
+
+const minutesToTime = (time: string) => {
+  return +time * 60 * 1000;
+};
+
+const timeToSeconds = (time: number) => {
+  return Math.floor((time / 1000) % 60);
+};
+
+const secondsToTime = (time: string) => {
+  return +time * 1000;
 };
 
 export const timeChange = (
@@ -72,8 +89,22 @@ export const timeChange = (
   dimension: string,
 ): IGameSettings => {
   const timer = { ...state.timer };
-  if (timer.isTimer) {
-    timer[dimension] = +timerData;
+  let newTime = 0;
+  if (dimension === 'minutes') {
+    newTime =
+      minutesToTime(timerData) +
+      secondsToTime(timeToSeconds(timer.time).toString());
+    timer.time = newTime;
+  }
+
+  if (dimension === 'seconds') {
+    console.log(timeToMinutes(timer.time).toString());
+    console.log(secondsToTime(timerData));
+
+    newTime =
+      minutesToTime(timeToMinutes(timer.time).toString()) +
+      secondsToTime(timerData);
+    timer.time = newTime;
   }
   return {
     ...state,

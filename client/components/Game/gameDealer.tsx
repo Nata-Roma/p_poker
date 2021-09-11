@@ -1,14 +1,19 @@
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState, useContext } from 'react';
 import { Typography, Grid, Box, Button } from '@material-ui/core';
-import { IGameIssue, IGamePageIssue, IUser, ITimerState } from 'utils/interfaces';
+import {
+  IGameIssue,
+  IGamePageIssue,
+  IUser,
+  IGameTimer,
+} from 'utils/interfaces';
 
 import AppContext from 'store/store';
 import { UserCard } from 'components/Cards/userCard';
 import { roles } from 'utils/configs';
 import useStylesGamePart from '@styles/gamePart.style';
 import { IssuesBlock } from './issuesBlock';
-import { Timer } from './timer';
+import { Timer } from './Timer/timer';
 import { NewIssueGamePopup } from './newIssueGame';
 
 interface GameDealerProps {
@@ -18,7 +23,12 @@ interface GameDealerProps {
   activeIssueName: string;
   calculateIssueScore: () => void;
   springTitle: string;
-  timer?: ITimerState;
+  onStartVoting: () => void;
+  voting: boolean;
+  result: boolean;
+  timer: IGameTimer;
+  timeStarted: number;
+  onTimerStop: () => void;
 }
 
 export const GameDealer: FC<GameDealerProps> = ({
@@ -28,15 +38,19 @@ export const GameDealer: FC<GameDealerProps> = ({
   activeIssueName,
   calculateIssueScore,
   springTitle,
-  timer
+  timer,
+  onStartVoting,
+  voting,
+  result,
+  timeStarted,
+  onTimerStop,
 }) => {
   const classes = useStylesGamePart();
   const router = useRouter();
   const { lobby } = router.query;
   const { state } = useContext(AppContext);
   const [ title, setTitle ] = useState<string>();
-  const [isOpen, setIsOpen] = useState(false);
-  
+  const [ isOpen, setIsOpen ] = useState(false);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveGame', {
@@ -52,18 +66,15 @@ export const GameDealer: FC<GameDealerProps> = ({
   };
 
   const onAddOpenIssue = () => {
-    console.log('Add new Issue');
     setIsOpen(true);
-  }
+  };
 
   const onAddCloseIssue = () => {
-    console.log('Add new Issue');
     setIsOpen(false);
-  }
+  };
 
   const onIssueCreate = (newIssue: IGameIssue) => {
-    console.log(newIssue);
-    state.socket.emit('addNewGameIssue', {roomId: lobby, newIssue})
+    state.socket.emit('addNewGameIssue', { roomId: lobby, newIssue });
     onAddCloseIssue();
   };
 
@@ -87,8 +98,7 @@ export const GameDealer: FC<GameDealerProps> = ({
       });
     };
   }, []);
-  console.log('dealer from gameDealer',  state.dealer);
-  
+
   return (
     <div>
       <Typography variant="h6" align="center" gutterBottom>
@@ -113,34 +123,69 @@ export const GameDealer: FC<GameDealerProps> = ({
               <Button
                 variant="outlined"
                 className={classes.btn}
-                onClick={calculateIssueScore}
-              >
-                Issue Score
-              </Button>
-            </Box>
-          </Grid>
-          <Grid item className={classes.mBottom}>
-            <Box boxShadow={2} mr={10}>
-              <Button
-                variant="outlined"
-                className={classes.btn}
                 onClick={onRoomLeave}
               >
                 Stop Game
               </Button>
             </Box>
           </Grid>
+          <Grid container item justifyContent="space-between">
+            <Grid
+              container
+              item
+              direction="column"
+              className={classes.btnContainer}
+            >
+              <Grid item className={classes.mBottom}>
+                <Box boxShadow={2} mr={10}>
+                  <Button
+                    variant="outlined"
+                    className={classes.btn}
+                    onClick={onStartVoting}
+                    disabled={voting}
+                  >
+                    Start Voting
+                  </Button>
+                </Box>
+              </Grid>
+              <Grid item className={classes.mBottom}>
+                <Box boxShadow={2} mr={10}>
+                  <Button
+                    variant="outlined"
+                    className={classes.btn}
+                    onClick={calculateIssueScore}
+                    disabled={!result}
+                  >
+                    Voting results
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid item>
+              {timer &&
+              timer.isTimer && (
+                <Timer
+                  timer={timer}
+                  timeStarted={timeStarted}
+                  onTimerStop={onTimerStop}
+                />
+              )}
+            </Grid>
+          </Grid>
         </Grid>
-        { timer && <Timer timer={timer} dealer={dealer}/> }
         {gameIssues && (
           <IssuesBlock
             issues={gameIssues}
             activeIssueName={activeIssueName}
             onIssueClick={onIssueClick}
-            onAddIssue= {onAddOpenIssue}
+            onAddIssue={onAddOpenIssue}
           />
         )}
-        <NewIssueGamePopup onIssueCreate={onIssueCreate} onAddCloseIssue={onAddCloseIssue} isOpen={isOpen} />
+        <NewIssueGamePopup
+          onIssueCreate={onIssueCreate}
+          onAddCloseIssue={onAddCloseIssue}
+          isOpen={isOpen}
+        />
       </Grid>
     </div>
   );
