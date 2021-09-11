@@ -13,6 +13,10 @@ const useStylesGamePart = makeStyles((theme: Theme) => ({
   btn: {
     width: '190px',
   },
+  btnContainer: {
+    width: '190px',
+    marginRight: 80
+  },
   mBottom: {
     marginBottom: '20px',
   },
@@ -49,7 +53,7 @@ const useStylesGamePart = makeStyles((theme: Theme) => ({
   statContainer: {
     paddingLeft: theme.spacing(1),
     paddingBottom: theme.spacing(2),
-  }
+  },
 }));
 
 export default useStylesGamePart;

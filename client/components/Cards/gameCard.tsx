@@ -26,6 +26,7 @@ interface GameCardProps {
   deckLength?: number;
   onGameCardClick?: (cardName: string, cardNumber: number) => void
   activeCard?: string
+  voting: boolean
 }
 
 export const GameCard: FC<GameCardProps> = ({
@@ -37,7 +38,8 @@ export const GameCard: FC<GameCardProps> = ({
   empty = false,
   deckLength,
   onGameCardClick,
-  activeCard
+  activeCard,
+  voting
 }) => {
   const classes = useStylesGameCard(cardSize)();
   const [ clicked, setClicked ] = useState(false);
@@ -94,14 +96,14 @@ export const GameCard: FC<GameCardProps> = ({
           {game && (
             <div
               className={
-                activeCard===cardImg ? (
+                activeCard===cardImg && voting ? (
                   `${classes.cardCover} ${classes.cardCoverActive}`
                 ) : (
                   classes.cardCover
                 )
               }
             >
-              {activeCard===cardImg && (
+              {activeCard===cardImg && voting && (
                 <div className={classes.iconUnder}>
                   <CheckCircleIcon color="primary" className={classes.icon} />
                 </div>

@@ -6,6 +6,7 @@ import {
   IUserData,
   IGameSettingsFromClient,
   IIssue,
+  IGameTimer,
 } from '../models/interfaces';
 import Room from '../models/roomModel';
 
@@ -166,6 +167,13 @@ class Rooms {
       return room.addNewIssue(issue);
     }
   };
+
+  getTimer = (roomId: string): IGameTimer => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      return room.getTimer();
+    }
+  }
 }
 
 const roomContoller = new Rooms();

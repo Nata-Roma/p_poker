@@ -56,8 +56,9 @@ export interface IGameIssue {
 
 export interface IGameTimer {
   isTimer: boolean;
-  minutes: number;
-  seconds: number;
+  time: number
+  // minutes: number;
+  // seconds: number;
 }
 
 interface IGameCard {
@@ -124,4 +125,18 @@ export interface issuePrevNext {
 export interface IStatistics {
   choice: number;
   ratio: number;
+}
+
+export interface IActiveIssue {
+  issueName: string;
+  score: number;
+}
+
+export interface GamePageProps {
+  gameData: IApiStartGame;
+  userData: Array<IUser>;
+}
+export interface ITimerState {
+  minutes: number;
+  seconds: number;
 }
