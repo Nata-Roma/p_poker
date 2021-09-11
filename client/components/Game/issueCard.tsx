@@ -29,8 +29,8 @@ export const IssueCard: FC<IssueCardProps> = ({
   score,
 }) => {
   const classes = useStylesIssueCard();
-  const activeCard = clsx(classes.root, activeIssueName === issueName && classes.activeCard)
-  const activeText = clsx(classes.text, activeIssueName === issueName && classes.activeCard)
+  const activeCard = clsx(classes.root, activeIssueName === issueName && classes.activeCard);
+  const activeText = clsx(classes.text, activeIssueName === issueName && classes.activeCard);
 
   return (
     <Card

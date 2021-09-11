@@ -186,6 +186,10 @@ class Game {
       this.issues.push(newIssue);
     }
   };
+
+  getTimer = (): IGameTimer => {
+    return this.timer;
+  }
 }
 
 export default Game;

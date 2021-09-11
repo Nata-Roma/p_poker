@@ -46,10 +46,10 @@ export const gameCardSur = [
 ];
 
 export const cardDecks = [
-  { 
-    name: 'Surrealism', 
-    deck: gameCardSur
-  } 
+  {
+    name: 'Surrealism',
+    deck: gameCardSur,
+  },
 ];
 
 export const fibonacci_Seq = [ 1, 2, 3, 5, 8, 13, 21, 34, 55, 89 ];
@@ -80,8 +80,7 @@ export const initGameSettings = {
   issues: [] as Array<IGameIssue>,
   timer: {
     isTimer: false,
-    minutes: 0,
-    seconds: 0,
+    time: 0,
   },
   card: {
     cardDeck: cardDecks[0].name,
@@ -90,4 +89,9 @@ export const initGameSettings = {
     cardNumberStart: 0,
     cardTurn: false,
   },
+};
+
+export const timerValid = {
+  minutesMax: 3 * 60 * 1000,
+  secondsMin: 10 * 1000,
 };

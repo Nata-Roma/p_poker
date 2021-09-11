@@ -19,8 +19,9 @@ export interface IIssue {
 
 export interface IGameTimer {
   isTimer: boolean;
-  minutes: number;
-  seconds: number;
+  time: number
+  // minutes: number;
+  // seconds: number;
 }
 
 export interface IGameCard {

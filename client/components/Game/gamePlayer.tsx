@@ -1,25 +1,34 @@
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState, useContext } from 'react';
 import { Typography, Grid, Box, Button } from '@material-ui/core';
-import { IGamePageIssue, IUser } from 'utils/interfaces';
-
+import {
+  IGamePageIssue,
+  IGameTimer,
+  IUser,
+} from 'utils/interfaces';
 import AppContext from 'store/store';
 import { UserCard } from 'components/Cards/userCard';
 import { roles } from 'utils/configs';
-import { IssueCards } from './issueCards';
 import useStylesGamePart from '@styles/gamePart.style';
 import { IssuesBlock } from './issuesBlock';
+import { Timer } from './Timer/timer';
 
 interface GameDealerProps {
   dealer: IUser;
   gameIssues: Array<IGamePageIssue>;
   activeIssueName: string;
+  timer: IGameTimer;
+  timeStarted: number;
+  onTimerStop: () => void;
 }
 
 export const GamePlayer: FC<GameDealerProps> = ({
   dealer,
   gameIssues,
   activeIssueName,
+  timer,
+  timeStarted,
+  onTimerStop,
 }) => {
   const classes = useStylesGamePart();
   const router = useRouter();
@@ -78,6 +87,7 @@ export const GamePlayer: FC<GameDealerProps> = ({
               <UserCard
                 user={dealer}
                 observer={dealer.userRole === roles.observer ? true : false}
+                onKickUser={() => {}}
               />
             )}
           </Grid>
@@ -93,23 +103,20 @@ export const GamePlayer: FC<GameDealerProps> = ({
             </Box>
           </Grid>
         </Grid>
-        {/* <Grid container item className={classes.mBottom}>
-          <div className={classes.issuesContainer}>
-            {issues && (
-              <IssueCards
-                issues={issues}
-                activeIssueName={activeIssueName}
-                onIssueClick={onIssueClick}
-              />
-            )}
-          </div>
-          Statistics
-        </Grid> */}
+        {timer &&
+        timer.isTimer && (
+          <Timer
+            timer={timer}
+            timeStarted={timeStarted}
+            onTimerStop={onTimerStop}
+          />
+        )}
         {gameIssues && (
           <IssuesBlock
             issues={gameIssues}
             activeIssueName={activeIssueName}
             onIssueClick={onIssueClick}
+            onAddIssue={() => {}}
           />
         )}
       </Grid>

@@ -1,7 +1,7 @@
 import { Typography, Grid, TextField, Switch } from '@material-ui/core';
 import { useStylesSettingsGame } from '@styles/settings.style';
 import React, { FC, useEffect, useState } from 'react';
-import { cardDecks, gameSelectOptions, sequences } from 'utils/configs';
+import { cardDecks, gameSelectOptions, sequences, timerValid } from 'utils/configs';
 import { IGameTimer } from 'utils/interfaces';
 import { GameSelect } from './gameSelect';
 
@@ -160,20 +160,26 @@ const GameSettings: FC<GameSettingsProps> = ({
           </Grid>
           <Grid container item xl={6} xs={6}>
             <TextField
+              error={timer.time > timerValid.minutesMax ? true : false}
+              helperText={timer.time > timerValid.minutesMax ? "Enter 3 or less" : ' '} 
               type="number"
               label="minutes"
+              inputProps={{min: 0, max: 3}}
               className={classes.timerInput}
               name="minutes"
-              value={timer.minutes}
+              value={Math.floor(timer.time / 1000 / 60 )}
               disabled={!timer.isTimer}
               onChange={(e) => onTimeChange(e.target.value, e.target.name)}
             />
             <TextField
+              error={timer.isTimer && (timer.time === 0 || timer.time < timerValid.secondsMin) ? true : false}
+              helperText={timer.isTimer && (timer.time === 0 || timer.time < timerValid.secondsMin) ? "Enter 10 or more" : ' '} 
               type="number"
               label="seconds"
+              inputProps={{min: 0, max: 60}}
               className={classes.timerInputRigth}
               name="seconds"
-              value={timer.seconds}
+              value={timer.time / 1000 % 60}
               disabled={!timer.isTimer}
               onChange={(e) => onTimeChange(e.target.value, e.target.name)}
             />

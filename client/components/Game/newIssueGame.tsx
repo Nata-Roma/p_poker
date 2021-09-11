@@ -25,7 +25,6 @@ export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
   const classes = useStylesCreateIssuePopup();
   const [ priority, setPriority ] = React.useState('low');
   const [ issueName, setIssueName ] = React.useState('');
-  const [ open, setOpen ] = React.useState(false);
 
   const onCreateClick = () => {
     onIssueCreate({

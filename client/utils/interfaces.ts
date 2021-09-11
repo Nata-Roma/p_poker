@@ -56,8 +56,9 @@ export interface IGameIssue {
 
 export interface IGameTimer {
   isTimer: boolean;
-  minutes: number;
-  seconds: number;
+  time: number
+  // minutes: number;
+  // seconds: number;
 }
 
 interface IGameCard {
@@ -147,11 +148,16 @@ export interface NewIssueGamePopupProps {
   issues: Array<IGameIssue>;
 }
 
-export interface GameDealerProps {
-  dealer: IUser;
-  gameIssues: Array<IGamePageIssue>;
-  onIssueClick: (issueName: string) => void;
-  activeIssueName: string;
-  calculateIssueScore: () => void;
-  springTitle: string;
+export interface IActiveIssue {
+  issueName: string;
+  score: number;
+}
+
+export interface GamePageProps {
+  gameData: IApiStartGame;
+  userData: Array<IUser>;
+}
+export interface ITimerState {
+  minutes: number;
+  seconds: number;
 }

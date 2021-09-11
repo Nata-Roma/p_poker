@@ -1,6 +1,6 @@
 import { FC, useContext, useEffect, useState } from 'react';
 import { Typography, Grid} from '@material-ui/core';
-import { IGameIssue, IGamePageIssue, IGamePageIssueScore } from 'utils/interfaces';
+import { IGamePageIssue, IGamePageIssueScore } from 'utils/interfaces';
 import useStylesGamePart from '@styles/gamePart.style';
 import { StaticticsCard } from './statisticsCard';
 import { nanoid } from 'nanoid';

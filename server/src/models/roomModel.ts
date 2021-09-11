@@ -7,6 +7,7 @@ import {
   IUserData,
   IGameSettingsFromClient,
   IIssue,
+  IGameTimer,
 } from './interfaces';
 
 class Room {
@@ -141,8 +142,13 @@ class Room {
         return user.id;
       }
     });
-    this.game.addNewIssue(issue, playerIds)
-  }
+    this.game.addNewIssue(issue, playerIds);
+  };
+
+  getTimer = (): IGameTimer => {
+    const timer = this.game.getTimer();
+    if (timer) return timer;
+  };
 }
 
 export default Room;
