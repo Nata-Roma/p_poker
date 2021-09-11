@@ -50,7 +50,14 @@ createStyles({
   },
   iconScore: {
     fontSize: '15px'
-  }
+  },
+  dealerName: {
+    width: '100%',
+    textAlign: 'center'
+  },
+  containerDealer: {
+    justifyContent: 'flex-start',
+  },
 }));
 
 export default useStylesUserGameCard;
