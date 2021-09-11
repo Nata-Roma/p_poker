@@ -171,8 +171,8 @@ const GameSettings: FC<GameSettingsProps> = ({
               onChange={(e) => onTimeChange(e.target.value, e.target.name)}
             />
             <TextField
-              error={timer.minutes === 0 && timer.seconds < 10 ? true : false}
-              helperText={timer.minutes === 0 && timer.seconds < 10 ? "Enter 10 or more" : ''} 
+              error={timer.isTimer && timer.minutes === 0 && timer.seconds < 10 ? true : false}
+              helperText={timer.isTimer && timer.minutes === 0 && timer.seconds < 10 ? "Enter 10 or more" : ''} 
               type="number"
               label="seconds"
               className={classes.timerInputRigth}
