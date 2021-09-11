@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useContext } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -12,62 +12,42 @@ import {
   InputLabel,
   NativeSelect,
 } from '@material-ui/core';
-import CreateIcon from '@material-ui/icons/Create';
 import { useStylesCreateIssuePopup } from '@styles/createIssuePopup.style';
 import { IGameIssue } from 'utils/interfaces';
 
-export interface ChangeIssueProps {
-  onIssueChangeClick: (changedIssue: IGameIssue) => void;
-  issueSelected: IGameIssue;
+interface NewIssueGamePopupProps {
+  onIssueCreate: (newIssue: IGameIssue) => void;
+  onAddCloseIssue: () => void;
+  isOpen: boolean;
 }
 
-const ChangeIssuePopup: FC<ChangeIssueProps> = ({
-  onIssueChangeClick,
-  issueSelected,
+export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
+  onIssueCreate,
+  isOpen,
+  onAddCloseIssue,
 }) => {
   const classes = useStylesCreateIssuePopup();
-  const [ issue, setIssue ] = useState<IGameIssue>(issueSelected);
-  const [ open, setOpen ] = useState(false);
+  const [ priority, setPriority ] = React.useState('low');
+  const [ issueName, setIssueName ] = React.useState('');
+  const [ open, setOpen ] = React.useState(false);
 
-  const changeIssue = () => {
-    setOpen(false);
-    onIssueChangeClick(issue);
-    onClosePopup();
+  const onCreateClick = () => {
+    onIssueCreate({
+      issueName,
+      priority,
+    });
+    setIssueName('');
   };
-
-  const onClosePopup = () => {
-    setOpen(false);
-    setIssue({ issueName: '', priority: '' });
-  };
-
-  const onChangePriority = (e: ChangeEvent<HTMLSelectElement>) => {
-    setIssue((prev) => ({ ...prev, priority: e.target.value }));
-  };
-
-  const onChangeIssueName = (e: ChangeEvent<HTMLInputElement>) => {
-    setIssue((prev) => ({ ...prev, issueName: e.target.value }));
-  };
-
-  const onOpenPopup = () => {
-    setOpen(true);
-  };
-
-  const disabled = issue && issue.issueName.length < 1;
 
   return (
     <div>
-      <CreateIcon
-        color="primary"
-        className={classes.btn}
-        onClick={onOpenPopup}
-      />
       <Dialog
-        open={open}
-        onClose={changeIssue}
+        open={isOpen}
+        onClose={onAddCloseIssue}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title" style={{ textAlign: 'center' }}>
-          Change Issue
+          Create Issue
         </DialogTitle>
         <DialogContent>
           <TextField
@@ -76,16 +56,16 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
             id="name"
             label="Issue"
             fullWidth
-            value={issue?.issueName}
-            onChange={onChangeIssueName}
+            value={issueName}
+            onChange={(e) => setIssueName(e.target.value)}
             required
           />
           <FormControl className={classes.select}>
             <InputLabel htmlFor="issue">Priority:</InputLabel>
             <NativeSelect
               fullWidth
-              value={issue?.priority}
-              onChange={onChangePriority}
+              value={priority}
+              onChange={(e) => setPriority(e.target.value)}
               inputProps={{
                 name: 'issue',
               }}
@@ -101,18 +81,17 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Button
-                onClick={changeIssue}
-                disabled={disabled}
+                onClick={onCreateClick}
                 color="primary"
                 variant="contained"
                 fullWidth
               >
-                Save
+                Create
               </Button>
             </Grid>
             <Grid item xs={6}>
               <Button
-                onClick={changeIssue}
+                onClick={onAddCloseIssue}
                 color="primary"
                 variant="outlined"
                 fullWidth
@@ -126,5 +105,3 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
     </div>
   );
 };
-
-export default ChangeIssuePopup;

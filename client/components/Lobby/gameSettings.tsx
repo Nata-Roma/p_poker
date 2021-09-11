@@ -44,7 +44,7 @@ const GameSettings: FC<GameSettingsProps> = ({
 
   return (
     <div style={{ width: '100%' }}>
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography variant="h5" align="center" gutterBottom className={classes.title}>
         Game Settings:
       </Typography>
       <Grid container spacing={2}>
@@ -83,6 +83,25 @@ const GameSettings: FC<GameSettingsProps> = ({
               color="primary"
               value={timer.isTimer ? '' : 'timer'}
               onChange={(e) => onTimerClick(e.target.value)}
+            />
+          </Grid>
+        </Grid>
+        <Grid item container spacing={2}>
+          <Grid item xl={6} xs={6}>
+            <Typography
+              variant="subtitle1"
+              align="left"
+              gutterBottom
+              className={classes.settingsLabel}
+            >
+              Automatically let in all new participants if the game has already started:
+            </Typography>
+          </Grid>
+          <Grid item xl={6} xs={6}>
+            <Switch
+              color="primary"
+              // value={}
+              onChange={(e) => console.log(e)}
             />
           </Grid>
         </Grid>

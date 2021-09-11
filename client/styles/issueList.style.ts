@@ -10,13 +10,24 @@ export const useStylesIssueList = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(2),
     },
     deleteButton: {
-      width: '190px',
+      cursor: 'pointer',
     },
     btn: {
       width: '190px',
+      cursor: 'pointer',
     },
     gap: {
       gap: '10px'
-    }
+    },
+    issueList: {
+      flexGrow: 0,
+      flexBasis: '16.666667%'
+    },
+    title: {
+      textAlign: 'left',
+      [theme.breakpoints.down('sm')]: {
+        textAlign: 'center',
+      },
+    },
   }),
 );

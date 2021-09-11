@@ -1,6 +1,6 @@
 import { Grid, Typography } from "@material-ui/core";
 import useStylesMemberList from "@styles/memberList.style";
-import { UserCard } from "Cards/userCard";
+import { UserCard } from "components/Cards/userCard";
 import { FC } from "react";
 import { roles } from "utils/configs";
 import { IUser } from "utils/interfaces";
@@ -17,7 +17,7 @@ export const ObserverList: FC<ObserverListProps> = ({ users, onKickUser }) => {
   return (
     <div className={classes.container}>
       {isObserver ? (
-        <Typography variant="h4" align="center" gutterBottom>
+        <Typography variant="h5" gutterBottom className={classes.title}>
           Observers:
         </Typography>
       ) : null}

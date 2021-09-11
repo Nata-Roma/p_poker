@@ -20,8 +20,9 @@ export const useStylesCreateIssuePopup = makeStyles((theme) => ({
   },
   select: {
     width: "100%",
+    margin: theme.spacing(2, 0),
   },
   btn: {
-    width: "190px",
+    cursor: 'pointer',
   }
 }));

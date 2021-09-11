@@ -4,15 +4,15 @@ import { Button, Typography, Grid } from '@material-ui/core';
 
 import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
-import { UserCard } from 'Cards/userCard';
+import { UserCard } from 'components/Cards/userCard';
 import NameGame from './nameGame';
 import GameSettings from './gameSettings';
 import IssueList from './issueList';
-import AppContext, { appStore } from 'store/store';
+import AppContext from 'store/store';
 import {
+  IGameIssue,
   IGameSettings,
   IssueData,
-  issuePrevNext,
   IUser,
 } from 'utils/interfaces';
 import { ObserverList } from './observerList';
@@ -28,9 +28,8 @@ import { CardList } from './cardList';
 import { apiCreateGame } from 'services/apiServices';
 import KickPlayerPopup from './kickPlayerPopup';
 import {
-  issueChangeEdit,
+  issueChanged,
   issueCreate,
-  issueDelete,
   selectCard,
   selectCardDeck,
   selectCardSequence,
@@ -49,13 +48,13 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
   const { lobby } = router.query;
   const [ dealer, setDealer ] = useState<IUser>();
   const [ isOpenKickUser, setIsOpenKickUser ] = useState(false);
+  const [ kickOffUser, setKickOffUser ] = useState<IUser>();
   const [ gameSettings, setGameSettings ] = useState<IGameSettings>(
     initGameSettings,
   );
   const [ chosenDeck, setChosenDeck ] = useState<Array<string>>();
   const [ chosenSeq, setChosenSeq ] = useState<Array<number>>();
   const [ cardPot, setCardPot ] = useState('');
-  const [ kickOffUser, setKickOffUser ] = useState<IUser>();
 
   const onStartGameClick = async () => {
     console.log(gameSettings);
@@ -79,15 +78,15 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
     });
   };
 
-  const onIssueDelete = (issueName: string) => {
+  const onIssueDelete = (newIssues: Array<IGameIssue>) => {
     setGameSettings((prev) => {
-      return issueDelete(prev, issueName);
+      return issueChanged(prev, newIssues);
     });
   };
 
-  const onIssueChangeEdit = (changedIssue: issuePrevNext) => {
+  const onIssueEdit = (newIssues: Array<IGameIssue>) => {
     setGameSettings((prev) => {
-      return issueChangeEdit(prev, changedIssue);
+      return issueChanged(prev, newIssues);
     });
   };
 
@@ -199,7 +198,6 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
   };
 
   const gameFinish = (message: string) => {
-    console.log('gameOver', message);
     state.socket.emit('gameOverFinish', { roomId: lobby });
     router.push('/');
   };
@@ -306,7 +304,7 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
         <IssueList
           onIssueCreate={onIssueCreate}
           onIssueDelete={onIssueDelete}
-          onIssueChangeEdit={onIssueChangeEdit}
+          onIssueEdit={onIssueEdit}
           issues={gameSettings.issues}
         />
         <GameSettings

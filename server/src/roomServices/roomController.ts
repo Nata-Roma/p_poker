@@ -5,6 +5,7 @@ import {
   IPlayerChoice,
   IUserData,
   IGameSettingsFromClient,
+  IIssue,
 } from '../models/interfaces';
 import Room from '../models/roomModel';
 
@@ -28,10 +29,11 @@ class Rooms {
     return roomIds;
   };
 
-  getRoomId = (roomId: string): string => {
+  getRoomId = (roomId: string): string | null => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     console.log('get room by Id');
-    return roomId;
+    if(room) return roomId;
+    return null
   };
 
   getRoomUsers = (roomId: string): Array<IUserData> => {
@@ -156,6 +158,13 @@ class Rooms {
 
   gameOver = (roomId: string) => {
     this.rooms = this.rooms.filter((room) => room.getRoomId() !== roomId);
+  };
+
+  addNewIssue = (roomId: string, issue: IIssue): void => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      return room.addNewIssue(issue);
+    }
   };
 }
 

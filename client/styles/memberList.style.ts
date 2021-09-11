@@ -11,6 +11,12 @@ const useStylesMemberList = makeStyles((theme: Theme) =>
     container: {
       width: '100%',
     },
+    title: {
+      textAlign: 'left',
+      [theme.breakpoints.down('sm')]: {
+        textAlign: 'center',
+      },
+    },
   }),
 );
 

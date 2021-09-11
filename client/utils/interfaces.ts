@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from 'react';
-
 export interface IUser {
   username: string;
   userSurname: string;
@@ -44,6 +42,7 @@ export interface IChat {
 export interface IApiGetLobbyInfo {
   chat: Array<IChatMessage>;
   users: Array<IUser>;
+  error: string
 }
 export interface IssueData {
   issueName: string;
@@ -111,15 +110,9 @@ export interface CreateIssuePopupProps {
 
 export interface IssueListProps {
   onIssueCreate: (issue: IGameIssue) => void;
-  onIssueDelete: (issue: string) => void;
-  onIssueChangeEdit: (issue: issuePrevNext) => void;
+  onIssueDelete: (issues: Array<IGameIssue>) => void;
+  onIssueEdit: (issues: Array<IGameIssue>) => void;
   issues: Array<IGameIssue>;
-}
-
-export interface ChangeIssueProps {
-  issueChange: boolean;
-  onIssueChange: (changedIssue: IssueData) => void;
-  setIssueChange: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface issuePrevNext {

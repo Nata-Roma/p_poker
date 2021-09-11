@@ -4,7 +4,7 @@ import { Button, Typography, Grid } from '@material-ui/core';
 
 import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
-import { UserCard } from 'Cards/userCard';
+import { UserCard } from 'components/Cards/userCard';
 import AppContext from 'store/store';
 import { IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';

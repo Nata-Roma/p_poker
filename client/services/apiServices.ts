@@ -3,24 +3,31 @@ import { BASE_URL } from 'utils/apiConfig';
 import {
   IApiGetLobbyInfo,
   IApiStartGame,
-  IChatMessage,
   IGameSettings,
-  IUser,
 } from 'utils/interfaces';
 
-export const apiGetLobbyInfo = async (
+export const apiGetLobbyUsers = async (
   room: string | Array<string>,
-): Promise<IApiGetLobbyInfo | null> => {
+) => {
+  if (typeof room === 'string') {
+    const users = await axios({
+      method: 'GET',
+      url: `${BASE_URL}/users/${room}`,
+    });
+    return users;
+  }
+  return null;
+};
+
+export const apiGetLobbyChats = async (
+  room: string | Array<string>,
+) => {
   if (typeof room === 'string') {
     const chat = await axios({
       method: 'GET',
       url: `${BASE_URL}/chats/${room}`,
     });
-    const users = await axios({
-      method: 'GET',
-      url: `${BASE_URL}/users/${room}`,
-    });
-    return { chat: chat.data, users: users.data };
+    return chat;
   }
   return null;
 };
@@ -30,17 +37,17 @@ export const apiGetRooms = async () => {
     method: 'GET',
     url: `${BASE_URL}/rooms`,
   });
-  return rooms.data;
+  return rooms;
 };
 
-export const apiStartGame = async (room: string | Array<string>): Promise<IApiStartGame| null> => {
+export const apiStartGame = async (room: string | Array<string>) => {
   // For now it is GET request. Will be converted to POST
   if (typeof room === 'string') {
     const gameInitData = await axios({
       method: 'GET',
       url: `${BASE_URL}/gamestart/${room}`,
     });
-    return gameInitData.data;
+    return gameInitData;
   }
   return null;
 };

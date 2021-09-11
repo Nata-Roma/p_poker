@@ -2,27 +2,27 @@ import { Grid } from '@material-ui/core';
 import useStylesGame from '@styles/game.style';
 import { useRouter } from 'next/router';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import { apiGetLobbyInfo, apiStartGame } from 'services/apiServices';
 import AppContext from 'store/store';
-import {
-  IApiStartGame,
-  IGamePageIssue,
-  IStatistics,
-  IUser,
-  ITimerState,
-  IActiveIssue,
-  GamePageProps
-} from 'utils/interfaces';
-import { GameCard } from '../../Cards/gameCard';
+import { IApiStartGame, IGamePageIssue, IUser } from 'utils/interfaces';
 import { cardDecks, nonVoted, roles, sequences } from 'utils/configs';
 import { GameDealer } from './gameDealer';
 import { GamePlayer } from './gamePlayer';
 import { ScoreList } from './scoreList';
 import { ObserverList } from './observerList';
+import { GameCard } from 'components/Cards/gameCard';
 
 
+interface GamePageProps {
+  gameData: IApiStartGame;
+  userData: Array<IUser>;
+  errorStatus: string;
+}
 
-export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
+export const GamePage: FC<GamePageProps> = ({
+  gameData,
+  userData,
+  errorStatus,
+}) => {
   const classes = useStylesGame();
   const [ users, setUsers ] = useState<Array<IUser>>();
   const { state } = useContext(AppContext);
@@ -113,15 +113,27 @@ export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
     });
   };
 
-  useEffect(() => {
-    initData();
-    state.socket.on('userJoined', (message) => {
-      onUserJoinLeave(message);
-    });
+  const newIssueAdded = (newIssue: Array<IGamePageIssue>) => {
+    setGameIssues(newIssue);
+  };
 
-    state.socket.on('userLeft', (message) => {
-      onUserJoinLeave(message);
-    });
+  useEffect(() => {
+    if (errorStatus === 'no users' || errorStatus === 'no room') {
+      router.push('/');
+    } else {
+      initData();
+      state.socket.on('userJoined', (message) => {
+        onUserJoinLeave(message);
+      });
+
+      state.socket.on('userLeft', (message) => {
+        onUserJoinLeave(message);
+      });
+
+      state.socket.on('newGameIssue', (message) => {
+        newIssueAdded(message);
+      });
+    }
 
     return () => {
       state.socket.off('userJoined', (message) => {
@@ -130,6 +142,10 @@ export const GamePage: FC<GamePageProps> = ({ gameData, userData }) => {
 
       state.socket.off('userLeft', (message) => {
         onUserJoinLeave(message);
+      });
+
+      state.socket.off('newGameIssue', (message) => {
+        newIssueAdded(message);
       });
     };
   }, []);

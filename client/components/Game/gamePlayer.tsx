@@ -3,7 +3,7 @@ import { FC, useEffect, useState, useContext } from 'react';
 import { Typography, Grid, Box, Button} from '@material-ui/core';
 import { IGamePageIssue, ITimerState, IUser } from 'utils/interfaces';
 import AppContext from 'store/store';
-import { UserCard } from 'Cards/userCard';
+import { UserCard } from 'components/Cards/userCard';
 import { roles } from 'utils/configs';
 import { IssueCards } from './issueCards';
 import useStylesGamePart from '@styles/gamePart.style';

@@ -23,6 +23,12 @@ export const useStylesSettingsGame = makeStyles((theme: Theme) =>
     timerInputRigth: {
       marginLeft:'10px',
       width: '90px',
-    }
+    },
+    title: {
+      textAlign: 'left',
+      [theme.breakpoints.down('sm')]: {
+        textAlign: 'center',
+      },
+    },
   }),
 );
