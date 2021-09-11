@@ -1,4 +1,12 @@
 import { Server } from 'socket.io';
+import {
+  socketRoomIssueInward,
+  socketRoomNewIssueInward,
+  socketRoomPlayerChoiceInward,
+  socketRoomUserIdInward,
+  socketRoomUserIdmessageInward,
+  socketRoomUserInward,
+} from '../models/interfaces';
 import roomContoller from '../roomServices/roomController';
 
 const socketServer = (httpServer) => {
@@ -15,7 +23,7 @@ const socketServer = (httpServer) => {
     console.log(`Connected to socket: ${socket.id}`);
     console.log('Socket userId', socket.handshake.auth.userId);
 
-    socket.on('joinRoom', (message) => {
+    socket.on('joinRoom', (message: socketRoomUserInward) => {
       const { roomId, user } = message;
       const room = roomContoller.getRoomId(roomId);
       if (room) {
@@ -31,7 +39,7 @@ const socketServer = (httpServer) => {
       }
     });
 
-    socket.on('userRoomReconnect', (message) => {
+    socket.on('userRoomReconnect', (message: socketRoomUserIdInward) => {
       const { roomId, userId } = message;
       const room = roomContoller.getRoomId(roomId);
       if (room) {
@@ -42,7 +50,7 @@ const socketServer = (httpServer) => {
       }
     });
 
-    socket.on('sendMessage', (data) => {
+    socket.on('sendMessage', (data: socketRoomUserIdmessageInward) => {
       const { roomId, userId, message } = data;
 
       if (roomId && userId && message) {
@@ -52,7 +60,7 @@ const socketServer = (httpServer) => {
       }
     });
 
-    socket.on('leaveRoom', (message) => {
+    socket.on('leaveRoom', (message: socketRoomUserIdInward) => {
       const { roomId, userId } = message;
       const room = roomContoller.getRoomId(roomId);
       if (room) {
@@ -64,11 +72,11 @@ const socketServer = (httpServer) => {
       }
     });
 
-    socket.on('startGame', (message) => {
+    socket.on('startGame', (message: { roomId: string }) => {
       socket.to(message.roomId).emit('gameStarted');
     });
 
-    socket.on('gameCardChoice', (message) => {
+    socket.on('gameCardChoice', (message: socketRoomPlayerChoiceInward) => {
       const { roomId, playerChoice } = message;
       roomContoller.setGameUserChoice(roomId, playerChoice);
       const checkVotes = roomContoller.getCardTurnStatus(roomId);
@@ -90,7 +98,7 @@ const socketServer = (httpServer) => {
       }
     });
 
-    socket.on('changeActiveIssue', (message) => {
+    socket.on('changeActiveIssue', (message: socketRoomIssueInward) => {
       const { roomId, issueName } = message;
       const gameIssues = roomContoller.getGameIssues(roomId);
       const timer = roomContoller.getTimer(roomId);
@@ -101,7 +109,7 @@ const socketServer = (httpServer) => {
       });
     });
 
-    socket.on('calcScore', (message) => {
+    socket.on('calcScore', (message: socketRoomIssueInward) => {
       const { roomId, issueName } = message;
       roomContoller.calculateIssueScore(roomId, issueName);
       const gameIssues = roomContoller.getGameIssues(roomId);
@@ -113,22 +121,22 @@ const socketServer = (httpServer) => {
       });
     });
 
-    socket.on('leaveGame', (message) => {
+    socket.on('leaveGame', (message: { roomId: string }) => {
       const { roomId } = message;
       roomContoller.gameOver(roomId);
       io.in(roomId).emit('gameOver', 'The end');
     });
 
-    socket.on('gameOverFinish', (message) => {
+    socket.on('gameOverFinish', (message: { roomId: string }) => {
       socket.leave(message.roomId);
     });
 
-    socket.on('kickPlayerFromLobby', (message) => {
+    socket.on('kickPlayerFromLobby', (message: socketRoomUserIdInward) => {
       const { roomId, userId } = message;
       socket.to(roomId).emit('userToBeKickedOff', userId);
     });
 
-    socket.on('startVoting', (message) => {
+    socket.on('startVoting', (message: { roomId: string }) => {
       console.log('TIMER IS STARTED');
       const { roomId } = message;
       const timer = roomContoller.getTimer(roomId);
@@ -139,12 +147,7 @@ const socketServer = (httpServer) => {
       }
     });
 
-    // socket.on('userKickOff', (message) => {
-    //   const { roomId, userId } = message;
-    //   roomContoller.leaveUserFromRoom(roomId, userId);
-    //   socket.to(roomId).emit('userToBeKickedOff', userId);
-    // });
-    socket.on('addNewGameIssue', (message) => {
+    socket.on('addNewGameIssue', (message: socketRoomNewIssueInward) => {
       const { roomId, newIssue } = message;
       roomContoller.addNewIssue(roomId, newIssue);
       const issues = roomContoller.getGameIssues(roomId);

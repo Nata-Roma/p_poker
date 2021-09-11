@@ -157,7 +157,7 @@ class Rooms {
     }
   };
 
-  gameOver = (roomId: string) => {
+  gameOver = (roomId: string): void => {
     this.rooms = this.rooms.filter((room) => room.getRoomId() !== roomId);
   };
 

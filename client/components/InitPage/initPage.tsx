@@ -1,11 +1,9 @@
 import React, { useContext, useEffect, FC, useState } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import axios from 'axios';
 import { nanoid } from 'nanoid';
 import { Button, Grid, Typography } from '@material-ui/core';
 import { useStyleHomePage } from '@styles/initPage.style';
-import { BASE_URL } from 'utils/apiConfig';
 import { RoomSelect } from './roomSelect';
 import {
   setDealer,
@@ -18,11 +16,11 @@ import {
 } from 'store/actionCreators';
 import AppContext from 'store/store';
 import { roles, userInitData } from 'utils/configs';
-import { userCreate } from 'utils/userCreate';
 import { IDialogUsers } from 'utils/interfaces';
 import { UserDialog } from './Dialog/userDialog';
 import pokerImage from '../../public/poker-cards_green.png';
 import appStorage from 'utils/storage';
+import { apiCreateRoom } from 'services/apiServices';
 
 interface MakeChoiceProps {
   rooms: Array<string>;
@@ -48,12 +46,10 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   const [ loading, setLoading ] = useState(false);
   const { state, dispatch } = useContext(AppContext);
 
-  
-
   const onRoomList = (rooms: Array<string>) => {
     setRoomList(rooms);
-  }
-  
+  };
+
   const goToLobby = (id: string) => {
     const userId = appStorage.getSession();
     dispatch(setUserId(userId));
@@ -75,7 +71,8 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
         data: id,
       };
       setOpenCreate(false);
-      const created = await axios.post(`${BASE_URL}/rooms`, config);
+      const created = await apiCreateRoom(config);
+      console.log('Room', created);
       goToLobby(id);
     }
   };
@@ -151,21 +148,18 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       const session = appStorage.getSession();
       state.socket.auth.userId = session;
     }
-    state.socket.disconnect().connect();
+    // state.socket.disconnect().connect();
 
     state.socket.on('roomList', (message) => {
-      onRoomList(message)
+      onRoomList(message);
     });
-
-    state.socket.on('connect', () => {});
 
     return () => {
       state.socket.off('roomList', (message) => {
-        onRoomList(message)
+        onRoomList(message);
       });
-
-      state.socket.off('connect', () => {});
-    }
+      setRoomList([]);
+    };
   }, []);
 
   return (

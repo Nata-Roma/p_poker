@@ -66,3 +66,34 @@ export interface IGameSettings {
   timer: IGameTimer;
   card: IGameCard;
 }
+
+export interface socketRoomUserIdInward {
+  roomId: string;
+  userId: string;
+}
+
+export interface socketRoomUserInward {
+  roomId: string;
+  user: IUserData;
+}
+
+export interface socketRoomIssueInward {
+  roomId: string;
+  issueName: string;
+}
+
+export interface socketRoomNewIssueInward {
+  roomId: string;
+  newIssue: IIssue;
+}
+
+export interface socketRoomPlayerChoiceInward {
+  roomId: string;
+  playerChoice: IPlayerChoice;
+}
+
+export interface socketRoomUserIdmessageInward {
+  roomId: string;
+  userId: string;
+  message: string;
+}

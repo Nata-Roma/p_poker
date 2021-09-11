@@ -36,11 +36,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
     setUsers(users);
   };
 
-  state.socket.on('disconnected', () => {
-    console.log('Disconnected!!!');
-    router.push('/');
-  });
-
   const onLobbyEntrance = () => {
     const message = userCreate(
       lobby,
@@ -132,6 +127,11 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
         kickOffUser(message);
       });
 
+      state.socket.on('disconnected', () => {
+        console.log('Disconnected!!!');
+        router.push('/');
+      });
+
       return () => {
         state.socket.off('userJoined', (message) => {
           onUserJoinLeave(message);
@@ -143,6 +143,11 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
 
         state.socket.off('userToBeKickedOff', (message) => {
           kickOffUser(message);
+        });
+
+        state.socket.off('disconnected', () => {
+          console.log('Disconnected!!!');
+          router.push('/');
         });
       };
     }
