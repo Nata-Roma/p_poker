@@ -107,6 +107,7 @@ export interface IApiStartGame {
 
 export interface CreateIssuePopupProps {
   onIssueCreate: (issue: IssueData) => void;
+  issues: Array<IGameIssue>;
 }
 
 export interface IssueListProps {
@@ -125,6 +126,26 @@ export interface issuePrevNext {
 export interface IStatistics {
   choice: number;
   ratio: number;
+}
+
+export interface UserCardProps {
+  user: IUser;
+  observer: boolean;
+  score?: boolean;
+  onKickUser: (user: IUser) => void;
+}
+
+export interface ChangeIssueProps {
+  onIssueChangeClick: (changedIssue: IGameIssue) => void;
+  issueSelected: IGameIssue;
+  issues: Array<IGameIssue>;
+}
+
+export interface NewIssueGamePopupProps {
+  onIssueCreate: (newIssue: IGameIssue) => void;
+  onAddCloseIssue: () => void;
+  isOpen: boolean;
+  issues: Array<IGameIssue>;
 }
 
 export interface IActiveIssue {

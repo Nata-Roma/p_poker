@@ -181,11 +181,7 @@ export const GameDealer: FC<GameDealerProps> = ({
             onAddIssue={onAddOpenIssue}
           />
         )}
-        <NewIssueGamePopup
-          onIssueCreate={onIssueCreate}
-          onAddCloseIssue={onAddCloseIssue}
-          isOpen={isOpen}
-        />
+        <NewIssueGamePopup onIssueCreate={onIssueCreate} onAddCloseIssue={onAddCloseIssue} isOpen={isOpen} issues={gameIssues.map((el) => ({issueName: el.issue.issueName, priority: el.issue.priority}))}/>
       </Grid>
     </div>
   );

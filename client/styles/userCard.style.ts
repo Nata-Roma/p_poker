@@ -58,6 +58,13 @@ createStyles({
   },
   iconScore: {
     fontSize: '15px'
+  },
+  containerDealer: {
+    justifyContent: 'flex-start',
+  },
+  dealerName: {
+    width: '100%',
+    textAlign: 'center'
   }
 }));
 

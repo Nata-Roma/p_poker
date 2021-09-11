@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useContext } from 'react';
+import React, { FC } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,18 +13,14 @@ import {
   NativeSelect,
 } from '@material-ui/core';
 import { useStylesCreateIssuePopup } from '@styles/createIssuePopup.style';
-import { IGameIssue } from 'utils/interfaces';
-
-interface NewIssueGamePopupProps {
-  onIssueCreate: (newIssue: IGameIssue) => void;
-  onAddCloseIssue: () => void;
-  isOpen: boolean;
-}
+import { NewIssueGamePopupProps } from 'utils/interfaces';
+import { checkValidateIssue, generateErrorName } from 'components/Lobby/lobbyDealerHelpers';
 
 export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
   onIssueCreate,
   isOpen,
   onAddCloseIssue,
+  issues
 }) => {
   const classes = useStylesCreateIssuePopup();
   const [ priority, setPriority ] = React.useState('low');
@@ -38,6 +34,8 @@ export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
     setIssueName('');
   };
 
+  const disabled = checkValidateIssue(issueName, issues);
+  const errorInfo = generateErrorName(issueName, issues);
   return (
     <div>
       <Dialog
@@ -58,6 +56,8 @@ export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
             value={issueName}
             onChange={(e) => setIssueName(e.target.value)}
             required
+            error={disabled}
+            helperText={errorInfo}
           />
           <FormControl className={classes.select}>
             <InputLabel htmlFor="issue">Priority:</InputLabel>
@@ -84,6 +84,7 @@ export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
                 color="primary"
                 variant="contained"
                 fullWidth
+                disabled={disabled}
               >
                 Create
               </Button>
