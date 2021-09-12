@@ -45,6 +45,7 @@ class Game {
           players: players,
           score: [],
           totalScore: 0,
+          amendedScore: 0,
         };
         this.issues.push(newIssue);
       }
@@ -182,6 +183,7 @@ class Game {
         players: players,
         score: [],
         totalScore: 0,
+        amendedScore: 0,
       };
       this.issues.push(newIssue);
     }
@@ -189,6 +191,15 @@ class Game {
 
   getTimer = (): IGameTimer => {
     return this.timer;
+  };
+
+  amendedIssueScore = (amendedIssue: IGameIssue): void => {
+    const issueIndex = this.issues.findIndex(
+      (issue) => issue.issue.issueName === amendedIssue.issue.issueName,
+    );
+    if (issueIndex >= 0) {
+      this.issues.splice(issueIndex, 1, amendedIssue);
+    }
   };
 }
 

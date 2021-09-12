@@ -33,8 +33,8 @@ class Rooms {
   getRoomId = (roomId: string): string | null => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     console.log('get room by Id');
-    if(room) return roomId;
-    return null
+    if (room) return roomId;
+    return null;
   };
 
   getRoomUsers = (roomId: string): Array<IUserData> => {
@@ -173,7 +173,14 @@ class Rooms {
     if (room) {
       return room.getTimer();
     }
-  }
+  };
+
+  amendedIssueScore = (roomId: string, amendedIssue: IGameIssue): void => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      room.amendedIssueScore(amendedIssue);
+    }
+  };
 }
 
 const roomContoller = new Rooms();

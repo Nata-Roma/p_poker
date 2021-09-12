@@ -12,13 +12,15 @@ interface IssuesBlockProps {
   onIssueClick: (issueName: string) => void;
   activeIssueName: string;
   onAddIssue: () => void
+  onAmendScore?: () => void
 }
 
 export const IssuesBlock: FC<IssuesBlockProps> = ({
   issues,
   activeIssueName,
   onIssueClick,
-  onAddIssue
+  onAddIssue,
+  onAmendScore
 }) => {
   const classes = useStylesGamePart();
   const [ stat, setStat ] = useState<Array<IGamePageIssueScore>>();
@@ -49,6 +51,8 @@ export const IssuesBlock: FC<IssuesBlockProps> = ({
               activeIssueName={activeIssueName}
               addIssue={false}
               score={issue.totalScore}
+              amendedScore={issue.amendedScore}
+              onAmendScore={onAmendScore}
               key={`${issue.issue.issueName}-${Date.now()}`}
             />
           ))}

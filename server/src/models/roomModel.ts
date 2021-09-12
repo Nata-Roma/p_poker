@@ -149,6 +149,10 @@ class Room {
     const timer = this.game.getTimer();
     if (timer) return timer;
   };
+
+  amendedIssueScore = (amendedIssue: IGameIssue): void => {
+    this.game.amendedIssueScore(amendedIssue);
+  }
 }
 
 export default Room;

@@ -154,6 +154,13 @@ const socketServer = (httpServer) => {
       io.in(roomId).emit('newGameIssue', issues);
     });
 
+    socket.on('amendScoreGameIssue', message => {
+      const { roomId, amnendedIssue } = message;
+      roomContoller.amendedIssueScore(roomId, amnendedIssue);
+      const issues = roomContoller.getGameIssues(roomId);
+      io.in(roomId).emit('newGameIssue', issues);
+    })
+
     // socket.on('disconnect', (message) => {
     //   console.log('Got disconnect!');
     //   roomContoller.userDisconnect(socket.handshake.auth.username);

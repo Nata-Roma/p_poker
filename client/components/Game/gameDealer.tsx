@@ -14,7 +14,8 @@ import { roles } from 'utils/configs';
 import useStylesGamePart from '@styles/gamePart.style';
 import { IssuesBlock } from './issuesBlock';
 import { Timer } from './Timer/timer';
-import { NewIssueGamePopup } from './newIssueGame';
+import { NewIssueGamePopup } from './Popups/newIssueGame';
+import { ChangeScoreGamePopup } from './Popups/changeScoreGame';
 
 interface GameDealerProps {
   dealer: IUser;
@@ -51,6 +52,7 @@ export const GameDealer: FC<GameDealerProps> = ({
   const { state } = useContext(AppContext);
   const [ title, setTitle ] = useState<string>();
   const [ isOpen, setIsOpen ] = useState(false);
+  const [ isScoreOpen, setIsScoreOpen ] = useState(false);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveGame', {
@@ -73,10 +75,23 @@ export const GameDealer: FC<GameDealerProps> = ({
     setIsOpen(false);
   };
 
+  const onChangeOpenIssue = () => {
+    setIsScoreOpen(true);
+  };
+
+  const onChangeCloseIssue = () => {
+    setIsScoreOpen(false);
+  };
+
   const onIssueCreate = (newIssue: IGameIssue) => {
     state.socket.emit('addNewGameIssue', { roomId: lobby, newIssue });
     onAddCloseIssue();
   };
+
+  const onScoreChange = (amnendedIssue: IGamePageIssue) => {
+    state.socket.emit('amendScoreGameIssue', { roomId: lobby, amnendedIssue });
+    onChangeCloseIssue();
+  }
 
   useEffect(
     () => {
@@ -179,9 +194,11 @@ export const GameDealer: FC<GameDealerProps> = ({
             activeIssueName={activeIssueName}
             onIssueClick={onIssueClick}
             onAddIssue={onAddOpenIssue}
+            onAmendScore={onChangeOpenIssue}
           />
         )}
         <NewIssueGamePopup onIssueCreate={onIssueCreate} onAddCloseIssue={onAddCloseIssue} isOpen={isOpen} issues={gameIssues.map((el) => ({issueName: el.issue.issueName, priority: el.issue.priority}))}/>
+        <ChangeScoreGamePopup onScoreChange={onScoreChange} onChangeCloseIssue={onChangeCloseIssue} isOpen={isScoreOpen} issue={gameIssues.find(iss => iss.issue.issueName === activeIssueName)} />
       </Grid>
     </div>
   );
