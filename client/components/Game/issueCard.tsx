@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
@@ -8,6 +8,7 @@ import { useStylesIssueCard } from '@styles/issueCard.style';
 import { Grid } from '@material-ui/core';
 import clsx from 'clsx';
 import { IGameIssue } from 'utils/interfaces';
+import AppContext from 'store/store';
 
 interface IssueCardProps {
   issueName: string;
@@ -17,6 +18,8 @@ interface IssueCardProps {
   addIssue: boolean;
   onAddIssue?: () => void
   score: number;
+  amendedScore?: number
+  onAmendScore?: () => void
 }
 
 export const IssueCard: FC<IssueCardProps> = ({
@@ -27,8 +30,11 @@ export const IssueCard: FC<IssueCardProps> = ({
   addIssue,
   onAddIssue,
   score,
+  amendedScore,
+  onAmendScore,
 }) => {
   const classes = useStylesIssueCard();
+  const { state } = useContext(AppContext);
   const activeCard = clsx(classes.root, activeIssueName === issueName && classes.activeCard);
   const activeText = clsx(classes.text, activeIssueName === issueName && classes.activeCard);
 
@@ -55,7 +61,7 @@ export const IssueCard: FC<IssueCardProps> = ({
             </Typography>
           )}
         </div>
-        <div className={classes.block}>
+        <div className={classes.blockScore} onClick={score && state.dealer ? onAmendScore : null}>
           {!(issueName === 'Create New Issue') && (
             <>
               <Typography
@@ -66,7 +72,7 @@ export const IssueCard: FC<IssueCardProps> = ({
                 Score
               </Typography>
               <Typography color="textSecondary" variant="h5" align="center">
-                {score ? score : '-'}
+                {amendedScore ? amendedScore : score ? score : '-'}
               </Typography>
             </>
           )}

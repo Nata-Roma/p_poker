@@ -15,6 +15,7 @@ export const UserGameCard: FC<UserGameCardProps> = ({ user, observer, score }) =
   const classes = useStylesUserGameCard();
   const observerView = clsx(classes.avatar, observer && classes.avatarObserver);
   const dealerRole = clsx(classes.container, user.dealer && classes.containerDealer);
+  const dealerName = clsx(user.dealer && classes.dealerName);
 
   return (
     <div className={classes.container}>
@@ -32,7 +33,7 @@ export const UserGameCard: FC<UserGameCardProps> = ({ user, observer, score }) =
           </>
         )}
       </div>
-      <div className={user.dealer && classes.dealerName}>
+      <div className={dealerName}>
       <Typography variant="body1">{user.username}{' '}{user.userSurname}</Typography>
       {/* <BlockIcon fontSize={score ? "medium" : "large"} /> */}
       </div>

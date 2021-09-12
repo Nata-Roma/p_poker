@@ -19,7 +19,7 @@ export interface IIssue {
 
 export interface IGameTimer {
   isTimer: boolean;
-  time: number
+  time: number;
   // minutes: number;
   // seconds: number;
 }
@@ -52,6 +52,7 @@ export interface IGameIssue {
   players: Array<IGamePlayer>;
   score: Array<IGameIssueScore>;
   totalScore: number;
+  amendedScore: number;
 }
 
 export interface IGameSettingsFromClient {
