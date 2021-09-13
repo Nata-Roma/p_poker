@@ -137,6 +137,10 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   );
 
   useEffect(() => {
+    window.onbeforeunload =() => {
+      console.log('HHHHHHH');
+      
+    }
     dispatch(setRoomId(''));
     dispatch(setUserId(''));
     dispatch(setDealer(false));

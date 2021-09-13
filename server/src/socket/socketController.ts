@@ -66,9 +66,18 @@ const socketServer = (httpServer) => {
       if (room) {
         console.log('SOCKET LEAVE', message);
         socket.leave(roomId);
-        roomContoller.leaveUserFromRoom(roomId, userId);
         const users = roomContoller.getRoomUsers(roomId);
-        socket.to(roomId).emit('userLeft', users);
+        const userDealer = users.find((user) => user.id === userId);
+        console.log();
+        
+        if (userDealer.dealer) {
+          console.log('DEALER');
+          roomContoller.gameOver(roomId);
+          io.in(roomId).emit('gameOver', 'The end');
+        } else {
+          roomContoller.leaveUserFromRoom(roomId, userId);
+          socket.to(roomId).emit('userLeft', users);
+        }
       }
     });
 
@@ -154,12 +163,12 @@ const socketServer = (httpServer) => {
       io.in(roomId).emit('newGameIssue', issues);
     });
 
-    socket.on('amendScoreGameIssue', message => {
+    socket.on('amendScoreGameIssue', (message) => {
       const { roomId, amnendedIssue } = message;
       roomContoller.amendedIssueScore(roomId, amnendedIssue);
       const issues = roomContoller.getGameIssues(roomId);
       io.in(roomId).emit('newGameIssue', issues);
-    })
+    });
 
     // socket.on('disconnect', (message) => {
     //   console.log('Got disconnect!');

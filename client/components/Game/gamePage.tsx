@@ -162,6 +162,19 @@ export const GamePage: FC<GamePageProps> = ({
   };
 
   useEffect(() => {
+    router.beforePopState(({url, as}) => {
+      console.log('beforePopState');
+      state.socket.emit('leaveRoom', {
+        roomId: lobby,
+        userId: state.userId,
+      });
+      if (as !== '/') {
+        window.location.href = as;
+        return false;
+      }
+      return true;
+    });
+
     if (errorStatus === 'no users' || errorStatus === 'no room') {
       router.push('/');
     } else {
