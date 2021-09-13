@@ -9,12 +9,7 @@ import NameGame from './nameGame';
 import GameSettings from './gameSettings';
 import IssueList from './issueList';
 import AppContext from 'store/store';
-import {
-  IGameIssue,
-  IGameSettings,
-  IssueData,
-  IUser,
-} from 'utils/interfaces';
+import { IGameIssue, IGameSettings, IssueData, IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
 import {
   cardDecks,
@@ -36,6 +31,7 @@ import {
   timeChange,
   timerChange,
 } from './lobbyDealerHelpers';
+import { DealerLeavePage } from 'components/Game/Popups/dealerLeavePage';
 
 export interface LobbyDealerProps {
   users: Array<IUser>;
@@ -55,6 +51,7 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
   const [ chosenDeck, setChosenDeck ] = useState<Array<string>>();
   const [ chosenSeq, setChosenSeq ] = useState<Array<number>>();
   const [ cardPot, setCardPot ] = useState('');
+  const [ isLeaveOpen, setIsLeaveOpen ] = useState(false);
 
   const onStartGameClick = async () => {
     console.log(gameSettings);
@@ -63,7 +60,7 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
       !gameSettings.card.cardNumber ||
       (gameSettings.timer.isTimer &&
         // (!gameSettings.timer.minutes && !gameSettings.timer.seconds))
-        (!gameSettings.timer.time))
+        !gameSettings.timer.time)
     )
       return null;
     const create = await apiCreateGame(lobby, gameSettings);
@@ -211,8 +208,6 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
     [ users ],
   );
   useEffect(() => {
-    
-
     setChosenSeq(
       Array.from(
         { length: gameSettings.card.cardNumber },
@@ -292,7 +287,7 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
         <Button
           variant="outlined"
           className={classes.btn}
-          onClick={onRoomLeave}
+          onClick={() => setIsLeaveOpen(true)}
         >
           Cancel Game
         </Button>
@@ -333,6 +328,11 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
         onClosePopUp={(isOpen: boolean) => setIsOpenKickUser(isOpen)}
         user={kickOffUser}
         onDeleteUser={onDeleteUser}
+      />
+      <DealerLeavePage
+        isOpen={isLeaveOpen}
+        onLeaveClose={() => setIsLeaveOpen(false)}
+        onLeaveConfirm={onRoomLeave}
       />
     </Grid>
   );
