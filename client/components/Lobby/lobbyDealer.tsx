@@ -211,6 +211,8 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
     [ users ],
   );
   useEffect(() => {
+    
+
     setChosenSeq(
       Array.from(
         { length: gameSettings.card.cardNumber },

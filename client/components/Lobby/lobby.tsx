@@ -71,6 +71,30 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   };
 
   useEffect(() => {
+    router.beforePopState(({url, as}) => {
+      console.log('beforePopState');
+      state.socket.emit('leaveRoom', {
+        roomId: lobby,
+        userId: state.userId,
+      });
+      if (as !== '/') {
+        window.location.href = as;
+        return false;
+      }
+      return true;
+    });
+    // if (process.browser) {
+    //   window.onbeforeunload =() => {
+    //     router.push('/');
+    //     console.log('Lobby reload');
+    //     state.socket.emit('leaveRoom', {
+    //       roomId: lobby,
+    //       userId: state.userid,
+    //     });
+
+    //   }
+    // }
+
     if (lobbyInfo.error === 'no room') {
       <ErrorPopup
         isOpen={true}
@@ -132,6 +156,10 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
         router.push('/');
       });
 
+      // state.socket.on('gameOver', (message) => {
+      //   gameFinish(message);
+      // });
+
       return () => {
         state.socket.off('userJoined', (message) => {
           onUserJoinLeave(message);
@@ -149,6 +177,11 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
           console.log('Disconnected!!!');
           router.push('/');
         });
+
+        // state.socket.off('gameOver', (message) => {
+        //   gameFinish(message);
+        // });
+
       };
     }
   }, []);
