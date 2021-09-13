@@ -71,7 +71,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   };
 
   useEffect(() => {
-    router.beforePopState(({url, as}) => {
+    router.beforePopState(({ url, as }) => {
       console.log('beforePopState');
       state.socket.emit('leaveRoom', {
         roomId: lobby,
@@ -83,17 +83,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       }
       return true;
     });
-    // if (process.browser) {
-    //   window.onbeforeunload =() => {
-    //     router.push('/');
-    //     console.log('Lobby reload');
-    //     state.socket.emit('leaveRoom', {
-    //       roomId: lobby,
-    //       userId: state.userid,
-    //     });
-
-    //   }
-    // }
 
     if (lobbyInfo.error === 'no room') {
       <ErrorPopup
@@ -111,7 +100,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
             message={'No Room found'}
             onClosePopup={kickOffUser(state.userId)}
           />;
-          // kickOffUser(state.userId);
         }
       }
 
@@ -156,10 +144,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
         router.push('/');
       });
 
-      // state.socket.on('gameOver', (message) => {
-      //   gameFinish(message);
-      // });
-
       return () => {
         state.socket.off('userJoined', (message) => {
           onUserJoinLeave(message);
@@ -178,10 +162,8 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
           router.push('/');
         });
 
-        // state.socket.off('gameOver', (message) => {
-        //   gameFinish(message);
-        // });
-
+        setUsers([]);
+        setChatMessages([]);
       };
     }
   }, []);

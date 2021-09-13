@@ -16,6 +16,7 @@ import { IssuesBlock } from './issuesBlock';
 import { Timer } from './Timer/timer';
 import { NewIssueGamePopup } from './Popups/newIssueGame';
 import { ChangeScoreGamePopup } from './Popups/changeScoreGame';
+import { DealerLeavePage } from './Popups/dealerLeavePage';
 
 interface GameDealerProps {
   dealer: IUser;
@@ -53,6 +54,7 @@ export const GameDealer: FC<GameDealerProps> = ({
   const [ title, setTitle ] = useState<string>();
   const [ isOpen, setIsOpen ] = useState(false);
   const [ isScoreOpen, setIsScoreOpen ] = useState(false);
+  const [ isLeaveOpen, setIsLeaveOpen ] = useState(false);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveGame', {
@@ -91,7 +93,7 @@ export const GameDealer: FC<GameDealerProps> = ({
   const onScoreChange = (amnendedIssue: IGamePageIssue) => {
     state.socket.emit('amendScoreGameIssue', { roomId: lobby, amnendedIssue });
     onChangeCloseIssue();
-  }
+  };
 
   useEffect(
     () => {
@@ -138,7 +140,7 @@ export const GameDealer: FC<GameDealerProps> = ({
               <Button
                 variant="outlined"
                 className={classes.btn}
-                onClick={onRoomLeave}
+                onClick={() => setIsLeaveOpen(true)}
               >
                 Stop Game
               </Button>
@@ -197,8 +199,28 @@ export const GameDealer: FC<GameDealerProps> = ({
             onAmendScore={onChangeOpenIssue}
           />
         )}
-        <NewIssueGamePopup onIssueCreate={onIssueCreate} onAddCloseIssue={onAddCloseIssue} isOpen={isOpen} issues={gameIssues.map((el) => ({issueName: el.issue.issueName, priority: el.issue.priority}))}/>
-        <ChangeScoreGamePopup onScoreChange={onScoreChange} onChangeCloseIssue={onChangeCloseIssue} isOpen={isScoreOpen} issue={gameIssues.find(iss => iss.issue.issueName === activeIssueName)} />
+        <NewIssueGamePopup
+          onIssueCreate={onIssueCreate}
+          onAddCloseIssue={onAddCloseIssue}
+          isOpen={isOpen}
+          issues={gameIssues.map((el) => ({
+            issueName: el.issue.issueName,
+            priority: el.issue.priority,
+          }))}
+        />
+        <ChangeScoreGamePopup
+          onScoreChange={onScoreChange}
+          onChangeCloseIssue={onChangeCloseIssue}
+          isOpen={isScoreOpen}
+          issue={gameIssues.find(
+            (iss) => iss.issue.issueName === activeIssueName,
+          )}
+        />
+        <DealerLeavePage
+          isOpen={isLeaveOpen}
+          onLeaveConfirm={onRoomLeave}
+          onLeaveClose={() => setIsLeaveOpen(false)}
+        />
       </Grid>
     </div>
   );
