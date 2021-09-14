@@ -9,7 +9,7 @@ import AppContext from 'store/store';
 import { IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
 import { roles } from 'utils/configs';
-import KickPlayerPopup from './kickPlayerPopup';
+import KickPlayerPopup from './popups/kickPlayerPopup';
 
 
 export interface LobbyUserProps {

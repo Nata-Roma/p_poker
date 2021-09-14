@@ -65,19 +65,20 @@ const socketServer = (httpServer) => {
       const room = roomContoller.getRoomId(roomId);
       if (room) {
         console.log('SOCKET LEAVE', message);
-        socket.leave(roomId);
-        const users = roomContoller.getRoomUsers(roomId);
+
+        let users = roomContoller.getRoomUsers(roomId);
         const userDealer = users.find((user) => user.id === userId);
-        console.log();
-        
+        console.log('users before leave', users);
         if (userDealer.dealer) {
           console.log('DEALER');
           roomContoller.gameOver(roomId);
           io.in(roomId).emit('gameOver', 'The end');
         } else {
           roomContoller.leaveUserFromRoom(roomId, userId);
+          users = roomContoller.getRoomUsers(roomId);
           socket.to(roomId).emit('userLeft', users);
         }
+        socket.leave(roomId);
       }
     });
 
@@ -142,6 +143,8 @@ const socketServer = (httpServer) => {
 
     socket.on('kickPlayerFromLobby', (message: socketRoomUserIdInward) => {
       const { roomId, userId } = message;
+      console.log('kickPlayerFromLobby', userId);
+
       socket.to(roomId).emit('userToBeKickedOff', userId);
     });
 

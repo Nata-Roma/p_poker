@@ -37,7 +37,7 @@ const KickPlayerPopup: FC<KickPlayerPopupProps> = ({
           </DialogTitle>
           <DialogContent>
             Do you really want to remove player {user.username}{' '}
-            {user.userSurname} from game session?
+            {user.userSurname} from the game session?
           </DialogContent>
           <DialogActions>
             <Grid container spacing={2}>
