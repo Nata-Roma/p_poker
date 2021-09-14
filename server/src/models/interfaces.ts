@@ -98,3 +98,14 @@ export interface socketRoomUserIdmessageInward {
   userId: string;
   message: string;
 }
+
+export interface socketRoomUserKickVote {
+  roomId: string;
+  user: IUserData;
+  vote: number
+}
+
+export interface IKickUserVotes {
+  votes: number;
+  voted: number;
+}

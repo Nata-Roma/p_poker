@@ -21,7 +21,7 @@ import {
 } from 'utils/configs';
 import { CardList } from './cardList';
 import { apiCreateGame } from 'services/apiServices';
-import KickPlayerPopup from './kickPlayerPopup';
+import KickPlayerPopup from './popups/kickPlayerPopup';
 import {
   issueChanged,
   issueCreate,

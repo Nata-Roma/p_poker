@@ -15,7 +15,7 @@ import {
 import CreateIcon from '@material-ui/icons/Create';
 import { useStylesCreateIssuePopup } from '@styles/createIssuePopup.style';
 import { ChangeIssueProps, IGameIssue } from 'utils/interfaces';
-import { checkValidateIssue, generateErrorName } from './lobbyDealerHelpers';
+import { checkValidateIssue, generateErrorName } from '../lobbyDealerHelpers';
 
 const ChangeIssuePopup: FC<ChangeIssueProps> = ({
   onIssueChangeClick,

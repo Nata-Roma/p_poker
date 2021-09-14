@@ -10,8 +10,8 @@ import {
 } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
 import { useStylesIssueList } from '@styles/issueList.style';
-import CreateIssuePopup from './createIssuePopup';
-import ChangeIssuePopup from './changeIssuePopup';
+import CreateIssuePopup from './popups/createIssuePopup';
+import ChangeIssuePopup from './popups/changeIssuePopup';
 import { IGameIssue, IssueListProps } from 'utils/interfaces';
 
 const IssueList: FC<IssueListProps> = ({
