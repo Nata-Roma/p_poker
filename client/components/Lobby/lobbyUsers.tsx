@@ -10,7 +10,8 @@ import { IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
 import { roles } from 'utils/configs';
 import KickPlayerPopup from './popups/kickPlayerPopup';
-
+import KickPlayerReject from './popups/kickPlayerReject';
+import KickPlayerConfirm from './popups/kickPlayerConfirm';
 
 export interface LobbyUserProps {
   users: Array<IUser>;
@@ -23,7 +24,9 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
   const { lobby } = router.query;
   const [ dealer, setDealer ] = useState<IUser>();
   const [ isOpenKickUser, setIsOpenKickUser ] = useState(false);
-  const [kickOffUser, setKickOffUser] = useState<IUser>();
+  const [ kickOffUser, setKickOffUser ] = useState<IUser>();
+  const [ isOpenReject, setIsOpenReject ] = useState(false);
+  const [ isOpenConfirm, setIsOpenConfirm ] = useState(false);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -34,28 +37,48 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
   };
 
   const onDeleteUser = (user: IUser) => {
-
-  }
-
-  // state.socket.on('userJoined', (message) => {
-  //   setUserArr(message);
-  //   console.log('Lobby Users join user', message);
-  // });
-
-  // state.socket.on('userLeft', (message) => {
-  //   setUserArr(message);
-  //   console.log('Lobby user left', message);
-  // });
+    state.socket.emit('userWantsKick', { roomId: lobby, user });
+  };
 
   const gameStart = () => {
     router.push(`/${lobby}/game`);
-    console.log('Go to Game Page');
   };
 
   const gameFinish = (message: string) => {
     console.log('gameOver', message);
     state.socket.emit('gameOverFinish', { roomId: lobby });
     router.push('/');
+  };
+
+  const rejectUserRemove = (isOpen: boolean) => {
+    setIsOpenReject(isOpen);
+    setKickOffUser(null);
+  };
+
+  const userRemoveRejectPopup = () => {
+    setIsOpenReject(true);
+  };
+
+  const onCloseConfirm = (isOpen: boolean) => {
+    setIsOpenConfirm(isOpen);
+    setKickOffUser(null);
+  };
+
+  const onConfirmClick = (user: IUser, vote: number) => {
+    onCloseConfirm(false);
+    state.socket.emit('confirmedKick', { roomId: lobby, user, vote });
+  };
+
+  const userKickVoting = (user: IUser) => {
+    if (state.userId !== user.id) {
+      setIsOpenConfirm(true);
+      setKickOffUser(user);
+    }
+  };
+
+  const onKickUser = (user: IUser) => {
+    setIsOpenKickUser(true);
+    setKickOffUser(user);
   };
 
   useEffect(
@@ -73,7 +96,17 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
     state.socket.on('gameStarted', (message) => {
       gameStart();
     });
-    
+
+    state.socket.on('gameStarted', (message) => {
+      gameStart();
+    });
+    state.socket.on('noQuorum', (message) => {
+      userRemoveRejectPopup();
+    });
+
+    state.socket.on('kickConfirm', (user: IUser) => {
+      userKickVoting(user);
+    });
 
     return () => {
       state.socket.off('gameOver', (message) => {
@@ -82,13 +115,15 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
       state.socket.off('gameStarted', (message) => {
         gameStart();
       });
+      state.socket.off('noQuorum', (message) => {
+        userRemoveRejectPopup();
+      });
+
+      state.socket.off('kickConfirm', (user: IUser) => {
+        userKickVoting(user);
+      });
     };
   }, []);
-
-  const onKickUser = (user: IUser) => {
-    setIsOpenKickUser(true);
-    setKickOffUser(user)
-  };
 
   return (
     <Grid
@@ -134,15 +169,25 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
         {users && <MemberList users={users} onKickUser={onKickUser} />}
       </Grid>
       <Grid item container>
-        {users && (
-          <ObserverList users={users} onKickUser={onKickUser} />
-        )}
+        {users && <ObserverList users={users} onKickUser={onKickUser} />}
       </Grid>
       <KickPlayerPopup
         isOpenKickUser={isOpenKickUser}
         onClosePopUp={(isOpen: boolean) => setIsOpenKickUser(isOpen)}
         user={kickOffUser}
         onDeleteUser={onDeleteUser}
+      />
+      <KickPlayerConfirm
+        isOpenConfirm={isOpenConfirm}
+        onCloseConfirm={onCloseConfirm}
+        user={kickOffUser}
+        onConfirmClick={onConfirmClick}
+        onRejectClick={onConfirmClick}
+      />
+      <KickPlayerReject
+        isOpenReject={isOpenReject}
+        onCloseReject={rejectUserRemove}
+        user={kickOffUser}
       />
     </Grid>
   );

@@ -33,8 +33,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   const { lobby } = router.query;
 
   const onUserJoinLeave = (users: Array<IUser>) => {
-    console.log('userLeft');
-    
     setUsers(users);
   };
 
@@ -63,8 +61,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
 
   const kickOffUser = (userId: string) => {
     const userFound = state.userId === userId;
-    console.log('userToBeKickedOff', userFound);
-    
     if (userFound) {
       state.socket.emit('leaveRoom', {
         roomId: lobby,

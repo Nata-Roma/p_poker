@@ -6,6 +6,7 @@ import {
   socketRoomUserIdInward,
   socketRoomUserIdmessageInward,
   socketRoomUserInward,
+  socketRoomUserKickVote,
 } from '../models/interfaces';
 import roomContoller from '../roomServices/roomController';
 
@@ -43,8 +44,6 @@ const socketServer = (httpServer) => {
       const { roomId, userId } = message;
       const room = roomContoller.getRoomId(roomId);
       if (room) {
-        console.log('Socket REconnected', roomId, userId);
-
         const user = roomContoller.getRoomUser(roomId, userId);
         socket.emit('reconnectToLobby', user);
       }
@@ -64,13 +63,9 @@ const socketServer = (httpServer) => {
       const { roomId, userId } = message;
       const room = roomContoller.getRoomId(roomId);
       if (room) {
-        console.log('SOCKET LEAVE', message);
-
         let users = roomContoller.getRoomUsers(roomId);
         const userDealer = users.find((user) => user.id === userId);
-        console.log('users before leave', users);
-        if (userDealer.dealer) {
-          console.log('DEALER');
+        if (userDealer && userDealer.dealer) {
           roomContoller.gameOver(roomId);
           io.in(roomId).emit('gameOver', 'The end');
         } else {
@@ -96,7 +91,6 @@ const socketServer = (httpServer) => {
           playerChoice.issue,
         );
         if (voteFinish) {
-          console.log('VOTING FINISHED');
           roomContoller.calculateIssueScore(roomId, playerChoice.issue);
           const gameIssues = roomContoller.getGameIssues(roomId);
 
@@ -143,13 +137,10 @@ const socketServer = (httpServer) => {
 
     socket.on('kickPlayerFromLobby', (message: socketRoomUserIdInward) => {
       const { roomId, userId } = message;
-      console.log('kickPlayerFromLobby', userId);
-
       socket.to(roomId).emit('userToBeKickedOff', userId);
     });
 
     socket.on('startVoting', (message: { roomId: string }) => {
-      console.log('TIMER IS STARTED');
       const { roomId } = message;
       const timer = roomContoller.getTimer(roomId);
       if (timer) {
@@ -173,17 +164,24 @@ const socketServer = (httpServer) => {
       io.in(roomId).emit('newGameIssue', issues);
     });
 
-    // socket.on('disconnect', (message) => {
-    //   console.log('Got disconnect!');
-    //   roomContoller.userDisconnect(socket.handshake.auth.username);
-    //   socket.emit('userDisconnected')
-    //   // const { roomId, userId } = message;
-    //   // socket.leave(roomId);
-    //   // const users = roomContoller.getRoomUsers(roomId);
-    //   // socket.to(roomId).emit('userLeft', users);
-    //   console.log(socket.handshake.auth.username);
+    socket.on('userWantsKick', (message: socketRoomUserInward) => {
+      const { roomId, user } = message;
+      const users = roomContoller.getRoomUsers(roomId);
+      if (users && users.length >= 4) {
+        io.in(roomId).emit('kickConfirm', user);
+      } else {
+        socket.emit('noQuorum', user);
+      }
+    });
 
-    //  });
+    socket.on('confirmedKick', (message: socketRoomUserKickVote) => {
+      const { roomId, user, vote } = message;
+      roomContoller.setKickUserVotes(roomId, vote);
+      const votesStatus = roomContoller.getKickUserVotesStatus(roomId);
+      if (votesStatus) {
+        socket.to(roomId).emit('userToBeKickedOff', user.id);
+      }
+    });
   });
 };
 

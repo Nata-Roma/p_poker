@@ -7,6 +7,7 @@ import {
   IGameSettingsFromClient,
   IIssue,
   IGameTimer,
+  IKickUserVotes,
 } from '../models/interfaces';
 import Room from '../models/roomModel';
 
@@ -179,6 +180,20 @@ class Rooms {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     if (room) {
       room.amendedIssueScore(amendedIssue);
+    }
+  };
+
+  setKickUserVotes = (roomId: string, vote: number): void => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      room.setKickUserVotes(vote);
+    }
+  };
+
+  getKickUserVotesStatus = (roomId: string): boolean => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      return room.getKickUserVotesStatus();
     }
   };
 }
