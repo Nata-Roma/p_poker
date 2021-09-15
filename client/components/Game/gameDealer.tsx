@@ -7,6 +7,7 @@ import {
   IUser,
   IGameTimer,
 } from 'utils/interfaces';
+import { LateMemberAccess } from './Popups/lateMemberAccess';
 
 import AppContext from 'store/store';
 import { UserCard } from 'components/Cards/userCard';
@@ -47,181 +48,183 @@ export const GameDealer: FC<GameDealerProps> = ({
   timeStarted,
   onTimerStop,
 }) => {
-  const classes = useStylesGamePart();
-  const router = useRouter();
-  const { lobby } = router.query;
-  const { state } = useContext(AppContext);
-  const [ title, setTitle ] = useState<string>();
-  const [ isOpen, setIsOpen ] = useState(false);
-  const [ isScoreOpen, setIsScoreOpen ] = useState(false);
-  const [ isLeaveOpen, setIsLeaveOpen ] = useState(false);
+    const classes = useStylesGamePart();
+    const router = useRouter();
+    const { lobby } = router.query;
+    const { state } = useContext(AppContext);
+    const [ title, setTitle ] = useState<string>();
+    const [ isOpen, setIsOpen ] = useState(false);
+    const [ requestToJoin, setRequestToJoin ] = useState(false);
+    const [ lateMember, setLateMember ] = useState<IUser>(null);
+    const [ isScoreOpen, setIsScoreOpen ] = useState(false);
+    const [ isLeaveOpen, setIsLeaveOpen ] = useState(false);
 
-  const onRoomLeave = () => {
-    state.socket.emit('leaveGame', {
+    const onRoomLeave = () => {
+      state.socket.emit('leaveGame', {
       roomId: lobby,
       userId: state.userId,
-    });
-  };
-
-  const gameFinish = (message: string) => {
-    console.log('gameOver', message);
-    state.socket.emit('gameOverFinish', { roomId: lobby });
-    router.push('/');
-  };
-
-  const onAddOpenIssue = () => {
-    setIsOpen(true);
-  };
-
-  const onAddCloseIssue = () => {
-    setIsOpen(false);
-  };
-
-  const onChangeOpenIssue = () => {
-    setIsScoreOpen(true);
-  };
-
-  const onChangeCloseIssue = () => {
-    setIsScoreOpen(false);
-  };
-
-  const onIssueCreate = (newIssue: IGameIssue) => {
-    state.socket.emit('addNewGameIssue', { roomId: lobby, newIssue });
-    onAddCloseIssue();
-  };
-
-  const onScoreChange = (amnendedIssue: IGamePageIssue) => {
-    state.socket.emit('amendScoreGameIssue', { roomId: lobby, amnendedIssue });
-    onChangeCloseIssue();
-  };
-
-  useEffect(
-    () => {
-      const newTitle = gameIssues
-        .map((item) => item.issue.issueName)
-        .join(', ');
-      setTitle(newTitle);
-    },
-    [ gameIssues ],
-  );
-
-  useEffect(() => {
-    state.socket.on('gameOver', (message) => {
-      gameFinish(message);
-    });
-    return () => {
-      state.socket.off('gameOver', (message) => {
-        gameFinish(message);
       });
     };
-  }, []);
 
-  return (
-    <div>
-      <Typography variant="h6" align="center" gutterBottom>
-        Spring: {springTitle && `${springTitle}`} planning (issues:{' '}
-        {title && `${title}`})
-      </Typography>
+    const gameFinish = (message: string) => {
+      console.log('gameOver', message);
+      state.socket.emit('gameOverFinish', { roomId: lobby });
+      router.push('/');
+    };
 
-      <Typography variant="subtitle2">Dealer:</Typography>
-      <Grid container direction="column">
-        <Grid container justifyContent="space-between" alignItems="flex-end">
-          <Grid item className={classes.mBottom}>
-            {dealer && (
-              <UserCard
-                user={dealer}
-                observer={dealer.userRole === roles.observer ? true : false}
-                onKickUser={() => {}}
-              />
+    const onAddOpenIssue = () => {
+    setIsOpen(true);
+    };
+
+    const onAddCloseIssue = () => {
+    setIsOpen(false);
+    };
+
+    const onChangeOpenIssue = () => {
+    setIsScoreOpen(true);
+    };
+
+    const onChangeCloseIssue = () => {
+    setIsScoreOpen(false);
+    };
+
+    const onIssueCreate = (newIssue: IGameIssue) => {
+    state.socket.emit('addNewGameIssue', { roomId: lobby, newIssue });
+    onAddCloseIssue();
+    };
+
+    const onScoreChange = (amnendedIssue: IGamePageIssue) => {
+    state.socket.emit('amendScoreGameIssue', { roomId: lobby, amnendedIssue });
+    onChangeCloseIssue();
+    };
+
+    useEffect(
+    () => {
+    const newTitle = gameIssues
+    .map((item) => item.issue.issueName)
+    .join(', ');
+    setTitle(newTitle);
+    },
+    [ gameIssues ],
+    );
+
+    useEffect(() => {
+    state.socket.on('gameOver', (message) => {
+    gameFinish(message);
+    });
+
+    state.socket.on('lateMemberAskToJoin', (message) => {
+    setLateMember(message);
+    setRequestToJoin(true);
+    });
+
+
+    return () => {
+    state.socket.off('gameOver', (message) => {
+    gameFinish(message);
+    });
+
+    state.socket.off('lateMemberAskToJoin', (message) => {
+
+    });
+
+    };
+    }, []);
+
+    const handleCloseDialog = () => {
+    setRequestToJoin(false);
+    setLateMember(null);
+    };
+
+    const onAllow = () => {
+    state.socket.emit('allowLateMemberIntoGame', {
+    roomId: lobby,
+    userId: lateMember.id,
+    });
+    handleCloseDialog();
+    };
+
+    const onRoomLeaveLateMember = () => {
+    state.socket.emit('declineLateMember', {
+    roomId: lobby,
+    userId: lateMember.id,
+    });
+    handleCloseDialog();
+    };
+
+    return (
+        <div>
+          <Typography variant="h6" align="center" gutterBottom>
+            Spring: {springTitle && `${springTitle}`} planning (issues:{' '}
+            {title && `${title}`})
+          </Typography>
+
+          <Typography variant="subtitle2">Dealer:</Typography>
+          <Grid container direction="column">
+            <Grid container justifyContent="space-between" alignItems="flex-end">
+              <Grid item className={classes.mBottom}>
+                {dealer && (
+                <UserCard user={dealer} observer={dealer.userRole===roles.observer ? true : false} onKickUser={()=> {}}
+                  />
+                  )}
+              </Grid>
+              <Grid item className={classes.mBottom}>
+                <Box boxShadow={2} mr={10}>
+                  <Button variant="outlined" className={classes.btn} onClick={()=> setIsLeaveOpen(true)}
+                    >
+                    Stop Game
+                  </Button>
+                </Box>
+              </Grid>
+              <Grid container item justifyContent="space-between">
+                <Grid container item direction="column" className={classes.btnContainer}>
+                  <Grid item className={classes.mBottom}>
+                    <Box boxShadow={2} mr={10}>
+                      <Button variant="outlined" className={classes.btn} onClick={onStartVoting} disabled={voting}>
+                        Start Voting
+                      </Button>
+                    </Box>
+                  </Grid>
+                  <Grid item className={classes.mBottom}>
+                    <Box boxShadow={2} mr={10}>
+                      <Button variant="outlined" className={classes.btn} onClick={calculateIssueScore}
+                        disabled={!result}>
+                        Voting results
+                      </Button>
+                    </Box>
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  {timer &&
+                  timer.isTimer && (
+                  <Timer timer={timer} timeStarted={timeStarted} onTimerStop={onTimerStop} />
+                  )}
+                </Grid>
+              </Grid>
+            </Grid>
+            {gameIssues && (
+            <IssuesBlock issues={gameIssues} activeIssueName={activeIssueName} onIssueClick={onIssueClick}
+              onAddIssue={onAddOpenIssue} onAmendScore={onChangeOpenIssue} />
             )}
-          </Grid>
-          <Grid item className={classes.mBottom}>
-            <Box boxShadow={2} mr={10}>
-              <Button
-                variant="outlined"
-                className={classes.btn}
-                onClick={() => setIsLeaveOpen(true)}
-              >
-                Stop Game
-              </Button>
-            </Box>
-          </Grid>
-          <Grid container item justifyContent="space-between">
-            <Grid
-              container
-              item
-              direction="column"
-              className={classes.btnContainer}
-            >
-              <Grid item className={classes.mBottom}>
-                <Box boxShadow={2} mr={10}>
-                  <Button
-                    variant="outlined"
-                    className={classes.btn}
-                    onClick={onStartVoting}
-                    disabled={voting}
-                  >
-                    Start Voting
-                  </Button>
-                </Box>
-              </Grid>
-              <Grid item className={classes.mBottom}>
-                <Box boxShadow={2} mr={10}>
-                  <Button
-                    variant="outlined"
-                    className={classes.btn}
-                    onClick={calculateIssueScore}
-                    disabled={!result}
-                  >
-                    Voting results
-                  </Button>
-                </Box>
-              </Grid>
-            </Grid>
-            <Grid item>
-              {timer &&
-              timer.isTimer && (
-                <Timer
-                  timer={timer}
-                  timeStarted={timeStarted}
-                  onTimerStop={onTimerStop}
+            <NewIssueGamePopup onIssueCreate={onIssueCreate} onAddCloseIssue={onAddCloseIssue} isOpen={isOpen}
+              issues={gameIssues.map((el)=> ({
+              issueName: el.issue.issueName,
+              priority: el.issue.priority,
+              }))}
+              />
+              <ChangeScoreGamePopup onScoreChange={onScoreChange} onChangeCloseIssue={onChangeCloseIssue}
+                isOpen={isScoreOpen} issue={gameIssues.find( (iss)=> iss.issue.issueName === activeIssueName,
+                )}
                 />
-              )}
-            </Grid>
+                <DealerLeavePage isOpen={isLeaveOpen} onLeaveConfirm={onRoomLeave} onLeaveClose={()=>
+                  setIsLeaveOpen(false)}
+                  />
           </Grid>
-        </Grid>
-        {gameIssues && (
-          <IssuesBlock
-            issues={gameIssues}
-            activeIssueName={activeIssueName}
-            onIssueClick={onIssueClick}
-            onAddIssue={onAddOpenIssue}
-            onAmendScore={onChangeOpenIssue}
-          />
-        )}
-        <NewIssueGamePopup
-          onIssueCreate={onIssueCreate}
-          onAddCloseIssue={onAddCloseIssue}
-          isOpen={isOpen}
-          issues={gameIssues.map((el) => ({
-            issueName: el.issue.issueName,
-            priority: el.issue.priority,
-          }))}
-        />
-        <ChangeScoreGamePopup
-          onScoreChange={onScoreChange}
-          onChangeCloseIssue={onChangeCloseIssue}
-          isOpen={isScoreOpen}
-          issue={gameIssues.find(
-            (iss) => iss.issue.issueName === activeIssueName,
-          )}
-        />
-        <DealerLeavePage
-          isOpen={isLeaveOpen}
-          onLeaveConfirm={onRoomLeave}
-          onLeaveClose={() => setIsLeaveOpen(false)}
-        />
-      </Grid>
-    </div>
-  );
+
+          { requestToJoin && lateMember && (
+          <LateMemberAccess requestToJoin={requestToJoin} lateMember={lateMember} onAllow={onAllow}
+            onRoomLeaveLateMember={onRoomLeaveLateMember} classBtn={classes.btn} />
+          )
+          }
+        </div>);
 };

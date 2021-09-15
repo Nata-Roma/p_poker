@@ -12,6 +12,8 @@ interface GameSettingsProps {
   timer: IGameTimer;
   onCardTurn: (cardChange: boolean) => void;
   isCardChange: boolean;
+  onAutoJoinChange: (isAutoJoin: boolean) => void;
+  isAutoJoin: boolean; 
 }
 
 const GameSettings: FC<GameSettingsProps> = ({
@@ -21,6 +23,8 @@ const GameSettings: FC<GameSettingsProps> = ({
   timer,
   onCardTurn,
   isCardChange,
+  onAutoJoinChange,
+  isAutoJoin,
 }) => {
   const classes = useStylesSettingsGame();
   const [ optionsArr, setOptionsArr ] = useState<Array<string>>();
@@ -29,6 +33,10 @@ const GameSettings: FC<GameSettingsProps> = ({
   const onTimerClick = (timerSwitch: string) => {
     onTimerChange(timerSwitch ? true : false);
   };
+
+  const onAutoJoinClick = (isAutoJoin: string) => {
+    onAutoJoinChange(isAutoJoin ? true : false);
+  }
 
   const onChangingCardClick = (cardChangeSwitch: string): void => {
     onCardTurn(cardChangeSwitch ? true : false);
@@ -101,8 +109,8 @@ const GameSettings: FC<GameSettingsProps> = ({
           <Grid item xl={6} xs={6}>
             <Switch
               color="primary"
-              // value={}
-              onChange={(e) => console.log(e)}
+              value={isAutoJoin ? '' : 'isAutoJoin'}
+              onChange={(e) => onAutoJoinClick(e.target.value)}
             />
           </Grid>
         </Grid>

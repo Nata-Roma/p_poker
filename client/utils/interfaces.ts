@@ -73,6 +73,8 @@ export interface IGameSettings {
   issues: Array<IGameIssue>;
   timer: IGameTimer;
   card: IGameCard;
+  isAutoJoin: boolean;
+  isStarted: boolean;
 }
 
 export interface IGameCardOption {

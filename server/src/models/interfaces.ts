@@ -60,12 +60,17 @@ export interface IGameSettingsFromClient {
   issues: Array<IIssue>;
   timer: IGameTimer;
   card: IGameCard;
+  isAutoJoin: boolean;
+  isStarted: boolean;
 }
+
 export interface IGameSettings {
   spring: string;
   issues: Array<IGameIssue>;
   timer: IGameTimer;
   card: IGameCard;
+  isAutoJoin: boolean;
+  isStarted: boolean;
 }
 
 export interface socketRoomUserIdInward {

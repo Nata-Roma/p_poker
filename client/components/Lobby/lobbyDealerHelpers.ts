@@ -112,6 +112,17 @@ export const timeChange = (
   };
 };
 
+export const autoJoinChange = (
+  state: IGameSettings,
+  isAutoJoin: boolean
+): IGameSettings => {
+  
+  return {
+    ...state,
+    isAutoJoin: isAutoJoin,
+  };
+};
+
 export const selectCard = (
   state: IGameSettings,
   choice: string,

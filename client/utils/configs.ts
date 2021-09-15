@@ -89,6 +89,8 @@ export const initGameSettings = {
     cardNumberStart: 0,
     cardTurn: false,
   },
+  isAutoJoin: false,
+  isStarted: true,
 };
 
 export const timerValid = {
