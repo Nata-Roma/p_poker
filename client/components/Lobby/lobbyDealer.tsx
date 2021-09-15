@@ -35,6 +35,7 @@ import {
   selectCardSequence,
   timeChange,
   timerChange,
+  autoJoinChange
 } from './lobbyDealerHelpers';
 
 export interface LobbyDealerProps {
@@ -198,6 +199,12 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
     });
   };
 
+  const onAutoJoinChange = (isAutoJoin: boolean) => {
+    setGameSettings((prev) => {
+      return autoJoinChange(prev, isAutoJoin);
+    });
+  };
+
   const gameFinish = (message: string) => {
     state.socket.emit('gameOverFinish', { roomId: lobby });
     router.push('/');
@@ -315,6 +322,8 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
           onSelectClick={onSelectClick}
           onCardTurn={onCardTurn}
           isCardChange={gameSettings.card.cardTurn}
+          onAutoJoinChange={onAutoJoinChange}
+          isAutoJoin={gameSettings.isAutoJoin}
         />
       </Grid>
       <Grid item container>

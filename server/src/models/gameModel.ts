@@ -22,6 +22,8 @@ class Game {
   private issues: Array<IGameIssue> = [];
   private card: IGameCard = null;
   private timer: IGameTimer = null;
+  private isAutoJoin: boolean;
+  private isStarted: boolean;
 
   constructor(roomId: string) {
     this.id = roomId;
@@ -52,6 +54,8 @@ class Game {
     this.spring = props.client.spring;
     this.card = { ...props.client.card };
     this.timer = { ...props.client.timer };
+    this.isAutoJoin = props.client.isAutoJoin;
+    this.isStarted = props.client.isStarted; 
   };
 
   getGameId = (): string => {
@@ -64,6 +68,8 @@ class Game {
       timer: { ...this.timer },
       card: { ...this.card },
       issues: this.issues,
+      isAutoJoin:  this.isAutoJoin,
+      isStarted: this.isStarted,
     };
     return gameData;
   };

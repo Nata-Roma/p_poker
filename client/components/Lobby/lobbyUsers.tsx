@@ -72,8 +72,41 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
     });
     state.socket.on('gameStarted', (message) => {
       gameStart();
+
+     
     });
     
+      
+  state.socket.emit('getGameData', { 
+    roomId: lobby,
+    user: { 
+      username: state.username,
+      userSurname: state.userSurname,
+      avatar: state.avatar,
+      id: state.userId,
+      userRole: state.userRole,
+    }
+  });
+
+  state.socket.on('gameData', (message) => {
+   const { gameData } = message;
+   if(gameData.isStarted && gameData.isAutoJoin) {   
+    gameStart();
+   } if(gameData && gameData.isStarted  && !gameData.isAutoJoin) {    
+     state.socket.on('lateMemberMayJoin', (message) => {     
+        if( state.userId === message) {
+          gameStart();
+        }
+     }); 
+   }
+  });
+
+  state.socket.on('memberIsDeclined', (message) => {   
+    if(state.userId === message) {
+      onRoomLeave();
+    }
+ });
+
 
     return () => {
       state.socket.off('gameOver', (message) => {
@@ -82,6 +115,15 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
       state.socket.off('gameStarted', (message) => {
         gameStart();
       });
+      state.socket.off('gameData', (message) => {
+ 
+      });
+      state.socket.off('lateMemberMayJoin', (message) => {
+    
+      });
+      state.socket.off('memberIsDeclined', (message) => {
+
+      });
     };
   }, []);
 
@@ -89,6 +131,7 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
     setIsOpenKickUser(true);
     setKickOffUser(user)
   };
+
 
   return (
     <Grid
