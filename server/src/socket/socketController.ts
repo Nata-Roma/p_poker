@@ -82,12 +82,7 @@ const socketServer = (httpServer) => {
       socket.to(message.roomId).emit('gameStarted');
     });
 
-<<<<<<< HEAD
-   
-    socket.on('gameCardChoice', (message) => {
-=======
     socket.on('gameCardChoice', (message: socketRoomPlayerChoiceInward) => {
->>>>>>> fff2fd1dd9dccb88bb4f99036cc19fb7516dae20
       const { roomId, playerChoice } = message;
       roomContoller.setGameUserChoice(roomId, playerChoice);
       const checkVotes = roomContoller.getCardTurnStatus(roomId);
