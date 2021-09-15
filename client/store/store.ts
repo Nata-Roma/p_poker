@@ -14,6 +14,9 @@ const socketIo = io(BASE_URL, {
   },
 });
 
+socketIo.on('connect', () => {});
+socketIo.disconnect().connect();
+
 export interface AppStore {
   socket: Socket;
   userId: string;

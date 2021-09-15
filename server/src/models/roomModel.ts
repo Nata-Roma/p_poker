@@ -8,13 +8,20 @@ import {
   IGameSettingsFromClient,
   IIssue,
   IGameTimer,
+  IKickUserVotes,
 } from './interfaces';
+
+const initKickUser = {
+  votes: 0,
+  voted: 0,
+};
 
 class Room {
   private users: Array<IUserData> = [];
   private roomId: string;
   private chatMessages: Array<IChatMessage> = [];
   private game: Game;
+  private kickUserVotes: IKickUserVotes = initKickUser;
 
   constructor(roomId: string) {
     this.roomId = roomId;
@@ -71,17 +78,12 @@ class Room {
   };
 
   findUser = (userId: string): number => {
-    console.log('incoming userId', userId);
-
     const userFoundIndex = this.users.findIndex((user) => user.id === userId);
-    console.log('found user', userFoundIndex);
-    console.log('all users', this.users);
-
     if (userFoundIndex >= 0) return userFoundIndex;
     return -1;
   };
 
-  getGameId = () => {
+  getGameId = (): string => {
     return this.game.getGameId();
   };
 
@@ -107,7 +109,7 @@ class Room {
     return issue;
   };
 
-  gameInit = (client: IGameSettingsFromClient) => {
+  gameInit = (client: IGameSettingsFromClient): void => {
     const players = this.users.map((user) => {
       if (user.userRole === 'member') {
         return user.id;
@@ -120,7 +122,7 @@ class Room {
     return this.game.getGameInitData();
   };
 
-  calculateIssueScore = (issueName: string) => {
+  calculateIssueScore = (issueName: string): void => {
     this.game.calculateIssueScore(issueName);
   };
 
@@ -148,6 +150,32 @@ class Room {
   getTimer = (): IGameTimer => {
     const timer = this.game.getTimer();
     if (timer) return timer;
+  };
+
+  amendedIssueScore = (amendedIssue: IGameIssue): void => {
+    this.game.amendedIssueScore(amendedIssue);
+  };
+
+  setKickUserVotes = (vote: number): void => {
+    this.kickUserVotes.votes += vote;
+    this.kickUserVotes.voted += 1;
+  };
+
+  getKickUserVotesStatus = (): boolean => {
+    if (this.kickUserVotes.voted === this.users.length - 2) {
+      if (this.kickUserVotes.votes >= (this.users.length - 2) / 2 + 1) {
+        this.cleanKickedUserVotes();
+        return true;
+      }
+      this.cleanKickedUserVotes();
+      return false;
+    }
+    return false;
+  };
+
+  cleanKickedUserVotes = (): void => {
+    this.kickUserVotes.voted = 0;
+    this.kickUserVotes.votes = 0;
   };
 }
 

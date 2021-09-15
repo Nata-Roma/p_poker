@@ -5,16 +5,24 @@ import clsx from 'clsx';
 import { FC } from 'react';
 import { UserCardProps } from 'utils/interfaces';
 
-export const UserCard:FC<UserCardProps> = ({ user, observer, score, onKickUser }) => {
+export const UserCard: FC<UserCardProps> = ({
+  user,
+  observer,
+  score,
+  onKickUser,
+}) => {
   const classes = useStylesUserCard();
   const observerRole = clsx(classes.avatar, observer && classes.avatarObserver);
-  const dealerRole = clsx(classes.container, user.dealer && classes.containerDealer);
+  const dealerRole = clsx(
+    classes.container,
+    user.dealer && classes.containerDealer,
+  );
+
+  const dealerName = clsx(user.dealer && classes.dealerName);
 
   return (
     <div className={dealerRole}>
-      <div
-        className={observerRole}
-      >
+      <div className={observerRole}>
         {user.avatar && (
           <div
             className={classes.avatarImg}
@@ -28,13 +36,17 @@ export const UserCard:FC<UserCardProps> = ({ user, observer, score, onKickUser }
           </>
         )}
       </div>
-      <div className={user.dealer && classes.dealerName}>
-      <Typography variant="h5" className=''>
-        {user.username} {user.userSurname}
-      </Typography>
+      <div className={dealerName}>
+        <Typography variant="h5" className="">
+          {user.username} {user.userSurname}
+        </Typography>
       </div>
       {!user.dealer ? (
-        <BlockIcon fontSize={score ? "medium" : "large"} onClick={() => onKickUser(user)} style={{cursor: "pointer"}}/>
+        <BlockIcon
+          fontSize={score ? 'medium' : 'large'}
+          onClick={() => onKickUser(user)}
+          style={{ cursor: 'pointer' }}
+        />
       ) : null}
     </div>
   );

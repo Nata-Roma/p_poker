@@ -47,6 +47,7 @@ class Game {
           players: players,
           score: [],
           totalScore: 0,
+          amendedScore: 0,
         };
         this.issues.push(newIssue);
       }
@@ -74,11 +75,21 @@ class Game {
     return gameData;
   };
 
+  clearScoreAndChoices = (issue: IGameIssue): void => {
+    if(issue.totalScore) {
+      issue.totalScore = 0;
+      issue.amendedScore = 0;
+      issue.score = [];
+      issue.players = issue.players.map(player => ({player: player.player, choice: 0}))
+    }
+  }
+
   setPlayerChoice = (playerChoice: IPlayerChoice): void => {
     const issueFound = this.issues.find(
       (issue) => issue.issue.issueName === playerChoice.issue,
     );
     if (issueFound) {
+      this.clearScoreAndChoices(issueFound);
       const playerFound = issueFound.players.find(
         (player) => player.player === playerChoice.playerId,
       );
@@ -88,7 +99,7 @@ class Game {
     }
   };
 
-  calculateIssueScore = (issueName: string) => {
+  calculateIssueScore = (issueName: string): void => {
     const gameIssue = this.issues.find(
       (issue) => issue.issue.issueName === issueName,
     );
@@ -188,6 +199,7 @@ class Game {
         players: players,
         score: [],
         totalScore: 0,
+        amendedScore: 0,
       };
       this.issues.push(newIssue);
     }
@@ -195,7 +207,16 @@ class Game {
 
   getTimer = (): IGameTimer => {
     return this.timer;
-  }
+  };
+
+  amendedIssueScore = (amendedIssue: IGameIssue): void => {
+    const issueIndex = this.issues.findIndex(
+      (issue) => issue.issue.issueName === amendedIssue.issue.issueName,
+    );
+    if (issueIndex >= 0) {
+      this.issues.splice(issueIndex, 1, amendedIssue);
+    }
+  };
 }
 
 export default Game;

@@ -36,11 +36,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
     setUsers(users);
   };
 
-  state.socket.on('disconnected', () => {
-    console.log('Disconnected!!!');
-    router.push('/');
-  });
-
   const onLobbyEntrance = () => {
     const message = userCreate(
       lobby,
@@ -76,6 +71,19 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   };
 
   useEffect(() => {
+    router.beforePopState(({ url, as }) => {
+      console.log('beforePopState');
+      state.socket.emit('leaveRoom', {
+        roomId: lobby,
+        userId: state.userId,
+      });
+      if (as !== '/') {
+        window.location.href = as;
+        return false;
+      }
+      return true;
+    });
+
     if (lobbyInfo.error === 'no room') {
       <ErrorPopup
         isOpen={true}
@@ -92,7 +100,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
             message={'No Room found'}
             onClosePopup={kickOffUser(state.userId)}
           />;
-          // kickOffUser(state.userId);
         }
       }
 
@@ -132,6 +139,11 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
         kickOffUser(message);
       });
 
+      state.socket.on('disconnected', () => {
+        console.log('Disconnected!!!');
+        router.push('/');
+      });
+
       return () => {
         state.socket.off('userJoined', (message) => {
           onUserJoinLeave(message);
@@ -144,6 +156,14 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
         state.socket.off('userToBeKickedOff', (message) => {
           kickOffUser(message);
         });
+
+        state.socket.off('disconnected', () => {
+          console.log('Disconnected!!!');
+          router.push('/');
+        });
+
+        setUsers([]);
+        setChatMessages([]);
       };
     }
   }, []);

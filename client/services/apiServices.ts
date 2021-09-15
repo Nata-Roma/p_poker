@@ -6,9 +6,7 @@ import {
   IGameSettings,
 } from 'utils/interfaces';
 
-export const apiGetLobbyUsers = async (
-  room: string | Array<string>,
-) => {
+export const apiGetLobbyUsers = async (room: string | Array<string>) => {
   if (typeof room === 'string') {
     const users = await axios({
       method: 'GET',
@@ -19,9 +17,7 @@ export const apiGetLobbyUsers = async (
   return null;
 };
 
-export const apiGetLobbyChats = async (
-  room: string | Array<string>,
-) => {
+export const apiGetLobbyChats = async (room: string | Array<string>) => {
   if (typeof room === 'string') {
     const chat = await axios({
       method: 'GET',
@@ -41,7 +37,6 @@ export const apiGetRooms = async () => {
 };
 
 export const apiStartGame = async (room: string | Array<string>) => {
-  // For now it is GET request. Will be converted to POST
   if (typeof room === 'string') {
     const gameInitData = await axios({
       method: 'GET',
@@ -63,4 +58,13 @@ export const apiCreateGame = async (
       data: data,
     });
   }
+};
+
+export const apiCreateRoom = async (config: { data: string }): Promise<string> => {
+  const createRoom = await axios({
+    method: 'POST',
+    url: `${BASE_URL}/rooms`,
+    data: config,
+  });
+  return createRoom.data;
 };

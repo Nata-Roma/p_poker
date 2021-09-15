@@ -7,6 +7,7 @@ import {
   IGameSettingsFromClient,
   IIssue,
   IGameTimer,
+  IKickUserVotes,
 } from '../models/interfaces';
 import Room from '../models/roomModel';
 
@@ -33,8 +34,8 @@ class Rooms {
   getRoomId = (roomId: string): string | null => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     console.log('get room by Id');
-    if(room) return roomId;
-    return null
+    if (room) return roomId;
+    return null;
   };
 
   getRoomUsers = (roomId: string): Array<IUserData> => {
@@ -157,7 +158,7 @@ class Rooms {
     }
   };
 
-  gameOver = (roomId: string) => {
+  gameOver = (roomId: string): void => {
     this.rooms = this.rooms.filter((room) => room.getRoomId() !== roomId);
   };
 
@@ -173,7 +174,28 @@ class Rooms {
     if (room) {
       return room.getTimer();
     }
-  }
+  };
+
+  amendedIssueScore = (roomId: string, amendedIssue: IGameIssue): void => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      room.amendedIssueScore(amendedIssue);
+    }
+  };
+
+  setKickUserVotes = (roomId: string, vote: number): void => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      room.setKickUserVotes(vote);
+    }
+  };
+
+  getKickUserVotesStatus = (roomId: string): boolean => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      return room.getKickUserVotesStatus();
+    }
+  };
 }
 
 const roomContoller = new Rooms();

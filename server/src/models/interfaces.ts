@@ -19,7 +19,7 @@ export interface IIssue {
 
 export interface IGameTimer {
   isTimer: boolean;
-  time: number
+  time: number;
   // minutes: number;
   // seconds: number;
 }
@@ -52,6 +52,7 @@ export interface IGameIssue {
   players: Array<IGamePlayer>;
   score: Array<IGameIssueScore>;
   totalScore: number;
+  amendedScore: number;
 }
 
 export interface IGameSettingsFromClient {
@@ -62,6 +63,7 @@ export interface IGameSettingsFromClient {
   isAutoJoin: boolean;
   isStarted: boolean;
 }
+
 export interface IGameSettings {
   spring: string;
   issues: Array<IGameIssue>;
@@ -69,4 +71,46 @@ export interface IGameSettings {
   card: IGameCard;
   isAutoJoin: boolean;
   isStarted: boolean;
+}
+
+export interface socketRoomUserIdInward {
+  roomId: string;
+  userId: string;
+}
+
+export interface socketRoomUserInward {
+  roomId: string;
+  user: IUserData;
+}
+
+export interface socketRoomIssueInward {
+  roomId: string;
+  issueName: string;
+}
+
+export interface socketRoomNewIssueInward {
+  roomId: string;
+  newIssue: IIssue;
+}
+
+export interface socketRoomPlayerChoiceInward {
+  roomId: string;
+  playerChoice: IPlayerChoice;
+}
+
+export interface socketRoomUserIdmessageInward {
+  roomId: string;
+  userId: string;
+  message: string;
+}
+
+export interface socketRoomUserKickVote {
+  roomId: string;
+  user: IUserData;
+  vote: number
+}
+
+export interface IKickUserVotes {
+  votes: number;
+  voted: number;
 }

@@ -44,7 +44,7 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
-        <title>My App</title>
+        <title>Pointing Poker</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"

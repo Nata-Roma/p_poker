@@ -7,60 +7,57 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
 import { IUser } from 'utils/interfaces';
 
-export interface KickPlayerPopupProps {
-  isOpenKickUser: boolean;
-  onClosePopUp: (isOpen: boolean) => void;
+export interface KickPlayerRejectProps {
+  isOpenReject: boolean;
+  onCloseReject: (isOpen: boolean) => void;
   user: IUser;
-  onDeleteUser: (user: IUser) => void;
 }
 
-const KickPlayerPopup: FC<KickPlayerPopupProps> = ({
-  isOpenKickUser,
-  onClosePopUp,
+const KickPlayerReject: FC<KickPlayerRejectProps> = ({
+  isOpenReject,
+  onCloseReject,
   user,
-  onDeleteUser,
 }) => {
   const onConfirmClick = () => {
-    onDeleteUser(user);
-    onClosePopUp(false);
+    onCloseReject(false);
   };
   return (
     <div>
       {user && (
         <Dialog
-          open={isOpenKickUser}
-          onClose={() => onClosePopUp(false)}
+          open={isOpenReject}
+          onClose={() => onCloseReject(false)}
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title" style={{ textAlign: 'center' }}>
-            Kick player?
+            No quorum for voting
           </DialogTitle>
           <DialogContent>
-            Do you really want to remove player {user.username}{' '}
-            {user.userSurname} from game session?
+            You cannot remove {user.username}{' '}
+            {user.userSurname} from the game session.
           </DialogContent>
           <DialogActions>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} justifyContent='center'>
               <Grid item xs={6}>
                 <Button
                   color="primary"
                   variant="contained"
                   fullWidth
-                  onClick={onConfirmClick}
+                  onClick={() => onCloseReject(false)}
                 >
-                  Yes
+                  Ok
                 </Button>
               </Grid>
-              <Grid item xs={6}>
+              {/* <Grid item xs={6}>
                 <Button
                   color="primary"
                   variant="outlined"
                   fullWidth
-                  onClick={() => onClosePopUp(false)}
+                  onClick={() => onCloseReject(false)}
                 >
                   No
                 </Button>
-              </Grid>
+              </Grid> */}
             </Grid>
           </DialogActions>
         </Dialog>
@@ -69,4 +66,4 @@ const KickPlayerPopup: FC<KickPlayerPopupProps> = ({
   );
 };
 
-export default KickPlayerPopup;
+export default KickPlayerReject;

@@ -17,6 +17,10 @@ export const useStylesIssueCard = makeStyles((theme: Theme) =>
     block: {
       padding: 0,
     },
+    blockScore: {
+      padding: 0,
+      cursor: 'pointer',
+    },
     title: {
       fontSize: 12,
       padding: 0,

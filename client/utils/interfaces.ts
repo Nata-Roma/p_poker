@@ -42,7 +42,7 @@ export interface IChat {
 export interface IApiGetLobbyInfo {
   chat: Array<IChatMessage>;
   users: Array<IUser>;
-  error: string
+  error: string;
 }
 export interface IssueData {
   issueName: string;
@@ -56,7 +56,7 @@ export interface IGameIssue {
 
 export interface IGameTimer {
   isTimer: boolean;
-  time: number
+  time: number;
   // minutes: number;
   // seconds: number;
 }
@@ -97,6 +97,7 @@ export interface IGamePageIssue {
   players: Array<IGamePagePlayer>;
   score: Array<IGamePageIssueScore>;
   totalScore: number;
+  amendedScore: number;
 }
 
 export interface IApiStartGame {

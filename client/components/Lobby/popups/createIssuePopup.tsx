@@ -15,7 +15,7 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import { useStylesCreateIssuePopup } from "@styles/createIssuePopup.style";
 import { CreateIssuePopupProps } from "utils/interfaces";
-import { checkValidateIssue, generateErrorName } from "./lobbyDealerHelpers";
+import { checkValidateIssue, generateErrorName } from "../lobbyDealerHelpers";
 
 const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate, issues }) => {
   const classes = useStylesCreateIssuePopup();
