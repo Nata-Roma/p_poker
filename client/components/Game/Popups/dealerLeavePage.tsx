@@ -32,7 +32,7 @@ export const DealerLeavePage: FC<DealerLeavePageProps> = ({
       >
         <div className={classes.amendContainer}>
           <DialogTitle id="form-dialog-title" style={{ textAlign: 'center' }}>
-            You are goinf to leave page
+            You are going to leave page
           </DialogTitle>
           <DialogActions>
             <Grid container spacing={2}>
