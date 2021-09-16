@@ -34,7 +34,7 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
 
   const onClosePopup = () => {
     setOpen(false);
-    setIssue({ issueName: '', priority: '' });
+    setIssue({ issueName: '', priority: '', issueDescription: ''});
   };
 
   const onChangePriority = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -43,6 +43,10 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
 
   const onChangeIssueName = (e: ChangeEvent<HTMLInputElement>) => {
     setIssue((prev) => ({ ...prev, issueName: e.target.value }));
+  };
+
+  const onChangeIssueDescription = (e: ChangeEvent<HTMLInputElement>) => { 
+    setIssue((prev) => ({ ...prev, issueDescription: e.target.value }));
   };
 
   const onOpenPopup = () => {
@@ -76,9 +80,6 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
             fullWidth
             value={issue?.issueName}
             onChange={onChangeIssueName}
-            required
-            error={disabled}
-            helperText={errorInfo}
           />
           <FormControl className={classes.select}>
             <InputLabel htmlFor="issue">Priority:</InputLabel>
@@ -96,13 +97,20 @@ const ChangeIssuePopup: FC<ChangeIssueProps> = ({
             </NativeSelect>
             <FormHelperText>choose the priority of issue</FormHelperText>
           </FormControl>
+          <TextField
+            margin="dense"
+            id="description"
+            label="Issue description"
+            fullWidth
+            value={issue?.issueDescription}
+            onChange={onChangeIssueDescription}
+          />
         </DialogContent>
         <DialogActions>
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Button
                 onClick={changeIssue}
-                disabled={disabled}
                 color="primary"
                 variant="contained"
                 fullWidth

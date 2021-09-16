@@ -46,7 +46,8 @@ const socketServer = (httpServer) => {
       const room = roomContoller.getRoomId(roomId);
       if (room) {
         const user = roomContoller.getRoomUser(roomId, userId);
-        socket.emit('reconnectToLobby', user);
+        const room = roomContoller.getRoomsInfo();
+        socket.emit('reconnectToLobby', {user, room});
       }
     });
 

@@ -20,6 +20,7 @@ export interface IChatMessage {
 export interface IIssue {
   issueName: string;
   priority: string;
+  issueDescription: string;
 }
 
 export interface IGameTimer {
@@ -112,7 +113,7 @@ export interface socketRoomUserIdmessageInward {
 export interface socketRoomUserKickVote {
   roomId: string;
   user: IUserData;
-  vote: number
+  vote: number;
 }
 
 export interface IKickUserVotes {
