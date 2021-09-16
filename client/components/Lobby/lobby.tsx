@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { FC, useContext, useEffect, useState } from 'react';
 import {
   setDealer,
-  setRoomId,
+  setRoom,
   setUserAvatar,
   setUserId,
   setUsername,
@@ -14,7 +14,7 @@ import {
   setUserSurname,
 } from 'store/actionCreators';
 import AppContext from 'store/store';
-import { IApiGetLobbyInfo, IChatMessage, IUser } from 'utils/interfaces';
+import { IApiGetLobbyInfo, IChatMessage, IRoomInfo, IUser } from 'utils/interfaces';
 import appStorage from 'utils/storage';
 import { userCreate } from 'utils/userCreate';
 import { LobbyDealer } from './lobbyDealer';
@@ -49,14 +49,14 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
     state.socket.emit('joinRoom', message);
   };
 
-  const onLobbyReconnect = (user: IUser) => {
-    dispatch(setRoomId(lobby));
-    dispatch(setUserId(user.id));
-    dispatch(setUsername(user.username));
-    dispatch(setUserSurname(user.userSurname));
-    dispatch(setUserAvatar(user.avatar));
-    dispatch(setUserRole(user.userRole));
-    dispatch(setDealer(user.dealer));
+  const onLobbyReconnect = (message: {user:IUser, room: IRoomInfo}) => {
+    dispatch(setRoom(message.room.roomId, message.room.roomName));
+    dispatch(setUserId(message.user.id));
+    dispatch(setUsername(message.user.username));
+    dispatch(setUserSurname(message.user.userSurname));
+    dispatch(setUserAvatar(message.user.avatar));
+    dispatch(setUserRole(message.user.userRole));
+    dispatch(setDealer(message.user.dealer));
   };
 
   const kickOffUser = (userId: string) => {
@@ -115,7 +115,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
           roomId: lobby,
           userId: appStorage.getSession(),
         });
-        state.socket.on('reconnectToLobby', (message: IUser) => {
+        state.socket.on('reconnectToLobby', (message: {user:IUser, room: IRoomInfo}) => {
           if (!state.username) {
             router.push('/404');
           } else {

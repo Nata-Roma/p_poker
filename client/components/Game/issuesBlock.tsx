@@ -47,6 +47,7 @@ export const IssuesBlock: FC<IssuesBlockProps> = ({
             <IssueCard
               issueName={issue.issue.issueName}
               priority={issue.issue.priority}
+              issueDescription={issue.issue.issueDescription}
               onIssueClick={onIssueClick}
               activeIssueName={activeIssueName}
               addIssue={false}

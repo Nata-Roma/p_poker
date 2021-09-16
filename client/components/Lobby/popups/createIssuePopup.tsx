@@ -21,6 +21,7 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate, issues }) 
   const classes = useStylesCreateIssuePopup();
   const [priority, setPriority] = React.useState('low');
   const [issueName, setIssueName] = React.useState('');
+  const [issueDescription, setIssueDescription] = React.useState('');
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -32,8 +33,10 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate, issues }) 
     onIssueCreate({
       issueName,
       priority,
+      issueDescription
     })
     setIssueName('');
+    setIssueDescription('');
   };
 
   const handleClose = () => {
@@ -46,6 +49,10 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate, issues }) 
 
   const onChangeIssueName = (e: ChangeEvent<HTMLInputElement>) => {
     setIssueName(e.target.value);
+  }
+
+  const onChangeIssueDescription = (e: ChangeEvent<HTMLInputElement>) => {
+    setIssueDescription(e.target.value);
   }
 
   const disabled = checkValidateIssue(issueName, issues);
@@ -91,6 +98,14 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate, issues }) 
             </NativeSelect>
             <FormHelperText>choose the priority of issue</FormHelperText>
           </FormControl>
+          <TextField
+            margin="dense"
+            id="description"
+            label="Issue description"
+            fullWidth
+            value={issueDescription}
+            onChange={onChangeIssueDescription}
+          />
         </DialogContent>
         <DialogActions>
           <Grid container spacing={2}>

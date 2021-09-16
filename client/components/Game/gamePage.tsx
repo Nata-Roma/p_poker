@@ -62,7 +62,7 @@ export const GamePage: FC<GamePageProps> = ({
     setActiveIssueName(message.issueName);
     setActiveCard('');
     setGameIssues(message.gameIssues);
-    if (message.timer.isTimer) {
+    if (message.timer && message.timer.isTimer) {
       setTimer(message.timer);
     }
     setVoting(false);
@@ -142,6 +142,8 @@ export const GamePage: FC<GamePageProps> = ({
   };
 
   const newIssueAdded = (newIssue: Array<IGamePageIssue>) => {
+    console.log('new Issue!', newIssue);
+    
     setGameIssues(newIssue);
   };
 

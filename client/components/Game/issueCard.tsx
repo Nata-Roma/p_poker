@@ -1,18 +1,28 @@
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/Add';
 import { useStylesIssueCard } from '@styles/issueCard.style';
-import { Grid } from '@material-ui/core';
+import { Grid, Theme, withStyles } from '@material-ui/core';
 import clsx from 'clsx';
-import { IGameIssue } from 'utils/interfaces';
+import Tooltip from '@material-ui/core/Tooltip';
 import AppContext from 'store/store';
 
+
+const LightTooltip = withStyles((theme: Theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[1],
+    fontSize: 16,
+  },
+}))(Tooltip);
 interface IssueCardProps {
   issueName: string;
   priority: string;
+  issueDescription?: string;
   activeIssueName?: string;
   onIssueClick?: (issueName: string) => void;
   addIssue: boolean;
@@ -25,6 +35,7 @@ interface IssueCardProps {
 export const IssueCard: FC<IssueCardProps> = ({
   issueName,
   priority,
+  issueDescription,
   activeIssueName,
   onIssueClick,
   addIssue,
@@ -35,10 +46,23 @@ export const IssueCard: FC<IssueCardProps> = ({
 }) => {
   const classes = useStylesIssueCard();
   const { state } = useContext(AppContext);
+  const [tooltip, setTooltip] = useState('');
   const activeCard = clsx(classes.root, activeIssueName === issueName && classes.activeCard);
   const activeText = clsx(classes.text, activeIssueName === issueName && classes.activeCard);
 
+  useEffect(() => {
+    if(addIssue) {
+      setTooltip(issueName)
+    } else {
+      if(issueDescription) {
+        setTooltip(`${issueDescription}`)
+      } else setTooltip(`Issue: ${issueName}`)
+      
+    }
+  }, [])
+
   return (
+    <LightTooltip  title={tooltip} placement="bottom-end">
     <Card
       className={activeCard}
       onClick={!addIssue ? () => onIssueClick(issueName) : null}
@@ -86,5 +110,6 @@ export const IssueCard: FC<IssueCardProps> = ({
         </CardActions>
       )}
     </Card>
+    </LightTooltip>
   );
 };

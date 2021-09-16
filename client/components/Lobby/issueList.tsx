@@ -38,7 +38,7 @@ const IssueList: FC<IssueListProps> = ({
     const newIssues = [ ...issues ];
     newIssues.splice(issueIndex, 1, changedIssue);
     onIssueEdit(newIssues);
-    setIssueSelected({ issueName: '', priority: '' });
+    setIssueSelected({ issueName: '', priority: '', issueDescription: '' });
   };
 
   const onIssueDeleteClick = () => {
@@ -48,8 +48,8 @@ const IssueList: FC<IssueListProps> = ({
     const newIssues = [ ...issues ];
     newIssues.splice(issueIndex, 1);
     onIssueDelete(newIssues);
-    setIssueSelected({ issueName: '', priority: '' });
-  }
+    setIssueSelected({ issueName: '', priority: '', issueDescription: '' });
+  };
 
   return (
     <Grid item container spacing={2} justifyContent="center">
@@ -62,7 +62,13 @@ const IssueList: FC<IssueListProps> = ({
             <InputLabel id="select-issue">Issues:</InputLabel>
             <Select
               labelId="select-issue"
-              value={issueSelected && issueSelected.issueName ? issueSelected.issueName : ''}
+              value={
+                issueSelected && issueSelected.issueName ? (
+                  issueSelected.issueName
+                ) : (
+                  ''
+                )
+              }
               onChange={onIssueSelect}
             >
               <MenuItem value="">
@@ -96,9 +102,10 @@ const IssueList: FC<IssueListProps> = ({
             />
           </Grid>
           <Grid item>
-            {issueSelected && issueSelected.issueName && (
+            {issueSelected &&
+            issueSelected.issueName && (
               <ChangeIssuePopup
-              onIssueChangeClick={onIssueChangeClick}
+                onIssueChangeClick={onIssueChangeClick}
                 issueSelected={issueSelected}
                 issues={issues}
               />

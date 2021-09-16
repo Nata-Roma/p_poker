@@ -14,6 +14,7 @@ export const issueCreate = (
   issues.push({
     issueName: issue.issueName,
     priority: issue.priority,
+    issueDescription: issue.issueDescription,
   });
   return {
     ...state,
@@ -28,23 +29,6 @@ export const issueChanged = (
   return {
     ...state,
     issues: newIssues,
-  };
-};
-
-export const issueChangeEdit = (
-  state: IGameSettings,
-  changedIssue: issuePrevNext,
-): IGameSettings => {
-  const filteredIssues = state.issues.filter(
-    (issue) => issue.issueName !== changedIssue.prevValue,
-  );
-  filteredIssues.push({
-    issueName: changedIssue.nextValue,
-    priority: changedIssue.priority,
-  });
-  return {
-    ...state,
-    issues: filteredIssues,
   };
 };
 

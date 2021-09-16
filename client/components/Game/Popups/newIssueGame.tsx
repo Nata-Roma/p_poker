@@ -14,24 +14,30 @@ import {
 } from '@material-ui/core';
 import { useStylesCreateIssuePopup } from '@styles/createIssuePopup.style';
 import { NewIssueGamePopupProps } from 'utils/interfaces';
-import { checkValidateIssue, generateErrorName } from 'components/Lobby/lobbyDealerHelpers';
+import {
+  checkValidateIssue,
+  generateErrorName,
+} from 'components/Lobby/lobbyDealerHelpers';
 
 export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
   onIssueCreate,
   isOpen,
   onAddCloseIssue,
-  issues
+  issues,
 }) => {
   const classes = useStylesCreateIssuePopup();
   const [ priority, setPriority ] = React.useState('low');
   const [ issueName, setIssueName ] = React.useState('');
+  const [ issueDescription, setIssueDescription ] = React.useState('');
 
   const onCreateClick = () => {
     onIssueCreate({
       issueName,
       priority,
+      issueDescription,
     });
     setIssueName('');
+    setIssueDescription('');
   };
 
   const disabled = checkValidateIssue(issueName, issues);
@@ -75,6 +81,14 @@ export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
             </NativeSelect>
             <FormHelperText>choose the priority of issue</FormHelperText>
           </FormControl>
+          <TextField
+            margin="dense"
+            id="description"
+            label="Issue description"
+            fullWidth
+            value={issueDescription}
+            onChange={(e) => setIssueDescription(e.target.value)}
+          />
         </DialogContent>
         <DialogActions>
           <Grid container spacing={2}>

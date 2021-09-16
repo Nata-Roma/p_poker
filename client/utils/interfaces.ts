@@ -56,11 +56,13 @@ export interface IApiGetLobbyInfo {
 export interface IssueData {
   issueName: string;
   priority: string;
+  issueDescription: string;
 }
 
 export interface IGameIssue {
   issueName: string;
   priority: string;
+  issueDescription: string;
 }
 
 export interface IGameTimer {
