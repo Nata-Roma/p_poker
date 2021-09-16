@@ -7,7 +7,7 @@ import { useStyleHomePage } from '@styles/initPage.style';
 import { RoomSelect } from './roomSelect';
 import {
   setDealer,
-  setRoomId,
+  setRoom,
   setUserAvatar,
   setUserId,
   setUsername,
@@ -15,21 +15,21 @@ import {
   setUserSurname,
 } from 'store/actionCreators';
 import AppContext from 'store/store';
-import { roles, userInitData } from 'utils/configs';
-import { IDialogUsers } from 'utils/interfaces';
+import { roles, roomInitData, userInitData } from 'utils/configs';
+import { IDialogUsers, IRoomCreateData, IRoomData, IRoomInfo } from 'utils/interfaces';
 import { UserDialog } from './Dialog/userDialog';
 import pokerImage from '../../public/poker-cards_green.png';
 import appStorage from 'utils/storage';
 import { apiCreateRoom } from 'services/apiServices';
 
 interface MakeChoiceProps {
-  rooms: Array<string>;
+  rooms: Array<IRoomInfo>;
 }
 
 export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   const classes = useStyleHomePage();
   const router = useRouter();
-  const [ roomList, setRoomList ] = useState<Array<string>>(rooms);
+  const [ roomList, setRoomList ] = useState<Array<IRoomInfo>>(rooms);
   const [ openCreate, setOpenCreate ] = useState(false);
   const [ openConnect, setOpenConnect ] = useState(false);
   const [ userData, setUserData ] = useState({
@@ -42,11 +42,11 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     },
   });
   const [ role, setRole ] = useState(roles.member);
-  const [ room, setRoom ] = useState('');
+  const [ roomInfo, setRoomInfo ] = useState<IRoomCreateData>(roomInitData);
   const [ loading, setLoading ] = useState(false);
   const { state, dispatch } = useContext(AppContext);
 
-  const onRoomList = (rooms: Array<string>) => {
+  const onRoomList = (rooms: Array<IRoomInfo>) => {
     setRoomList(rooms);
   };
 
@@ -63,12 +63,20 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   };
 
   const onCreateRoom = async () => {
-    if (userData.username.statusData && userData.userSurname.statusData) {
+    if (
+      userData.username.statusData &&
+      userData.userSurname.statusData &&
+      roomInfo.statusData
+    ) {
       const id = nanoid();
-      dispatch(setRoomId(id));
+      setRoomInfo((prev) => ({...prev, room: { ...prev.room, roomId: id}}))
+      dispatch(setRoom(id, roomInfo.room.roomName));
 
       const config = {
-        data: id,
+        data: {
+          roomId: id,
+          roomName: roomInfo.room.roomName,
+        },
       };
       setOpenCreate(false);
       const created = await apiCreateRoom(config);
@@ -81,11 +89,11 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     if (
       userData.username.statusData &&
       userData.userSurname.statusData &&
-      room
+      roomInfo.statusData
     ) {
-      dispatch(setRoomId(room));
+      dispatch(setRoom(roomInfo.room.roomId, roomInfo.room.roomName));
       setOpenConnect(false);
-      goToLobby(room);
+      goToLobby(roomInfo.room.roomId);
     }
   };
 
@@ -100,6 +108,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       },
     });
     setRole(roles.member);
+    setRoomInfo(roomInitData);
   };
 
   const onCreateCancel = () => {
@@ -121,6 +130,10 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     setUserData(userData);
   };
 
+  const changeRoomData = (roomData: IRoomCreateData) => {
+    setRoomInfo(roomData);
+  };
+
   const addAvatar = (data: string) => {
     setUserData((prev) => ({ ...prev, avatar: data }));
   };
@@ -137,11 +150,10 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   );
 
   useEffect(() => {
-    window.onbeforeunload =() => {
+    window.onbeforeunload = () => {
       console.log('HHHHHHH');
-      
-    }
-    dispatch(setRoomId(''));
+    };
+    dispatch(setRoom('', ''));
     dispatch(setUserId(''));
     dispatch(setDealer(false));
     dispatch(setUserRole(roles.member));
@@ -222,8 +234,11 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
                 role={role}
                 loading={(status) => setLoading(status)}
                 changeUserData={changeUserData}
+                changeRoomData={changeRoomData}
                 addAvatar={addAvatar}
                 userInfo={userData}
+                roomInfo={roomInfo}
+                newGame={true}
               />
             </Grid>
           </Grid>
@@ -238,7 +253,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
             <Grid item className={classes.choiceContainer}>
               <RoomSelect
                 rooms={roomList.map((item) => item)}
-                onRoomSelect={setRoom}
+                onRoomSelect={changeRoomData}
               />
             </Grid>
             <Grid item>
@@ -266,6 +281,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
                 changeUserData={changeUserData}
                 addAvatar={addAvatar}
                 userInfo={userData}
+                newGame={false}
               />
             </Grid>
           </Grid>

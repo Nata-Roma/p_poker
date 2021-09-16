@@ -1,23 +1,33 @@
 import { DialogContent, TextField } from '@material-ui/core';
-import { FC, useEffect, useState } from 'react';
-import { errorInfo, userInitData } from 'utils/configs';
-import { IDialogUsers } from 'utils/interfaces';
+import { FC, useState } from 'react';
+import { errorInfo } from 'utils/configs';
+import { IDialogUsers, IRoomCreateData } from 'utils/interfaces';
 
 interface DialogInputBlockProps {
   changeUserData: (value: IDialogUsers) => void;
-  userInfo: IDialogUsers
+  changeRoomData?: (value: IRoomCreateData) => void;
+  userInfo: IDialogUsers,
+  roomInfo?: IRoomCreateData,
+  newGame: boolean;
 }
 
 export const DialogInputBlock: FC<DialogInputBlockProps> = ({
   changeUserData,
-  userInfo
+  changeRoomData,
+  userInfo,
+  roomInfo,
+  newGame,
 }) => {
   const [ nameErrorInfo, setNameErrorInfo ] = useState(errorInfo.nameError.bad);
   const [ surnameErrorInfo, setSurnameErrorInfo ] = useState(
     errorInfo.surnameError.bad,
   );
+  const [ roomNameErrorInfo, setRoomNameErrorInfo ] = useState(
+    errorInfo.roomNameError.bad,
+  );
   const [ nameError, setNameError ] = useState(true);
   const [ surnameError, setSurnameError ] = useState(true);
+  const [ roomNameError, setRoomNameError ] = useState(true);
 
   const onChangeInput = (e) => {
     const targetName = e.target.name;
@@ -56,7 +66,31 @@ export const DialogInputBlock: FC<DialogInputBlockProps> = ({
         newUserInfo.userSurname.statusData = false;
       }
     }
+    if(roomInfo) {
+      const newRoomInfo = {
+        ...roomInfo,
+        room: {
+          ...roomInfo.room,
+        }
+      }
+  
+      if (targetName === 'roomName') {
+        newRoomInfo.room.roomName = targetValue;
+        if (targetValue.length >= errorInfo.roomNameError.validator) {
+          setRoomNameErrorInfo(errorInfo.roomNameError.ok);
+          setRoomNameError(false);
+          newRoomInfo.statusData = true;
+        } else {
+          setRoomNameErrorInfo(errorInfo.roomNameError.bad);
+          setRoomNameError(true);
+          newRoomInfo.statusData = false;
+        }
+      }
+      changeRoomData(newRoomInfo);
+    }
     changeUserData(newUserInfo);
+    
+    
   };
 
   return (
@@ -83,6 +117,18 @@ export const DialogInputBlock: FC<DialogInputBlockProps> = ({
           error={surnameError}
           helperText={surnameErrorInfo}
         />
+        {newGame && (
+          <TextField
+          margin="dense"
+          label="Room Name"
+          type="text"
+          fullWidth
+          name="roomName"
+          onChange={(e) => onChangeInput(e)}
+          error={roomNameError}
+          helperText={roomNameErrorInfo}
+        />
+        )}
       </DialogContent>
     </>
   );

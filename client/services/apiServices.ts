@@ -4,6 +4,7 @@ import {
   IApiGetLobbyInfo,
   IApiStartGame,
   IGameSettings,
+  IRoomInfo,
 } from 'utils/interfaces';
 
 export const apiGetLobbyUsers = async (room: string | Array<string>) => {
@@ -60,7 +61,7 @@ export const apiCreateGame = async (
   }
 };
 
-export const apiCreateRoom = async (config: { data: string }): Promise<string> => {
+export const apiCreateRoom = async (config: {data: IRoomInfo}): Promise<string> => {
   const createRoom = await axios({
     method: 'POST',
     url: `${BASE_URL}/rooms`,

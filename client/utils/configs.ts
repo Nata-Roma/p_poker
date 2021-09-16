@@ -17,6 +17,11 @@ export const errorInfo = {
     bad: 'Incorrect entry',
     validator: 3,
   },
+  roomNameError: {
+    ok: 'Correct',
+    bad: 'Incorrect entry',
+    validator: 3,
+  },
 };
 
 export const userInitData = {
@@ -29,6 +34,14 @@ export const userInitData = {
     statusData: false,
   },
   avatar: '',
+};
+
+export const roomInitData = {
+  room: {
+    roomName: '',
+    roomId: '',
+  },
+  statusData: false,
 };
 
 export const gameCardSur = [

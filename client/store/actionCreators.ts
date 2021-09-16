@@ -1,10 +1,13 @@
 import { actionTypes } from './reducer';
 
-export const setRoomId = (id: string | Array<string>) => {
-  if (typeof id === 'string') {
+export const setRoom = (roomId: string | Array<string>, roomName: string) => {
+  if (typeof roomId === 'string') {
     return {
-      type: actionTypes.SET_ROOM_ID,
-      payload: id,
+      type: actionTypes.SET_ROOM,
+      payload: {
+        roomId,
+        roomName
+      },
     };
   }
 };

@@ -1,10 +1,9 @@
-import axios from 'axios';
 import { InitPage } from 'components/InitPage/initPage';
 import { apiGetRooms } from 'services/apiServices';
-import { BASE_URL } from 'utils/apiConfig';
+import { IRoomInfo } from 'utils/interfaces';
 
 interface HomePageProps {
-  rooms: Array<string>
+  rooms: Array<IRoomInfo>
 }
 
 // function useSocket(url) {
@@ -33,7 +32,6 @@ interface HomePageProps {
 // }
 
 const HomePage = ({ rooms }: HomePageProps) => {
-  
   return (
     <div>
       <InitPage rooms={rooms} />

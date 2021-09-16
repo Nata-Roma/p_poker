@@ -4,6 +4,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import { IRoomCreateData, IRoomInfo } from 'utils/interfaces';
+import { roomInitData } from 'utils/configs';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,18 +21,21 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface RoomSelectProps {
-  rooms: Array<string>;
-  onRoomSelect: (room: string)=> void
+  rooms: Array<IRoomInfo>;
+  onRoomSelect: (room: IRoomCreateData) => void;
 }
 
 export const RoomSelect: FC<RoomSelectProps> = ({ rooms, onRoomSelect }) => {
   const classes = useStyles();
-  const [ room, setRoom ] = useState<string | number>('');
+  const [ room, setRoom ] = useState<IRoomInfo>({roomId: '', roomName: ''});
   const [ open, setOpen ] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<{ value: string }>) => {
-    setRoom(event.target.value);
-    onRoomSelect(event.target.value)
+    const selectedRoom = rooms.find((room) => room.roomId === event.target.value);
+    if (selectedRoom) {
+      setRoom(selectedRoom);
+      onRoomSelect({room: selectedRoom, statusData: true});
+    }
   };
 
   const handleClose = () => {
@@ -44,22 +49,28 @@ export const RoomSelect: FC<RoomSelectProps> = ({ rooms, onRoomSelect }) => {
   return (
     <div>
       <FormControl className={classes.formControl} fullWidth>
-        <InputLabel id="demo-controlled-open-select-label">Select Room</InputLabel>
+        <InputLabel id="demo-controlled-open-select-label">
+          Select Room
+        </InputLabel>
         <Select
           labelId="demo-controlled-open-select-label"
           id="demo-controlled-open-select"
           open={open}
           onClose={handleClose}
           onOpen={handleOpen}
-          value={room}
+          value={room.roomId}
           onChange={handleChange}
-          color='secondary'
+          color="secondary"
         >
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
           {rooms &&
-            rooms.map((item) => <MenuItem value={item} key={item}>{item}</MenuItem>)}
+            rooms.map((item) => (
+              <MenuItem value={item.roomId} key={item.roomId}>
+                {item.roomName}
+              </MenuItem>
+            ))}
         </Select>
       </FormControl>
     </div>

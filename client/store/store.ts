@@ -1,8 +1,6 @@
-import { nanoid } from 'nanoid';
 import { createContext } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { BASE_URL } from 'utils/apiConfig';
-import appStorage from 'utils/storage';
 
 const socketIo = io(BASE_URL, {
   withCredentials: true,
@@ -20,7 +18,11 @@ socketIo.disconnect().connect();
 export interface AppStore {
   socket: Socket;
   userId: string;
+  username: string;
+  userSurname: string;
+  avatar: string;
   roomId: string;
+  roomName: string;
   userRole: string;
   dealer: boolean;
 }
@@ -32,6 +34,7 @@ export const appStore = {
   userSurname: '',
   avatar: '',
   roomId: '',
+  roomName: '',
   userRole: 'member',
   dealer: false,
 };
