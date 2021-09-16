@@ -132,7 +132,7 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
       setIsVoting(message);
     });
 
-      // setIsVoting(gameData.isVoting);
+
      
       if( !gameData.isVoting && gameData.isAutoJoin) {    
         gameStart();
