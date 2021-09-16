@@ -9,6 +9,7 @@ import {
   IIssue,
   IGameTimer,
   IKickUserVotes,
+  IRoomInfo,
 } from './interfaces';
 
 const initKickUser = {
@@ -19,18 +20,25 @@ const initKickUser = {
 class Room {
   private users: Array<IUserData> = [];
   private roomId: string;
+  private roomName: string;
   private chatMessages: Array<IChatMessage> = [];
   private game: Game;
   private kickUserVotes: IKickUserVotes = initKickUser;
 
-  constructor(roomId: string) {
-    this.roomId = roomId;
+  constructor(room: IRoomInfo) {
+    this.roomId = room.roomId;
+    this.roomName = room.roomName;
     this.game = new Game(this.roomId);
     console.log('new room created');
   }
 
   getRoomId = (): string | null => {
     if (this.roomId) return this.roomId;
+    return null;
+  };
+
+  getRoom = (): IRoomInfo | null => {
+    if (this.roomId) return {roomId: this.roomId, roomName: this.roomName};
     return null;
   };
 

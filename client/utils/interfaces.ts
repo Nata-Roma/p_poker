@@ -9,7 +9,7 @@ export interface IUser {
 }
 
 export interface IUserCreate {
-  roomId: string;
+  room: IRoomInfo;
   user: IUser;
 }
 
@@ -24,8 +24,17 @@ export interface IDialogUsers {
   avatar: string;
 }
 
-export interface IRoomData {
+export interface IRoomInfo {
   roomId: string;
+  roomName: string;
+}
+export interface IRoomCreateData {
+  room: IRoomInfo;
+  statusData: boolean;
+}
+
+export interface IRoomData {
+  room: IRoomInfo;
   users: Array<IUser> | null;
 }
 
@@ -35,7 +44,7 @@ export interface IChatMessage {
 }
 
 export interface IChat {
-  roomId: string;
+  room: IRoomInfo;
   chatMessages: Array<IChatMessage>;
 }
 

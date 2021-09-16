@@ -24,7 +24,7 @@ app.post('/', (req, res) => {
 });
 
 app.get('/rooms', (req, res) => {
-  const rooms = roomContoller.getRoomIds();
+  const rooms = roomContoller.getRoomsInfo();
   console.log('ROOMS', rooms);
   if (rooms.length) {
     res.status(200).json(rooms);

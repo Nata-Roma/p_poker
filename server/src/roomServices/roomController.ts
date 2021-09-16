@@ -8,6 +8,7 @@ import {
   IIssue,
   IGameTimer,
   IKickUserVotes,
+  IRoomInfo,
 } from '../models/interfaces';
 import Room from '../models/roomModel';
 
@@ -15,7 +16,7 @@ class Rooms {
   private rooms: Array<Room> = [];
   constructor() {}
 
-  createRoom = (roomId: string): void => {
+  createRoom = (roomId: IRoomInfo): void => {
     const room = new Room(roomId);
     this.rooms.push(room);
     console.log('new room in rooms, length: ', this.rooms.length);
@@ -36,6 +37,11 @@ class Rooms {
     console.log('get room by Id');
     if (room) return roomId;
     return null;
+  };
+
+  getRoomsInfo = (): Array<IRoomInfo> => {
+    const rooms = this.rooms.map((room) => room.getRoom());
+    return rooms;
   };
 
   getRoomUsers = (roomId: string): Array<IUserData> => {

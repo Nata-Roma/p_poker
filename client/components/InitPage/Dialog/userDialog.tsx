@@ -1,5 +1,4 @@
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -16,7 +15,7 @@ import {
 import { roles } from 'utils/configs';
 import { CreateAvatar } from './avatar';
 import { DialogInputBlock } from './dialogInputBlock';
-import { IDialogUsers } from 'utils/interfaces';
+import { IDialogUsers, IRoomCreateData } from 'utils/interfaces';
 
 const useStyleDialog = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,24 +29,30 @@ interface UserDialogProps {
   onDialogClose: () => void;
   confirm: () => void;
   changeUserData: (value: IDialogUsers) => void;
+  changeRoomData?: (value: IRoomCreateData) => void;
   open: boolean;
   onRoleChange: () => void;
   role: string;
   loading: (status: boolean) => void;
   addAvatar: (data: string) => void;
   userInfo: IDialogUsers;
+  roomInfo?: IRoomCreateData;
+  newGame: boolean;
 }
 
 export const UserDialog: FC<UserDialogProps> = ({
   onDialogClose,
   open,
   changeUserData,
+  changeRoomData,
   confirm,
   onRoleChange,
   role,
   loading,
   addAvatar,
-  userInfo
+  userInfo,
+  roomInfo,
+  newGame,
 }) => {
   const classes = useStyleDialog();
 
@@ -75,7 +80,13 @@ export const UserDialog: FC<UserDialogProps> = ({
             />
           </Grid>
         </Grid>
-        <DialogInputBlock changeUserData={changeUserData} userInfo={userInfo} />
+        <DialogInputBlock
+          changeUserData={changeUserData}
+          userInfo={userInfo}
+          newGame={newGame}
+          changeRoomData={changeRoomData}
+          roomInfo={roomInfo}
+        />
         <DialogContent>
           <CreateAvatar loading={loading} addAvatar={addAvatar} />
         </DialogContent>

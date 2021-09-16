@@ -33,7 +33,7 @@ const socketServer = (httpServer) => {
         console.log('SOCKET JOIN');
         if (user.id) {
           roomContoller.joinUserToRoom(roomId, user);
-          const rooms = roomContoller.getRoomIds();
+          const rooms = roomContoller.getRoomsInfo();
           const users = roomContoller.getRoomUsers(roomId);
           socket.broadcast.emit('roomList', rooms);
           io.in(roomId).emit('userJoined', users);

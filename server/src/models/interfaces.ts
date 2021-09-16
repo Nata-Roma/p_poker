@@ -1,3 +1,8 @@
+export interface IRoomInfo {
+  roomId: string;
+  roomName: string;
+}
+
 export interface IUserData {
   username: string;
   userSurname: string;
