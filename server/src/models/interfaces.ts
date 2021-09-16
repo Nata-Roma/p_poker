@@ -68,6 +68,7 @@ export interface IGameSettingsFromClient {
   card: IGameCard;
   isAutoJoin: boolean;
   isStarted: boolean;
+  isVoting: boolean;
 }
 
 export interface IGameSettings {

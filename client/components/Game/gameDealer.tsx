@@ -256,7 +256,7 @@ export const GameDealer: FC<GameDealerProps> = ({
         />
       </Grid>
 
-      {requestToJoin &&
+      { !voting && requestToJoin &&
       lateMember && (
         <LateMemberAccess
           requestToJoin={requestToJoin}

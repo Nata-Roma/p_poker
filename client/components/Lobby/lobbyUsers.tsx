@@ -12,6 +12,7 @@ import { roles } from 'utils/configs';
 import KickPlayerPopup from './popups/kickPlayerPopup';
 import KickPlayerReject from './popups/kickPlayerReject';
 import KickPlayerConfirm from './popups/kickPlayerConfirm';
+import WaitForAuthPopup from './popups/waitForAuthPopup';
 
 export interface LobbyUserProps {
   users: Array<IUser>;
@@ -27,6 +28,9 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
   const [ kickOffUser, setKickOffUser ] = useState<IUser>();
   const [ isOpenReject, setIsOpenReject ] = useState(false);
   const [ isOpenConfirm, setIsOpenConfirm ] = useState(false);
+  const [ isGameStarted, setIsGameStarted] = useState(false);
+  const [ isVoting, setIsVoting ] = useState(false);
+  const [ isAutoJoin, setIsAutoJoin ] = useState(false);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -111,15 +115,36 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
 
     state.socket.on('gameData', (message) => {
     const { gameData } = message;
-    if(gameData.isStarted && gameData.isAutoJoin) {   
-      gameStart();
-    } if(gameData && gameData.isStarted  && !gameData.isAutoJoin) {    
-      state.socket.on('lateMemberMayJoin', (message) => {     
-          if( state.userId === message) {
-            gameStart();
-          }
-      }); 
+    console.log('game DATA', gameData);
+    if(gameData && gameData.isStarted) {
+      setIsGameStarted(true);
+      setIsVoting(gameData.isVoting);
+      setIsAutoJoin(gameData.isAutoJoin); 
+    // state.socket.emit('isVotingStarted', { roomId: state.roomId });
+
+    // state.socket.on('votingStarted', (message) => {
+    //   console.log('LOBBY IS VOTING', message);
+    //   setIsVoting(message.voting);
+    // });
+
+    state.socket.on('votingIsOver', (message) => {
+      console.log('LOBBY VOTING IS OVER', message);
+      setIsVoting(message);
+    });
+
+      // setIsVoting(gameData.isVoting);
+     
+      if( !gameData.isVoting && gameData.isAutoJoin) {    
+        gameStart();
+      } if(!gameData.isAutoJoin) {    
+        state.socket.on('lateMemberMayJoin', (message) => {     
+            if( state.userId === message) {
+              gameStart();
+            }
+        }); 
+      }
     }
+  
     });
 
     state.socket.on('memberIsDeclined', (message) => {   
@@ -136,19 +161,26 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
       userKickVoting(user);
     });
 
+    
+
     return () => {
       state.socket.off('gameOver', (message) => {
         gameFinish(message);
       });
+
       state.socket.off('gameStarted', (message) => {
         gameStart();
       });
-      state.socket.off('gameData', (message) => {
- 
-      });
+
+      state.socket.off('gameData');
+
       state.socket.off('lateMemberMayJoin');
       
       state.socket.off('memberIsDeclined');
+
+      // state.socket.off('votingStarted');
+
+      // state.socket.off('isVotingStarted');
 
       state.socket.off('noQuorum', (message) => {
         userRemoveRejectPopup();
@@ -159,6 +191,8 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
       });
     };
   }, []);
+
+  
 
   return (
     <Grid
@@ -224,6 +258,13 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
         onCloseReject={rejectUserRemove}
         user={kickOffUser}
       />
+      { isGameStarted &&
+        (<WaitForAuthPopup
+          isGameStarted={isGameStarted}
+          isVoting={isVoting}
+          isAutoJoin={isAutoJoin}
+        /> )
+      }
     </Grid>
   );
 };

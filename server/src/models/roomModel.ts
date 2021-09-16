@@ -95,8 +95,16 @@ class Room {
     return this.game.getGameId();
   };
 
+  getIsVoting = (): boolean => {
+    return this.game.getIsVoting();
+  };
+
   setUserChoice = (userChoice: IPlayerChoice) => {
     this.game.setPlayerChoice(userChoice);
+  };
+
+  setVoting = ( voting: boolean ) => {
+    this.game.setVoting(voting);
   };
 
   getGameIssue = (issueName: string): IGameIssue => {
@@ -155,6 +163,7 @@ class Room {
     this.game.addNewIssue(issue, playerIds);
   };
 
+  
   getTimer = (): IGameTimer => {
     const timer = this.game.getTimer();
     if (timer) return timer;
