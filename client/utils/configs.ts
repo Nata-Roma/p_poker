@@ -104,6 +104,7 @@ export const initGameSettings = {
   },
   isAutoJoin: false,
   isStarted: true,
+  isVoting: false,
 };
 
 export const timerValid = {

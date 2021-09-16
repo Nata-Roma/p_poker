@@ -149,12 +149,15 @@ export const GamePage: FC<GamePageProps> = ({
 
   const onStartVoting = () => {
       setVoting(true);
+      
+      state.socket.emit('startVoting', {
+        roomId: lobby,
+        voting: true
+      });
     if(!timer?.isTimer) {
       setResult(true);
     }
-    state.socket.emit('startVoting', {
-      roomId: lobby,
-    });
+    
   };
 
   const onTimerStart = (message: {time: number, timer: IGameTimer, voting: boolean}) => {

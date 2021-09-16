@@ -88,6 +88,7 @@ class Rooms {
     return id;
   };
 
+  
   setGameUserChoice = (roomId: string, userChoice: IPlayerChoice): void => {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     if (room) {
@@ -172,6 +173,21 @@ class Rooms {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     if (room) {
       return room.addNewIssue(issue);
+    }
+  };
+
+  setVoting = (roomId: string,  voting: boolean ): void => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      return room.setVoting(voting);
+    }
+  };
+
+  getIsVoting =(roomId: string): boolean => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if(room) {
+      const isVoting = room.getIsVoting();
+      return isVoting;
     }
   };
 
