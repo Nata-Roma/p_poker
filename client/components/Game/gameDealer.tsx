@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { FC, useEffect, useState, useContext } from 'react';
+import React, { FC, useEffect, useState, useContext } from 'react';
 import { Typography, Grid, Box, Button } from '@material-ui/core';
 import {
   IGameIssue,
@@ -18,6 +18,7 @@ import { Timer } from './Timer/timer';
 import { NewIssueGamePopup } from './Popups/newIssueGame';
 import { ChangeScoreGamePopup } from './Popups/changeScoreGame';
 import { DealerLeavePage } from './Popups/dealerLeavePage';
+import GameResultPopup from './Popups/gameResultsPopup';
 
 interface GameDealerProps {
   dealer: IUser;
@@ -64,6 +65,7 @@ export const GameDealer: FC<GameDealerProps> = ({
       roomId: lobby,
       userId: state.userId,
     });
+    console.log('leave')
   };
 
   const gameFinish = (message: string) => {
@@ -148,6 +150,10 @@ export const GameDealer: FC<GameDealerProps> = ({
     handleCloseDialog();
   };
 
+  const onLeaveRoomDealer = () => {
+    setIsLeaveOpen(true)
+  }
+
   return (
     <div>
       <Typography variant="h6" align="center" gutterBottom>
@@ -168,15 +174,17 @@ export const GameDealer: FC<GameDealerProps> = ({
             )}
           </Grid>
           <Grid item className={classes.mBottom}>
-            <Box boxShadow={2} mr={10}>
-              <Button
+            {/* <Box boxShadow={2} mr={10}> */}
+              {/* <Button
                 variant="outlined"
                 className={classes.btn}
-                onClick={() => setIsLeaveOpen(true)}
+                // onClick={() => setIsLeaveOpen(true)}
+                onClick={() => console.log('stop game')}
               >
                 Stop Game
-              </Button>
-            </Box>
+              </Button> */}
+              <GameResultPopup onLeaveRoom={onLeaveRoomDealer} roomId={lobby}/>
+            {/* </Box> */}
           </Grid>
           <Grid container item justifyContent="space-between">
             <Grid

@@ -228,6 +228,12 @@ const socketServer = (httpServer) => {
         socket.to(roomId).emit('userToBeKickedOff', user.id);
       }
     });
+
+    socket.on('showResults', async (message) => {
+      const { roomId } = message;
+      const issues = await roomContoller.getGameIssues(roomId);
+      io.in(roomId).emit('showGameResults', issues)
+    })
   });
 };
 
