@@ -30,7 +30,8 @@ import {
   selectCardSequence,
   timeChange,
   timerChange,
-  autoJoinChange
+  autoJoinChange,
+  sprintNameChange
 } from './lobbyDealerHelpers';
 import { DealerLeavePage } from 'components/Game/Popups/dealerLeavePage';
 
@@ -213,6 +214,7 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users, issues }) => {
   };
 
   const onSprintNameChange = (sprintName: string) => {
+    setGameSettings((prev) => sprintNameChange(prev, sprintName));
     state.socket.emit('changeSprintName', {
       roomId: lobby,
       sprintName,
