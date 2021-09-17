@@ -85,7 +85,7 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate, issues }) 
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="form-dialog-title"
+        className={classes.container}
       >
         <DialogTitle id="form-dialog-title" style={{textAlign:'center'}}>Create Issue</DialogTitle>
         <DialogContent>

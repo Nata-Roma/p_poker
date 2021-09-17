@@ -80,7 +80,7 @@ interface IGameCard {
   cardTurn: boolean;
 }
 export interface IGameSettings {
-  spring: string;
+  sprintName: string;
   issues: Array<IGameIssue>;
   timer: IGameTimer;
   card: IGameCard;
@@ -112,7 +112,7 @@ export interface IGamePageIssue {
 }
 
 export interface IApiStartGame {
-  spring: '';
+  sprintName: '';
   card: IGameCard;
   issues: Array<IGamePageIssue>;
   players: IGamePagePlayer;

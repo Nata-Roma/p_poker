@@ -111,7 +111,7 @@ export const GamePage: FC<GamePageProps> = ({
 
     setGameIssues(gameData.issues);
     setActiveIssueName(gameData.issues[0].issue.issueName);
-    setSprintTitle(gameData.spring);
+    setSprintTitle(gameData.sprintName);
     if (gameData.timer.isTimer) {
       setTimer(gameData.timer);
     }

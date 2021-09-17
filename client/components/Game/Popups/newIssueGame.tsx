@@ -62,7 +62,7 @@ export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
 
   return (
     <div>
-      <Dialog open={isOpen} onClose={onAddCloseIssue}>
+      <Dialog open={isOpen} onClose={onAddCloseIssue} className={classes.container}>
         <DialogTitle style={{ textAlign: 'center' }}>Create Issue</DialogTitle>
         <DialogContent>
           <TextField
