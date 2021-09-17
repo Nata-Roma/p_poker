@@ -96,7 +96,7 @@ export const gameSelectOptions = {
 };
 
 export const initGameSettings = {
-  spring: '',
+  sprintName: '',
   issues: [] as Array<IGameIssue>,
   timer: {
     isTimer: false,
