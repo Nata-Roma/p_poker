@@ -18,6 +18,7 @@ import { Timer } from './Timer/timer';
 import { NewIssueGamePopup } from './Popups/newIssueGame';
 import { ChangeScoreGamePopup } from './Popups/changeScoreGame';
 import { DealerLeavePage } from './Popups/dealerLeavePage';
+import clsx from 'clsx';
 
 interface GameDealerProps {
   dealer: IUser;
@@ -58,6 +59,7 @@ export const GameDealer: FC<GameDealerProps> = ({
   const [ lateMember, setLateMember ] = useState<IUser>(null);
   const [ isScoreOpen, setIsScoreOpen ] = useState(false);
   const [ isLeaveOpen, setIsLeaveOpen ] = useState(false);
+  const btnHidden = clsx(timer && timer.isTimer ? classes.btnHidden : classes.mBottom);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveGame', {
@@ -197,13 +199,14 @@ export const GameDealer: FC<GameDealerProps> = ({
                   </Button>
                 </Box>
               </Grid>
-              <Grid item className={classes.mBottom}>
+              <Grid item className={btnHidden}>
                 <Box boxShadow={2} mr={10}>
                   <Button
                     variant="outlined"
                     className={classes.btn}
                     onClick={calculateIssueScore}
                     disabled={!result}
+                    hidden={timer && timer.isTimer}
                   >
                     Voting results
                   </Button>

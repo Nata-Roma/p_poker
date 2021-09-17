@@ -77,6 +77,12 @@ export const GamePage: FC<GamePageProps> = ({
         time: 0,
       });
     }
+
+    state.socket.emit('calcScore', {
+      roomId: lobby,
+      issueName: activeIssueName,
+    });
+    // setVoting(true);
     setVoting(false);
     setResult(true);
   }
@@ -142,8 +148,6 @@ export const GamePage: FC<GamePageProps> = ({
   };
 
   const newIssueAdded = (newIssue: Array<IGamePageIssue>) => {
-    console.log('new Issue!', newIssue);
-    
     setGameIssues(newIssue);
   };
 
@@ -199,6 +203,10 @@ export const GamePage: FC<GamePageProps> = ({
       state.socket.on('timerStarted', (message) => {
         onTimerStart(message);
       });
+
+      state.socket.on('activeIssueChanged', (message) => {
+        changeActiveIssue(message);
+      });
     }
 
     return () => {
@@ -217,18 +225,20 @@ export const GamePage: FC<GamePageProps> = ({
       state.socket.off('timerStarted', (message) => {
         onTimerStart(message);
       });
-    };
-  }, []);
 
-  useEffect(() => {
-    state.socket.on('activeIssueChanged', (message) => {
-      changeActiveIssue(message);
-    });
-
-    return () =>
       state.socket.off('activeIssuechanged', (message) => {
         changeActiveIssue(message);
       });
+
+      setUsers([]);
+      setGameIssues([]);
+      setTimer(null)
+      setTimeStarted(0);
+      setVoting(false)
+      setResult(false);
+      setActiveIssueName('');
+      setActiveCard('');
+    };
   }, []);
 
   return (
@@ -268,7 +278,7 @@ export const GamePage: FC<GamePageProps> = ({
             activeIssueName={activeIssueName}
             timer={timer}
             timeStarted={timeStarted}
-            onTimerStop={onTimerStop}
+            onTimerStop={() => {}}
           />
         )}
         <Grid container item>

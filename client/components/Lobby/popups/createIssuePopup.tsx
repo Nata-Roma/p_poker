@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useContext } from "react";
+import React, { ChangeEvent, FC, useContext, useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -16,13 +16,16 @@ import AddIcon from '@material-ui/icons/Add';
 import { useStylesCreateIssuePopup } from "@styles/createIssuePopup.style";
 import { CreateIssuePopupProps } from "utils/interfaces";
 import { checkValidateIssue, generateErrorName } from "../lobbyDealerHelpers";
+import { issueErrorConfig } from "utils/configs";
 
 const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate, issues }) => {
   const classes = useStylesCreateIssuePopup();
-  const [priority, setPriority] = React.useState('low');
-  const [issueName, setIssueName] = React.useState('');
-  const [issueDescription, setIssueDescription] = React.useState('');
+  const [priority, setPriority] = useState('low');
+  const [issueName, setIssueName] = useState('');
+  const [issueDescription, setIssueDescription] = useState('');
   const [open, setOpen] = React.useState(false);
+  const [ issueError, setIssueError ] = useState<string>('');
+  const [ disabled, setDisabled ] = useState(true);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -55,8 +58,24 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate, issues }) 
     setIssueDescription(e.target.value);
   }
 
-  const disabled = checkValidateIssue(issueName, issues);
-  const errorInfo = generateErrorName(issueName, issues);
+  // const disabled = checkValidateIssue(issueName, issues);
+  // const errorInfo = generateErrorName(issueName, issues);
+
+  useEffect(
+    () => {
+      if (!issueName) {
+        setIssueError(issueErrorConfig.noEntry);
+        setDisabled(true);
+      } else if (issues.find((issue) => issue.issueName === issueName)) {
+        setIssueError(issueErrorConfig.existIssue);
+        setDisabled(true);
+      } else {
+        setIssueError(issueErrorConfig.ok);
+        setDisabled(false);
+      }
+    },
+    [ issueName ],
+  );
 
   return (
     <div>
@@ -80,7 +99,7 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate, issues }) 
             onChange={onChangeIssueName}
             required
             error={disabled}
-            helperText={errorInfo}
+            helperText={issueError}
           />
           <FormControl className={classes.select}>
             <InputLabel htmlFor="issue">Priority:</InputLabel>
