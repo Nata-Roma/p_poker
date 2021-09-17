@@ -244,21 +244,23 @@ const socketServer = (httpServer) => {
       }
     });
 
-    socket.on('showResults', async (message) => {
-      const { roomId } = message;
-      const issues = await roomContoller.getGameIssues(roomId);
-      io.in(roomId).emit('showGameResults', issues)
-      socket.on('changeSprintName', (message) => {
-        const { roomId, sprintName } = message;
-        socket.to(roomId).emit('sprintNameChanged', sprintName);
-      });
-
-      socket.on('changeIssuesLobby', message => {
-        const { roomId, issues } = message;
-        io.in(roomId).emit('issuesLobbyChanged', issues);
-      })
+    socket.on('changeSprintName', (message) => {
+      const { roomId, sprintName } = message;
+      socket.to(roomId).emit('sprintNameChanged', sprintName);
     });
 
+    socket.on('changeIssuesLobby', message => {
+      const { roomId, issues } = message;
+      io.in(roomId).emit('issuesLobbyChanged', issues);
+    })
+
+    socket.on('showResults', async (message) => {
+      const { roomId } = message;
+      if(roomContoller.getGameIssues(roomId)) {
+        const issues = roomContoller.getGameIssues(roomId);
+        io.in(roomId).emit('showGameResults', issues)
+      }
+    });
   })
 };
 
