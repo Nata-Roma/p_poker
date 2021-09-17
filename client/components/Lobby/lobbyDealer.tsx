@@ -131,7 +131,7 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users, issues }) => {
       if (isChange) {
         card.cardTurn = true;
       } else {
-        card.cardTurn = true;
+        card.cardTurn = false;
       }
       return {
         ...prev,

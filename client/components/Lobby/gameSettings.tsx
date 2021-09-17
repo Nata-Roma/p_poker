@@ -92,6 +92,7 @@ const GameSettings: FC<GameSettingsProps> = ({
               color="primary"
               value={timer.isTimer ? '' : 'timer'}
               onChange={(e) => onTimerClick(e.target.value)}
+              disabled={isCardChange}
             />
           </Grid>
         </Grid>

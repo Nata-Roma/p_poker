@@ -24,6 +24,13 @@ export const errorInfo = {
   },
 };
 
+export const issueErrorConfig = {
+  ok: 'Correct',
+  noEntry: 'issue name must be at least 1 character',
+  noEntryValidator: 1,
+  existIssue: 'this issue name alreasy exists',
+};
+
 export const userInitData = {
   username: {
     nameData: '',
