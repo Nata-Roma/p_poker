@@ -20,6 +20,7 @@ interface GameDealerProps {
   timer: IGameTimer;
   timeStarted: number;
   onTimerStop: () => void;
+  sprintTitle: string
 }
 
 export const GamePlayer: FC<GameDealerProps> = ({
@@ -29,6 +30,7 @@ export const GamePlayer: FC<GameDealerProps> = ({
   timer,
   timeStarted,
   onTimerStop,
+  sprintTitle
 }) => {
   const classes = useStylesGamePart();
   const router = useRouter();
@@ -76,7 +78,7 @@ export const GamePlayer: FC<GameDealerProps> = ({
   return (
     <>
       <Typography variant="h6" align="center" gutterBottom>
-        Spring: planning (issues: {title && `${title}`})
+        Spring:{' '}{sprintTitle}{' '}planning (issues: {title})
       </Typography>
 
       <Typography variant="subtitle2">Dealer:</Typography>
