@@ -6,18 +6,21 @@ import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'components/Cards/userCard';
 import AppContext from 'store/store';
-import { IUser } from 'utils/interfaces';
+import { IGameIssue, IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
 import { roles } from 'utils/configs';
 import KickPlayerPopup from './popups/kickPlayerPopup';
 import KickPlayerReject from './popups/kickPlayerReject';
 import KickPlayerConfirm from './popups/kickPlayerConfirm';
+import WaitForAuthPopup from './popups/waitForAuthPopup';
 
 export interface LobbyUserProps {
   users: Array<IUser>;
+  sprintName: string;
+  issues: Array<string>
 }
 
-export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
+export const LobbyUser: FC<LobbyUserProps> = ({ users, sprintName, issues }) => {
   const classes = useStylesLobbyPart();
   const { state } = useContext(AppContext);
   const router = useRouter();
@@ -27,6 +30,9 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
   const [ kickOffUser, setKickOffUser ] = useState<IUser>();
   const [ isOpenReject, setIsOpenReject ] = useState(false);
   const [ isOpenConfirm, setIsOpenConfirm ] = useState(false);
+  const [ isGameStarted, setIsGameStarted] = useState(false);
+  const [ isVoting, setIsVoting ] = useState(false);
+  const [ isAutoJoin, setIsAutoJoin ] = useState(false);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveRoom', {
@@ -95,7 +101,7 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
     });
 
     state.socket.on('gameStarted', (message) => {
-      gameStart();     
+      gameStart();
     });
           
     state.socket.emit('getGameData', { 
@@ -111,15 +117,36 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
 
     state.socket.on('gameData', (message) => {
     const { gameData } = message;
-    if(gameData.isStarted && gameData.isAutoJoin) {   
-      gameStart();
-    } if(gameData && gameData.isStarted  && !gameData.isAutoJoin) {    
-      state.socket.on('lateMemberMayJoin', (message) => {     
-          if( state.userId === message) {
-            gameStart();
-          }
-      }); 
+    console.log('game DATA', gameData);
+    if(gameData && gameData.isStarted) {
+      setIsGameStarted(true);
+      setIsVoting(gameData.isVoting);
+      setIsAutoJoin(gameData.isAutoJoin); 
+    // state.socket.emit('isVotingStarted', { roomId: state.roomId });
+
+    // state.socket.on('votingStarted', (message) => {
+    //   console.log('LOBBY IS VOTING', message);
+    //   setIsVoting(message.voting);
+    // });
+
+    state.socket.on('votingIsOver', (message) => {
+      console.log('LOBBY VOTING IS OVER', message);
+      setIsVoting(message);
+    });
+
+
+     
+      if( !gameData.isVoting && gameData.isAutoJoin) {    
+        gameStart();
+      } if(!gameData.isAutoJoin) {    
+        state.socket.on('lateMemberMayJoin', (message) => {     
+            if( state.userId === message) {
+              gameStart();
+            }
+        }); 
+      }
     }
+  
     });
 
     state.socket.on('memberIsDeclined', (message) => {   
@@ -136,19 +163,26 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
       userKickVoting(user);
     });
 
+    
+
     return () => {
       state.socket.off('gameOver', (message) => {
         gameFinish(message);
       });
+
       state.socket.off('gameStarted', (message) => {
         gameStart();
       });
-      state.socket.off('gameData', (message) => {
- 
-      });
+
+      state.socket.off('gameData');
+
       state.socket.off('lateMemberMayJoin');
       
       state.socket.off('memberIsDeclined');
+
+      // state.socket.off('votingStarted');
+
+      // state.socket.off('isVotingStarted');
 
       state.socket.off('noQuorum', (message) => {
         userRemoveRejectPopup();
@@ -159,6 +193,8 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
       });
     };
   }, []);
+
+  
 
   return (
     <Grid
@@ -174,6 +210,9 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
       <Grid item>
         <Typography variant="h4" align="center" gutterBottom>
           Lobby
+        </Typography>
+        <Typography variant="h6" align="center" gutterBottom>
+          Sprint:{' '}{sprintName}{' '}(issues{' '}{issues && issues.join(', ')})
         </Typography>
       </Grid>
       <Grid item className={classes.mBottom}>
@@ -224,6 +263,13 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
         onCloseReject={rejectUserRemove}
         user={kickOffUser}
       />
+      { isGameStarted &&
+        (<WaitForAuthPopup
+          isGameStarted={isGameStarted}
+          isVoting={isVoting}
+          isAutoJoin={isAutoJoin}
+        /> )
+      }
     </Grid>
   );
 };

@@ -18,12 +18,13 @@ interface GameInitProps {
 
 class Game {
   private id: string;
-  private spring: string = '';
+  private sprintName: string = '';
   private issues: Array<IGameIssue> = [];
   private card: IGameCard = null;
   private timer: IGameTimer = null;
   private isAutoJoin: boolean;
   private isStarted: boolean;
+  private isVoting: boolean;
 
   constructor(roomId: string) {
     this.id = roomId;
@@ -52,11 +53,12 @@ class Game {
         this.issues.push(newIssue);
       }
     });
-    this.spring = props.client.spring;
+    this.sprintName = props.client.sprintName;
     this.card = { ...props.client.card };
     this.timer = { ...props.client.timer };
     this.isAutoJoin = props.client.isAutoJoin;
-    this.isStarted = props.client.isStarted; 
+    this.isStarted = props.client.isStarted;
+    this.isVoting = props.client.isVoting;
   };
 
   getGameId = (): string => {
@@ -65,12 +67,13 @@ class Game {
 
   getGameInitData = (): IGameSettings => {
     const gameData = {
-      spring: this.spring,
+      sprintName: this.sprintName,
       timer: { ...this.timer },
       card: { ...this.card },
       issues: this.issues,
       isAutoJoin:  this.isAutoJoin,
       isStarted: this.isStarted,
+      isVoting: this.isVoting,
     };
     return gameData;
   };
@@ -165,6 +168,14 @@ class Game {
   getGameIssues = (): Array<IGameIssue> => {
     return this.issues;
   };
+
+  setVoting = (voting: boolean): void => {
+    this.isVoting = voting;
+  };
+
+  getIsVoting = (): boolean => {
+    return this.isVoting;
+  }
 
   checkVoting = (issueName: string): Array<IGameIssue> | null => {
     const gameIssue = this.issues.find(

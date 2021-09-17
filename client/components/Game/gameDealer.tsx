@@ -19,6 +19,7 @@ import { NewIssueGamePopup } from './Popups/newIssueGame';
 import { ChangeScoreGamePopup } from './Popups/changeScoreGame';
 import { DealerLeavePage } from './Popups/dealerLeavePage';
 import GameResultPopup from './Popups/gameResultsPopup';
+import clsx from 'clsx';
 
 interface GameDealerProps {
   dealer: IUser;
@@ -26,7 +27,7 @@ interface GameDealerProps {
   onIssueClick: (issueName: string) => void;
   activeIssueName: string;
   calculateIssueScore: () => void;
-  springTitle: string;
+  sprintTitle: string;
   onStartVoting: () => void;
   voting: boolean;
   result: boolean;
@@ -41,7 +42,7 @@ export const GameDealer: FC<GameDealerProps> = ({
   onIssueClick,
   activeIssueName,
   calculateIssueScore,
-  springTitle,
+  sprintTitle,
   timer,
   onStartVoting,
   voting,
@@ -59,6 +60,7 @@ export const GameDealer: FC<GameDealerProps> = ({
   const [ lateMember, setLateMember ] = useState<IUser>(null);
   const [ isScoreOpen, setIsScoreOpen ] = useState(false);
   const [ isLeaveOpen, setIsLeaveOpen ] = useState(false);
+  const btnHidden = clsx(timer && timer.isTimer ? classes.btnHidden : classes.mBottom);
 
   const onRoomLeave = () => {
     state.socket.emit('leaveGame', {
@@ -157,8 +159,7 @@ export const GameDealer: FC<GameDealerProps> = ({
   return (
     <div>
       <Typography variant="h6" align="center" gutterBottom>
-        Spring: {springTitle && `${springTitle}`} planning (issues:{' '}
-        {title && `${title}`})
+      Spring:{' '}{sprintTitle}{' '}planning (issues: {title})
       </Typography>
 
       <Typography variant="subtitle2">Dealer:</Typography>
@@ -205,13 +206,14 @@ export const GameDealer: FC<GameDealerProps> = ({
                   </Button>
                 </Box>
               </Grid>
-              <Grid item className={classes.mBottom}>
+              <Grid item className={btnHidden}>
                 <Box boxShadow={2} mr={10}>
                   <Button
                     variant="outlined"
                     className={classes.btn}
                     onClick={calculateIssueScore}
                     disabled={!result}
+                    hidden={timer && timer.isTimer}
                   >
                     Voting results
                   </Button>
@@ -264,7 +266,7 @@ export const GameDealer: FC<GameDealerProps> = ({
         />
       </Grid>
 
-      {requestToJoin &&
+      { !voting && requestToJoin &&
       lateMember && (
         <LateMemberAccess
           requestToJoin={requestToJoin}

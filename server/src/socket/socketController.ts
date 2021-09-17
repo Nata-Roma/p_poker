@@ -14,8 +14,8 @@ const socketServer = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
       origin: 'http://localhost:3000',
-      methods: [ 'GET', 'POST' ],
-      allowedHeaders: [ 'my-custom-header' ],
+      methods: ['GET', 'POST'],
+      allowedHeaders: ['my-custom-header'],
       credentials: true,
     },
   });
@@ -47,7 +47,7 @@ const socketServer = (httpServer) => {
       if (room) {
         const user = roomContoller.getRoomUser(roomId, userId);
         const room = roomContoller.getRoomsInfo();
-        socket.emit('reconnectToLobby', {user, room});
+        socket.emit('reconnectToLobby', { user, room });
       }
     });
 
@@ -117,6 +117,9 @@ const socketServer = (httpServer) => {
 
     socket.on('calcScore', (message: socketRoomIssueInward) => {
       const { roomId, issueName } = message;
+      const voting = false;
+      roomContoller.setVoting(roomId, voting);
+      socket.to(roomId).emit('votingIsOver', voting);
       roomContoller.calculateIssueScore(roomId, issueName);
       const gameIssues = roomContoller.getGameIssues(roomId);
       const timer = roomContoller.getTimer(roomId);
@@ -142,8 +145,10 @@ const socketServer = (httpServer) => {
       socket.to(roomId).emit('userToBeKickedOff', userId);
     });
 
-    socket.on('startVoting', (message: { roomId: string }) => {
-      const { roomId } = message;
+    socket.on('startVoting', (message: { roomId: string; voting: boolean }) => {
+      const { roomId, voting } = message;
+
+      roomContoller.setVoting(roomId, voting);
       const timer = roomContoller.getTimer(roomId);
       if (timer) {
         io
@@ -151,6 +156,11 @@ const socketServer = (httpServer) => {
           .emit('timerStarted', { time: Date.now(), timer, voting: true });
       }
     });
+
+    // socket.on('isVotingStarted', (message: { roomId: string }) => {
+    //   const voting = roomContoller.getIsVoting(message.roomId);
+    //   socket.to(message.roomId).emit('votingStarted',  voting );
+    // });
 
     socket.on('addNewGameIssue', (message: socketRoomNewIssueInward) => {
       const { roomId, newIssue } = message;
@@ -168,19 +178,24 @@ const socketServer = (httpServer) => {
       };
       const gameInitData = roomContoller.getGameInitData(roomId);
       const issues = roomContoller.getGameIssues(roomId);
-      Object.values(issues).map(issue => issue.players = [...issue.players, newPlayer])
+      Object.values(issues).map(
+        (issue) => (issue.players = [...issue.players, newPlayer]),
+      );
+
       // console.log('issues from socket updated game data', issues);
-      const gameData = { ...gameInitData, issues: issues};
+      const gameData = { ...gameInitData, issues: issues };
       console.log('game data updated from socket', gameData);
-      if(gameData && gameData.isStarted && !gameData.isAutoJoin) {
+      if (gameData && gameData.isStarted && !gameData.isAutoJoin) {
         console.log('late mem - game in process and ask to join', user);
         socket.to(roomId).emit('lateMemberAskToJoin', user);
       }
-      io.in(message.roomId).emit('gameData', { gameData: gameData, lateMember: user });
+      io
+        .in(message.roomId)
+        .emit('gameData', { gameData: gameData, lateMember: user });
     });
 
     socket.on('allowLateMemberIntoGame', (message) => {
-      const { roomId, userId } = message;     
+      const { roomId, userId } = message;
       socket.to(roomId).emit('lateMemberMayJoin', userId);
     });
 
@@ -233,8 +248,18 @@ const socketServer = (httpServer) => {
       const { roomId } = message;
       const issues = await roomContoller.getGameIssues(roomId);
       io.in(roomId).emit('showGameResults', issues)
-    })
-  });
+      socket.on('changeSprintName', (message) => {
+        const { roomId, sprintName } = message;
+        socket.to(roomId).emit('sprintNameChanged', sprintName);
+      });
+
+      socket.on('changeIssuesLobby', message => {
+        const { roomId, issues } = message;
+        io.in(roomId).emit('issuesLobbyChanged', issues);
+      })
+    });
+
+  })
 };
 
 export default socketServer;

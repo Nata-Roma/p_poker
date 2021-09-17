@@ -62,16 +62,17 @@ export interface IGameIssue {
 }
 
 export interface IGameSettingsFromClient {
-  spring: string;
+  sprintName: string;
   issues: Array<IIssue>;
   timer: IGameTimer;
   card: IGameCard;
   isAutoJoin: boolean;
   isStarted: boolean;
+  isVoting: boolean;
 }
 
 export interface IGameSettings {
-  spring: string;
+  sprintName: string;
   issues: Array<IGameIssue>;
   timer: IGameTimer;
   card: IGameCard;

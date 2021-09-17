@@ -6,10 +6,10 @@ export const useStylesSettingsGame = makeStyles((theme: Theme) =>
       cursor: 'pointer',
     },
     gameName: {
-      fontSize: '18px',
+      fontSize: '24px',
       alignSelf: 'center',
-      padding: '0 20px',
-      fontWeight: 400
+      padding: '0 5px',
+      fontWeight: 500
     },
     switch: {
       marginLeft:'0'

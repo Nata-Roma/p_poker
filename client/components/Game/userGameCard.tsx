@@ -1,5 +1,4 @@
 import { Typography } from '@material-ui/core';
-import BlockIcon from '@material-ui/icons/Block';
 import useStylesUserGameCard from '@styles/userGameCard.style';
 import clsx from 'clsx';
 import { FC } from 'react';
@@ -14,8 +13,6 @@ interface UserGameCardProps {
 export const UserGameCard: FC<UserGameCardProps> = ({ user, observer, score }) => {
   const classes = useStylesUserGameCard();
   const observerView = clsx(classes.avatar, observer && classes.avatarObserver);
-  const dealerRole = clsx(classes.container, user.dealer && classes.containerDealer);
-  const dealerName = clsx(user.dealer && classes.dealerName);
 
   return (
     <div className={classes.container}>
@@ -33,9 +30,8 @@ export const UserGameCard: FC<UserGameCardProps> = ({ user, observer, score }) =
           </>
         )}
       </div>
-      <div className={dealerName}>
+      <div className={classes.dealerName}>
       <Typography variant="body1">{user.username}{' '}{user.userSurname}</Typography>
-      {/* <BlockIcon fontSize={score ? "medium" : "large"} /> */}
       </div>
     </div>
   );

@@ -7,23 +7,13 @@ import { FC, useState } from 'react';
 import {
   FormControlLabel,
   Grid,
-  makeStyles,
   Switch,
-  Theme,
-  createStyles,
 } from '@material-ui/core';
 import { roles } from 'utils/configs';
 import { CreateAvatar } from './avatar';
 import { DialogInputBlock } from './dialogInputBlock';
 import { IDialogUsers, IRoomCreateData } from 'utils/interfaces';
-
-const useStyleDialog = makeStyles((theme: Theme) =>
-  createStyles({
-    rightPad: {
-      padding: theme.spacing(1, 2),
-    },
-  }),
-);
+import { useStyleDialog } from '@styles/userStartDialog.style';
 
 interface UserDialogProps {
   onDialogClose: () => void;
@@ -61,12 +51,13 @@ export const UserDialog: FC<UserDialogProps> = ({
   return (
     <div>
       <Dialog open={open} onClose={onDialogClose}>
-        <Grid container justifyContent="space-between" alignItems="center">
+        <Grid container className={classes.root} wrap="nowrap">
           <Grid item xl={9}>
             <DialogTitle>Connect to lobby</DialogTitle>
           </Grid>
           <Grid item xl={3} className={classes.rightPad}>
             <FormControlLabel
+              className={classes.label}
               control={
                 <Switch
                   checked={role === roles.observer ? true : false}

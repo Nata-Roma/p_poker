@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -18,6 +18,7 @@ import {
   checkValidateIssue,
   generateErrorName,
 } from 'components/Lobby/lobbyDealerHelpers';
+import { issueErrorConfig } from 'utils/configs';
 
 export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
   onIssueCreate,
@@ -26,9 +27,11 @@ export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
   issues,
 }) => {
   const classes = useStylesCreateIssuePopup();
-  const [ priority, setPriority ] = React.useState('low');
-  const [ issueName, setIssueName ] = React.useState('');
-  const [ issueDescription, setIssueDescription ] = React.useState('');
+  const [ priority, setPriority ] = useState('low');
+  const [ issueName, setIssueName ] = useState('');
+  const [ issueDescription, setIssueDescription ] = useState('');
+  const [ issueError, setIssueError ] = useState<string>('');
+  const [ disabled, setDisabled ] = useState(true);
 
   const onCreateClick = () => {
     onIssueCreate({
@@ -38,32 +41,41 @@ export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
     });
     setIssueName('');
     setIssueDescription('');
+    setDisabled(false);
   };
 
-  const disabled = checkValidateIssue(issueName, issues);
-  const errorInfo = generateErrorName(issueName, issues);
+  useEffect(
+    () => {
+      if (!issueName) {
+        setIssueError(issueErrorConfig.noEntry);
+        setDisabled(true);
+      } else if (issues.find((issue) => issue.issueName === issueName)) {
+        setIssueError(issueErrorConfig.existIssue);
+        setDisabled(true);
+      } else {
+        setIssueError(issueErrorConfig.ok);
+        setDisabled(false);
+      }
+    },
+    [ issueName ],
+  );
+
   return (
     <div>
-      <Dialog
-        open={isOpen}
-        onClose={onAddCloseIssue}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title" style={{ textAlign: 'center' }}>
-          Create Issue
-        </DialogTitle>
+      <Dialog open={isOpen} onClose={onAddCloseIssue}>
+        <DialogTitle style={{ textAlign: 'center' }}>Create Issue</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            id="name"
+            name="issueName"
             label="Issue"
+            type="text"
             fullWidth
             value={issueName}
             onChange={(e) => setIssueName(e.target.value)}
-            required
             error={disabled}
-            helperText={errorInfo}
+            helperText={issueError}
           />
           <FormControl className={classes.select}>
             <InputLabel htmlFor="issue">Priority:</InputLabel>
@@ -83,8 +95,9 @@ export const NewIssueGamePopup: FC<NewIssueGamePopupProps> = ({
           </FormControl>
           <TextField
             margin="dense"
-            id="description"
+            name="issueDescription"
             label="Issue description"
+            type="text"
             fullWidth
             value={issueDescription}
             onChange={(e) => setIssueDescription(e.target.value)}

@@ -54,6 +54,9 @@ const useStylesGamePart = makeStyles((theme: Theme) => ({
     paddingLeft: theme.spacing(1),
     paddingBottom: theme.spacing(2),
   },
+  btnHidden: {
+    display: 'none',
+  }
 }));
 
 export default useStylesGamePart;

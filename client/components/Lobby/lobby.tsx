@@ -14,7 +14,13 @@ import {
   setUserSurname,
 } from 'store/actionCreators';
 import AppContext from 'store/store';
-import { IApiGetLobbyInfo, IChatMessage, IRoomInfo, IUser } from 'utils/interfaces';
+import {
+  IApiGetLobbyInfo,
+  IChatMessage,
+  IGameIssue,
+  IRoomInfo,
+  IUser,
+} from 'utils/interfaces';
 import appStorage from 'utils/storage';
 import { userCreate } from 'utils/userCreate';
 import { LobbyDealer } from './lobbyDealer';
@@ -31,6 +37,8 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   const { state, dispatch } = useContext(AppContext);
   const router = useRouter();
   const { lobby } = router.query;
+  const [ sprintName, setSprintName ] = useState('');
+  const [ issues, setIssues ] = useState<Array<string>>();
 
   const onUserJoinLeave = (users: Array<IUser>) => {
     setUsers(users);
@@ -49,7 +57,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
     state.socket.emit('joinRoom', message);
   };
 
-  const onLobbyReconnect = (message: {user:IUser, room: IRoomInfo}) => {
+  const onLobbyReconnect = (message: { user: IUser; room: IRoomInfo }) => {
     dispatch(setRoom(message.room.roomId, message.room.roomName));
     dispatch(setUserId(message.user.id));
     dispatch(setUsername(message.user.username));
@@ -69,6 +77,15 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       router.push('/');
     }
   };
+
+  const onSprintNameChange = (sprint: string) => {
+    setSprintName(sprint);
+  };
+
+  const onIssuesChange = (issues: Array<IGameIssue>) => {
+    const newIssues = issues.map(issue => issue.issueName);
+    setIssues(newIssues);
+  }
 
   useEffect(() => {
     router.beforePopState(({ url, as }) => {
@@ -115,14 +132,17 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
           roomId: lobby,
           userId: appStorage.getSession(),
         });
-        state.socket.on('reconnectToLobby', (message: {user:IUser, room: IRoomInfo}) => {
-          if (!state.username) {
-            router.push('/404');
-          } else {
-            onLobbyReconnect(message);
-            onLobbyEntrance();
-          }
-        });
+        state.socket.on(
+          'reconnectToLobby',
+          (message: { user: IUser; room: IRoomInfo }) => {
+            if (!state.username) {
+              router.push('/404');
+            } else {
+              onLobbyReconnect(message);
+              onLobbyEntrance();
+            }
+          },
+        );
       } else {
         onLobbyEntrance();
       }
@@ -144,6 +164,14 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
         router.push('/');
       });
 
+      state.socket.on('sprintNameChanged', (message) => {
+        onSprintNameChange(message);
+      });
+
+      state.socket.on('issuesLobbyChanged', (message) => {
+        onIssuesChange(message);
+      });
+
       return () => {
         state.socket.off('userJoined', (message) => {
           onUserJoinLeave(message);
@@ -162,8 +190,18 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
           router.push('/');
         });
 
+        state.socket.off('sprintNameChanged', (message) => {
+          onSprintNameChange(message);
+        });
+
+        state.socket.off('issuesLobbyChanged', (message) => {
+          onIssuesChange(message);
+        });
+
         setUsers([]);
         setChatMessages([]);
+        setSprintName('');
+        setIssues([]);
       };
     }
   }, []);
@@ -173,8 +211,9 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       className={state.dealer ? classes.containerDealer : classes.containerUser}
     >
       <Grid container style={{ height: '100%' }}>
-        {state.dealer && users && <LobbyDealer users={users} />}
-        {!state.dealer && users && <LobbyUser users={users} />}
+        {state.dealer && users && <LobbyDealer users={users} issues={issues} />}
+        {!state.dealer &&
+        users && <LobbyUser users={users} sprintName={sprintName} issues={issues} />}
         <Grid item xs={12} md={3} sm={5} className={classes.chatPartContainer}>
           {chatMessages && <Chat chatMessages={chatMessages} />}
           {!chatMessages && <Chat chatMessages={chatMessages} />}
