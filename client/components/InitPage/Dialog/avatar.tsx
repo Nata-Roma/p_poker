@@ -21,6 +21,21 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     inputPad: {
       padding: theme.spacing(0, 4),
+      [theme.breakpoints.down(600)]: {
+        paddingLeft: '0',
+      },
+    },
+    label: {
+      cursor: 'pointer',
+    },
+    root: {
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      flexDirection: 'row',
+      [theme.breakpoints.down(600)]: {
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+      },
     },
   }),
 );
@@ -48,7 +63,7 @@ export const CreateAvatar: FC<CreateAvatarProps> = ({ loading, addAvatar }) => {
   };
 
   return (
-    <Grid container justifyContent="space-between" alignItems="center">
+    <Grid container className={classes.root} wrap="nowrap">
       <Grid item xl={6}>
         <Avatar className={classes.large}>
           <img src={src} width="100" height="100" />
@@ -56,7 +71,10 @@ export const CreateAvatar: FC<CreateAvatarProps> = ({ loading, addAvatar }) => {
       </Grid>
       <Grid item xl={6} className={classes.inputPad}>
         <FormControl>
-          <InputLabel htmlFor="input-with-icon-adornment">
+          <InputLabel
+            htmlFor="input-with-icon-adornment"
+            className={classes.label}
+          >
             Choose your avatar
           </InputLabel>
           <Input
