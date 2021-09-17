@@ -6,7 +6,7 @@ import useStylesLobbyPart from '@styles/lobbyPart.style';
 import { MemberList } from 'components/Lobby/memberList';
 import { UserCard } from 'components/Cards/userCard';
 import AppContext from 'store/store';
-import { IUser } from 'utils/interfaces';
+import { IGameIssue, IUser } from 'utils/interfaces';
 import { ObserverList } from './observerList';
 import { roles } from 'utils/configs';
 import KickPlayerPopup from './popups/kickPlayerPopup';
@@ -16,9 +16,11 @@ import WaitForAuthPopup from './popups/waitForAuthPopup';
 
 export interface LobbyUserProps {
   users: Array<IUser>;
+  sprintName: string;
+  issues: Array<string>
 }
 
-export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
+export const LobbyUser: FC<LobbyUserProps> = ({ users, sprintName, issues }) => {
   const classes = useStylesLobbyPart();
   const { state } = useContext(AppContext);
   const router = useRouter();
@@ -99,7 +101,7 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
     });
 
     state.socket.on('gameStarted', (message) => {
-      gameStart();     
+      gameStart();
     });
           
     state.socket.emit('getGameData', { 
@@ -208,6 +210,9 @@ export const LobbyUser: FC<LobbyUserProps> = ({ users }) => {
       <Grid item>
         <Typography variant="h4" align="center" gutterBottom>
           Lobby
+        </Typography>
+        <Typography variant="h6" align="center" gutterBottom>
+          Sprint:{' '}{sprintName}{' '}(issues{' '}{issues && issues.join(', ')})
         </Typography>
       </Grid>
       <Grid item className={classes.mBottom}>

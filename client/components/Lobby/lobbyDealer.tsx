@@ -36,9 +36,10 @@ import { DealerLeavePage } from 'components/Game/Popups/dealerLeavePage';
 
 export interface LobbyDealerProps {
   users: Array<IUser>;
+  issues: Array<string>
 }
 
-export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
+export const LobbyDealer: FC<LobbyDealerProps> = ({ users, issues }) => {
   const classes = useStylesLobbyPart();
   const { state } = useContext(AppContext);
   const router = useRouter();
@@ -73,7 +74,11 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
 
   const onIssueCreate = (issue: IssueData) => {
     setGameSettings((prev) => {
-      return issueCreate(prev, issue);
+      const newState = issueCreate(prev, issue);
+      console.log('issues Lobby', newState.issues);
+      
+      state.socket.emit('changeIssuesLobby', { roomId: lobby, issues: newState.issues });
+      return newState;
     });
   };
 
@@ -207,6 +212,13 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
     router.push('/');
   };
 
+  const onSprintNameChange = (sprintName: string) => {
+    state.socket.emit('changeSprintName', {
+      roomId: lobby,
+      sprintName,
+    })
+  }
+
   useEffect(
     () => {
       const dealer = users?.find((user) => user.dealer);
@@ -266,7 +278,7 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users }) => {
           Lobby
         </Typography>
       </Grid>
-      <NameGame />
+      <NameGame onSprintNameChange={onSprintNameChange} issues={issues} />
       <Grid item className={classes.mBottom}>
         <Typography variant="subtitle2">Dealer:</Typography>
         {dealer && (

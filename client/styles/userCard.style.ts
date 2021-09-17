@@ -64,7 +64,7 @@ createStyles({
   },
   dealerName: {
     width: '100%',
-    textAlign: 'center'
+    textAlign: 'left'
   }
 }));
 

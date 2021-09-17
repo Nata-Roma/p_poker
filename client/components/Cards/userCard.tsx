@@ -2,8 +2,9 @@ import { Typography } from '@material-ui/core';
 import BlockIcon from '@material-ui/icons/Block';
 import useStylesUserCard from '@styles/userCard.style';
 import clsx from 'clsx';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { UserCardProps } from 'utils/interfaces';
+import AppContext from 'store/store';
 
 export const UserCard: FC<UserCardProps> = ({
   user,
@@ -12,13 +13,14 @@ export const UserCard: FC<UserCardProps> = ({
   onKickUser,
 }) => {
   const classes = useStylesUserCard();
+  const { state } = useContext(AppContext);
   const observerRole = clsx(classes.avatar, observer && classes.avatarObserver);
   const dealerRole = clsx(
     classes.container,
     user.dealer && classes.containerDealer,
   );
 
-  const dealerName = clsx(user.dealer && classes.dealerName);
+  const dealerName = clsx((state.userId === user.id) && classes.dealerName);
 
   return (
     <div className={dealerRole}>
@@ -38,16 +40,17 @@ export const UserCard: FC<UserCardProps> = ({
       </div>
       <div className={dealerName}>
         <Typography variant="h5" className="">
-          {user.username} {user.userSurname}
+          {user.username}{' '}{user.userSurname}
         </Typography>
       </div>
-      {!user.dealer ? (
+      {(!user.dealer || (!user.dealer && state.userId !== user.id)) ? 
+      state.userId !== user.id ? (
         <BlockIcon
           fontSize={score ? 'medium' : 'large'}
           onClick={() => onKickUser(user)}
           style={{ cursor: 'pointer' }}
         />
-      ) : null}
+      ) : null : null}
     </div>
   );
 };
