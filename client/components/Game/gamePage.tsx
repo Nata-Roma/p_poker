@@ -39,7 +39,7 @@ export const GamePage: FC<GamePageProps> = ({
   const [ cardPot, setCardPot ] = useState('');
   const [ activeCard, setActiveCard ] = useState<string>('');
   const [ dealer, setDealer ] = useState<IUser>();
-  const [ springTitle, setSpringTitle ] = useState('');
+  const [ sprintTitle, setSprintTitle ] = useState('');
   const [ timer, setTimer ] = useState<IGameTimer>();
   const [ voting, setVoting ] = useState(false);
   const [ result, setResult ] = useState(false);
@@ -111,7 +111,7 @@ export const GamePage: FC<GamePageProps> = ({
 
     setGameIssues(gameData.issues);
     setActiveIssueName(gameData.issues[0].issue.issueName);
-    setSpringTitle(gameData.spring);
+    setSprintTitle(gameData.spring);
     if (gameData.timer.isTimer) {
       setTimer(gameData.timer);
     }
@@ -261,7 +261,7 @@ export const GamePage: FC<GamePageProps> = ({
             onIssueClick={onIssueClick}
             activeIssueName={activeIssueName}
             calculateIssueScore={calculateIssueScore}
-            springTitle={springTitle}
+            sprintTitle={sprintTitle}
             timer={timer}
             onStartVoting={onStartVoting}
             voting={voting}
@@ -276,6 +276,7 @@ export const GamePage: FC<GamePageProps> = ({
             dealer={dealer}
             gameIssues={gameIssues}
             activeIssueName={activeIssueName}
+            sprintTitle={sprintTitle}
             timer={timer}
             timeStarted={timeStarted}
             onTimerStop={() => {}}

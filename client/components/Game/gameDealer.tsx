@@ -26,7 +26,7 @@ interface GameDealerProps {
   onIssueClick: (issueName: string) => void;
   activeIssueName: string;
   calculateIssueScore: () => void;
-  springTitle: string;
+  sprintTitle: string;
   onStartVoting: () => void;
   voting: boolean;
   result: boolean;
@@ -41,7 +41,7 @@ export const GameDealer: FC<GameDealerProps> = ({
   onIssueClick,
   activeIssueName,
   calculateIssueScore,
-  springTitle,
+  sprintTitle,
   timer,
   onStartVoting,
   voting,
@@ -100,6 +100,27 @@ export const GameDealer: FC<GameDealerProps> = ({
     onChangeCloseIssue();
   };
 
+  const handleCloseDialog = () => {
+    setRequestToJoin(false);
+    setLateMember(null);
+  };
+
+  const onAllow = () => {
+    state.socket.emit('allowLateMemberIntoGame', {
+      roomId: lobby,
+      userId: lateMember.id,
+    });
+    handleCloseDialog();
+  };
+
+  const onRoomLeaveLateMember = () => {
+    state.socket.emit('declineLateMember', {
+      roomId: lobby,
+      userId: lateMember.id,
+    });
+    handleCloseDialog();
+  };
+
   useEffect(
     () => {
       const newTitle = gameIssues
@@ -129,32 +150,10 @@ export const GameDealer: FC<GameDealerProps> = ({
     };
   }, []);
 
-  const handleCloseDialog = () => {
-    setRequestToJoin(false);
-    setLateMember(null);
-  };
-
-  const onAllow = () => {
-    state.socket.emit('allowLateMemberIntoGame', {
-      roomId: lobby,
-      userId: lateMember.id,
-    });
-    handleCloseDialog();
-  };
-
-  const onRoomLeaveLateMember = () => {
-    state.socket.emit('declineLateMember', {
-      roomId: lobby,
-      userId: lateMember.id,
-    });
-    handleCloseDialog();
-  };
-
   return (
     <div>
       <Typography variant="h6" align="center" gutterBottom>
-        Spring: {springTitle && `${springTitle}`} planning (issues:{' '}
-        {title && `${title}`})
+      Spring:{' '}{sprintTitle}{' '}planning (issues: {title})
       </Typography>
 
       <Typography variant="subtitle2">Dealer:</Typography>
