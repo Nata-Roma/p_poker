@@ -23,7 +23,7 @@ html::-webkit-scrollbar-track:hover {
   background-color: #eee;
 }
 
-.makeStyles-contrainerResultsPopup-1335 .MuiDialog-paperWidthSm {
+div[role="dialog"] {
   max-width: 800px;
-  max-height: 400px;
+  max-height: 500px;
 }

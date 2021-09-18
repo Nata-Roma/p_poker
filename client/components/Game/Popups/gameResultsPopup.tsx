@@ -7,13 +7,9 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 import { Box } from "@material-ui/core";
 import { useStylesGameResultsPopup } from "@styles/gameResultsPopup.style";
-import { IGamePageIssue } from "utils/interfaces";
+import { IGameResultPopupProps } from "utils/interfaces";
 import GameResultTable from "../gameResultTable";
-
-export interface IGameResultPopupProps {
-  onLeaveRoom: () => void;
-  gameIssues: IGamePageIssue[];
-}
+import ExportCSV from "../exportCSV";
 
 const GameResultPopup: FC<IGameResultPopupProps> = ({
   onLeaveRoom,
@@ -24,6 +20,7 @@ const GameResultPopup: FC<IGameResultPopupProps> = ({
 
   const handleClickOpen = async () => {
     setOpen(true);
+    console.log(gameIssues)
   };
 
   const exportFile = () => {
@@ -65,14 +62,7 @@ const GameResultPopup: FC<IGameResultPopupProps> = ({
         <DialogActions className={classes.btnsContainer}>
           <Grid container spacing={2}>
             <Grid item xs={4}>
-              <Button
-                onClick={exportFile}
-                color="primary"
-                variant="contained"
-                fullWidth
-              >
-                Export
-              </Button>
+              <ExportCSV issues={gameIssues}/>
             </Grid>
             <Grid item xs={4}>
               <Button
