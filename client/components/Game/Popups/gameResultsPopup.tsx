@@ -7,7 +7,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 import { Box } from "@material-ui/core";
 import { useStylesGameResultsPopup } from "@styles/gameResultsPopup.style";
-import { IGamePageIssue, IUser } from "utils/interfaces";
+import { IGamePageIssue } from "utils/interfaces";
 import GameResultTable from "../gameResultTable";
 
 export interface IGameResultPopupProps {
@@ -54,6 +54,7 @@ const GameResultPopup: FC<IGameResultPopupProps> = ({
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
+        className={classes.contrainerResultsPopup}
       >
         <DialogTitle id="form-dialog-title" style={{ textAlign: "center" }}>
           Game results
@@ -61,7 +62,7 @@ const GameResultPopup: FC<IGameResultPopupProps> = ({
         <DialogContent>
           <GameResultTable issues={gameIssues} />
         </DialogContent>
-        <DialogActions>
+        <DialogActions className={classes.btnsContainer}>
           <Grid container spacing={2}>
             <Grid item xs={4}>
               <Button

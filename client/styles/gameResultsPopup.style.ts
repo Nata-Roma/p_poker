@@ -6,5 +6,11 @@ export const useStylesGameResultsPopup = makeStyles((theme) => ({
   },
   btnPopup: {
     width: '130px',
+  },
+  contrainerResultsPopup : {
+    width: '100%',
+  },
+  btnsContainer: {
+    marginTop: '20px'
   }
 }));
