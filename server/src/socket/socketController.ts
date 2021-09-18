@@ -253,14 +253,6 @@ const socketServer = (httpServer) => {
       const { roomId, issues } = message;
       io.in(roomId).emit('issuesLobbyChanged', issues);
     })
-
-    socket.on('showResults', async (message) => {
-      const { roomId } = message;
-      if(roomContoller.getGameIssues(roomId)) {
-        const issues = roomContoller.getGameIssues(roomId);
-        io.in(roomId).emit('showGameResults', issues)
-      }
-    });
   })
 };
 

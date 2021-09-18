@@ -175,17 +175,7 @@ export const GameDealer: FC<GameDealerProps> = ({
             )}
           </Grid>
           <Grid item className={classes.mBottom}>
-            {/* <Box boxShadow={2} mr={10}> */}
-              {/* <Button
-                variant="outlined"
-                className={classes.btn}
-                // onClick={() => setIsLeaveOpen(true)}
-                onClick={() => console.log('stop game')}
-              >
-                Stop Game
-              </Button> */}
-              <GameResultPopup onLeaveRoom={onLeaveRoomDealer} roomId={lobby}/>
-            {/* </Box> */}
+              <GameResultPopup onLeaveRoom={onLeaveRoomDealer} gameIssues={gameIssues} />
           </Grid>
           <Grid container item justifyContent="space-between">
             <Grid

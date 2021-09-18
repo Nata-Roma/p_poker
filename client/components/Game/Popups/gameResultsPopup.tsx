@@ -1,6 +1,5 @@
-import React, { ChangeEvent, Dispatch, FC, SetStateAction, useContext, useEffect } from "react";
+import React, { FC } from "react";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -8,32 +7,28 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 import { Box } from "@material-ui/core";
 import { useStylesGameResultsPopup } from "@styles/gameResultsPopup.style";
-import AppContext from "store/store";
-import { IGameIssue } from "utils/interfaces";
+import { IGamePageIssue, IUser } from "utils/interfaces";
+import GameResultTable from "../gameResultTable";
 
 export interface IGameResultPopupProps {
   onLeaveRoom: () => void;
-  roomId: string | string[];
+  gameIssues: IGamePageIssue[];
 }
 
-const GameResultPopup: FC<IGameResultPopupProps> = ({ onLeaveRoom, roomId }) => {
+const GameResultPopup: FC<IGameResultPopupProps> = ({
+  onLeaveRoom,
+  gameIssues,
+}) => {
   const classes = useStylesGameResultsPopup();
   const [open, setOpen] = React.useState(false);
-  const [issues, setIssues] = React.useState<IGameIssue[]>([]);
-  const { state } = useContext(AppContext);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = async () => {
     setOpen(true);
-    console.log('open')
-    state.socket.on('showGameResults', (issues:IGameIssue[] ) => {
-      console.log(issues, 'DATA WITH SCORE!')
-      setIssues(issues);
-    })
-    state.socket.emit('showResults', { roomId })
   };
 
-  const createHandleClose = () => {
+  const exportFile = () => {
     setOpen(false);
+    console.log("export");
   };
 
   const handleClose = () => {
@@ -42,7 +37,7 @@ const GameResultPopup: FC<IGameResultPopupProps> = ({ onLeaveRoom, roomId }) => 
 
   const onLeaveRoomInPopup = () => {
     onLeaveRoom();
-  }
+  };
 
   return (
     <div>
@@ -50,15 +45,11 @@ const GameResultPopup: FC<IGameResultPopupProps> = ({ onLeaveRoom, roomId }) => 
         <Button
           variant="outlined"
           className={classes.btn}
-          // onClick={() => setIsLeaveOpen(true)}
           onClick={handleClickOpen}
         >
           Stop Game
         </Button>
       </Box>
-      {/* <Button color="primary" onClick={handleClickOpen} className={classes.btn}>
-        Stop gmae
-      </Button> */}
       <Dialog
         open={open}
         onClose={handleClose}
@@ -68,13 +59,13 @@ const GameResultPopup: FC<IGameResultPopupProps> = ({ onLeaveRoom, roomId }) => 
           Game results
         </DialogTitle>
         <DialogContent>
-
+          <GameResultTable issues={gameIssues} />
         </DialogContent>
         <DialogActions>
           <Grid container spacing={2}>
             <Grid item xs={4}>
               <Button
-                onClick={createHandleClose}
+                onClick={exportFile}
                 color="primary"
                 variant="contained"
                 fullWidth
@@ -93,14 +84,14 @@ const GameResultPopup: FC<IGameResultPopupProps> = ({ onLeaveRoom, roomId }) => 
               </Button>
             </Grid>
             <Grid item xs={4}>
-              <Button
-                onClick={handleClose}
-                color="primary"
-                variant="outlined"
-                fullWidth
-              >
-                Cancel
-              </Button>
+                <Button
+                  onClick={handleClose}
+                  color="primary"
+                  variant="outlined"
+                  fullWidth
+                >
+                  Cancel
+                </Button>
             </Grid>
           </Grid>
         </DialogActions>
