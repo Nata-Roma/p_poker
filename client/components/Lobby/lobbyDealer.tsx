@@ -55,6 +55,7 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users, issues }) => {
   const [ chosenSeq, setChosenSeq ] = useState<Array<number>>();
   const [ cardPot, setCardPot ] = useState('');
   const [ isLeaveOpen, setIsLeaveOpen ] = useState(false);
+  const [ isCreatingIssue, setIsCreatingIssue ] = useState(false);
 
   const onStartGameClick = async () => {
     console.log(gameSettings);
@@ -291,6 +292,7 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users, issues }) => {
           />
         )}
       </Grid>
+      <Grid container item>
       <Grid
         item
         container
@@ -302,6 +304,7 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users, issues }) => {
           variant="contained"
           className={classes.btn}
           onClick={onStartGameClick}
+          disabled={!gameSettings.issues.length}
         >
           Start Game
         </Button>
@@ -312,6 +315,15 @@ export const LobbyDealer: FC<LobbyDealerProps> = ({ users, issues }) => {
         >
           Cancel Game
         </Button>
+      </Grid>
+      <div className={classes.errorWrapper}>
+      { !gameSettings.issues.length ?
+      <Typography variant="subtitle2" className={classes.error}>
+        To start the game, you need to create at least one issue
+        </Typography>
+        : null
+        }
+      </div>
       </Grid>
       <Grid item container>
         {users && <MemberList users={users} onKickUser={onKickUser} />}
