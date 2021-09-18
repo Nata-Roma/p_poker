@@ -175,3 +175,20 @@ export interface ITimerState {
   minutes: number;
   seconds: number;
 }
+
+export interface IGameResultPopupProps {
+  onLeaveRoom: () => void;
+  gameIssues: IGamePageIssue[];
+}
+
+export interface IExportCSV {
+  issues: IGamePageIssue[];
+}
+
+export interface IIssueResultConverted {
+  IssueName: string;
+  Priority: string;
+  Description: string;
+  Score: number;
+  Ratio: number;
+}
