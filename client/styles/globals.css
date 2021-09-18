@@ -22,3 +22,8 @@ html::-webkit-scrollbar-track {
 html::-webkit-scrollbar-track:hover {
   background-color: #eee;
 }
+
+.makeStyles-contrainerResultsPopup-1335 .MuiDialog-paperWidthSm {
+  max-width: 800px;
+  max-height: 400px;
+}

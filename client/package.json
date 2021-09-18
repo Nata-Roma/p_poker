@@ -9,10 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
+    "@mui/material": "^5.0.0",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
+    "mui-datatables": "^3.7.8",
     "nanoid": "^3.1.25",
     "next": "11.1.0",
     "react": "17.0.2",

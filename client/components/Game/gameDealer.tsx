@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { FC, useEffect, useState, useContext } from 'react';
+import React, { FC, useEffect, useState, useContext } from 'react';
 import { Typography, Grid, Box, Button } from '@material-ui/core';
 import {
   IGameIssue,
@@ -18,6 +18,7 @@ import { Timer } from './Timer/timer';
 import { NewIssueGamePopup } from './Popups/newIssueGame';
 import { ChangeScoreGamePopup } from './Popups/changeScoreGame';
 import { DealerLeavePage } from './Popups/dealerLeavePage';
+import GameResultPopup from './Popups/gameResultsPopup';
 import clsx from 'clsx';
 
 interface GameDealerProps {
@@ -66,6 +67,7 @@ export const GameDealer: FC<GameDealerProps> = ({
       roomId: lobby,
       userId: state.userId,
     });
+    console.log('leave')
   };
 
   const gameFinish = (message: string) => {
@@ -100,27 +102,6 @@ export const GameDealer: FC<GameDealerProps> = ({
     onChangeCloseIssue();
   };
 
-  const handleCloseDialog = () => {
-    setRequestToJoin(false);
-    setLateMember(null);
-  };
-
-  const onAllow = () => {
-    state.socket.emit('allowLateMemberIntoGame', {
-      roomId: lobby,
-      userId: lateMember.id,
-    });
-    handleCloseDialog();
-  };
-
-  const onRoomLeaveLateMember = () => {
-    state.socket.emit('declineLateMember', {
-      roomId: lobby,
-      userId: lateMember.id,
-    });
-    handleCloseDialog();
-  };
-
   useEffect(
     () => {
       const newTitle = gameIssues
@@ -150,6 +131,31 @@ export const GameDealer: FC<GameDealerProps> = ({
     };
   }, []);
 
+  const handleCloseDialog = () => {
+    setRequestToJoin(false);
+    setLateMember(null);
+  };
+
+  const onAllow = () => {
+    state.socket.emit('allowLateMemberIntoGame', {
+      roomId: lobby,
+      userId: lateMember.id,
+    });
+    handleCloseDialog();
+  };
+
+  const onRoomLeaveLateMember = () => {
+    state.socket.emit('declineLateMember', {
+      roomId: lobby,
+      userId: lateMember.id,
+    });
+    handleCloseDialog();
+  };
+
+  const onLeaveRoomDealer = () => {
+    setIsLeaveOpen(true)
+  }
+
   return (
     <div>
       <Typography variant="h6" align="center" gutterBottom>
@@ -169,15 +175,7 @@ export const GameDealer: FC<GameDealerProps> = ({
             )}
           </Grid>
           <Grid item className={classes.mBottom}>
-            <Box boxShadow={2} mr={10}>
-              <Button
-                variant="outlined"
-                className={classes.btn}
-                onClick={() => setIsLeaveOpen(true)}
-              >
-                Stop Game
-              </Button>
-            </Box>
+              <GameResultPopup onLeaveRoom={onLeaveRoomDealer} gameIssues={gameIssues} />
           </Grid>
           <Grid container item justifyContent="space-between">
             <Grid

@@ -14,8 +14,8 @@ const socketServer = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
       origin: 'http://localhost:3000',
-      methods: [ 'GET', 'POST' ],
-      allowedHeaders: [ 'my-custom-header' ],
+      methods: ['GET', 'POST'],
+      allowedHeaders: ['my-custom-header'],
       credentials: true,
     },
   });
@@ -179,8 +179,9 @@ const socketServer = (httpServer) => {
       const gameInitData = roomContoller.getGameInitData(roomId);
       const issues = roomContoller.getGameIssues(roomId);
       Object.values(issues).map(
-        (issue) => (issue.players = [ ...issue.players, newPlayer ]),
+        (issue) => (issue.players = [...issue.players, newPlayer]),
       );
+
       // console.log('issues from socket updated game data', issues);
       const gameData = { ...gameInitData, issues: issues };
       console.log('game data updated from socket', gameData);
@@ -252,7 +253,7 @@ const socketServer = (httpServer) => {
       const { roomId, issues } = message;
       io.in(roomId).emit('issuesLobbyChanged', issues);
     })
-  });
+  })
 };
 
 export default socketServer;
