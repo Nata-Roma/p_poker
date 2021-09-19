@@ -4,6 +4,7 @@ import { Chat } from 'components/Chat/chat';
 import { ErrorPopup } from 'components/Error/errorPopup';
 import { useRouter } from 'next/router';
 import { FC, useContext, useEffect, useState } from 'react';
+import { apiGetLobbyChats, apiGetLobbyUsers } from 'services/apiServices';
 import {
   setDealer,
   setRoom,
@@ -88,6 +89,17 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
     setIssues(newIssues);
   }
 
+  const getLobbyInfo = async () => {
+    const users = await apiGetLobbyUsers(lobby);
+    const chat = await apiGetLobbyChats(lobby);
+    
+    return {
+      users: users.data,
+      chat: chat.data,
+      error: 'no errors'
+    }
+  }
+
   useEffect(() => {
     router.beforePopState(({ url, as }) => {
       console.log('beforePopState');
@@ -102,7 +114,15 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       return true;
     });
 
-    if (lobbyInfo.error === 'no room') {
+    let lobbyInfoClient = null
+
+    getLobbyInfo().then(data => {
+      console.log('Lobby DATA', data);
+      
+      lobbyInfoClient = data;
+    })
+
+    if (lobbyInfo.error === 'no room' || lobbyInfoClient.error === 'no room') {
       <ErrorPopup
         isOpen={true}
         message={'No Room found'}
@@ -110,7 +130,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       />;
       // router.push('/404');
     } else {
-      if (lobbyInfo.error === 'no users') {
+      if (lobbyInfo.error === 'no users' || lobbyInfoClient.error === 'no users') {
         if (!state.dealer) {
           console.log('no users');
           <ErrorPopup
@@ -126,6 +146,13 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       }
       if (lobbyInfo.users) {
         setUsers(lobbyInfo.users);
+      }
+
+      if (lobbyInfoClient.chat.length) {
+        setChatMessages(lobbyInfoClient.chat);
+      }
+      if (lobbyInfoClient.users) {
+        setUsers(lobbyInfoClient.users);
       }
 
       if (!state.username) {
