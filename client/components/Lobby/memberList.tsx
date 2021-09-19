@@ -15,17 +15,20 @@ export const MemberList: FC<MemberListProps> = ({ users, onKickUser }) => {
   const classes = useStylesMemberList();
   const [ isMember, setIsMember ] = useState(false);
 
-  useEffect(() => {
-    console.log('memberList users', users);
-    
-    if (users.length) {
-      setIsMember(
-        users
-          .filter((user) => !user.dealer)
-          .some((user) => user.userRole === roles.member),
-      );
-    }
-  }, [users]);
+  useEffect(
+    () => {
+      console.log('memberList users', users);
+
+      if (users.length) {
+        setIsMember(
+          users
+            .filter((user) => !user.dealer)
+            .some((user) => user.userRole === roles.member),
+        );
+      }
+    },
+    [ users ],
+  );
 
   return (
     <div className={classes.container}>
@@ -35,7 +38,7 @@ export const MemberList: FC<MemberListProps> = ({ users, onKickUser }) => {
         </Typography>
       ) : null}
       <Grid container spacing={2} className={classes.root}>
-        {users && users.length &&
+        {isMember ? (
           users.map(
             (user) =>
               !user.dealer &&
@@ -48,7 +51,8 @@ export const MemberList: FC<MemberListProps> = ({ users, onKickUser }) => {
                   />
                 </Grid>
               ),
-          )}
+          )
+        ) : null}
       </Grid>
     </div>
   );

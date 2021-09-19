@@ -36,6 +36,11 @@ const socketServer = (httpServer) => {
           roomContoller.joinUserToRoom(room.roomId, user);
           const rooms = roomContoller.getRoomsInfo();
           const users = roomContoller.getRoomUsers(room.roomId);
+
+          console.log('user joined ro room');
+          console.log(rooms);
+          console.log(users);
+          
           socket.broadcast.emit('roomList', rooms);
           io.in(room.roomId).emit('userJoined', users);
         }
