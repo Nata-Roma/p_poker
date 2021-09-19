@@ -13,7 +13,8 @@ import roomContoller from '../roomServices/roomController';
 const socketServer = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
-      origin: 'http://localhost:3000',
+      // origin: 'http://localhost:3000',
+      origin: 'https://p-poker.vercel.app',
       methods: ['GET', 'POST'],
       allowedHeaders: ['my-custom-header'],
       credentials: true,
