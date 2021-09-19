@@ -16,6 +16,8 @@ export const MemberList: FC<MemberListProps> = ({ users, onKickUser }) => {
   const [ isMember, setIsMember ] = useState(false);
 
   useEffect(() => {
+    console.log('memberList users', users);
+    
     if (users.length) {
       setIsMember(
         users
