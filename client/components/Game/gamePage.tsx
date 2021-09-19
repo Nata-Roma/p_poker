@@ -231,7 +231,7 @@ export const GamePage: FC<GamePageProps> = ({
         console.log('status users', userData.status);
         console.log('status game', gameData.status);
         
-        if (typeof userData.data === 'string') {
+        if (typeof userData === 'string') {
           setErrorPage(true);
         } else {
           setUsers(userData);
@@ -240,7 +240,7 @@ export const GamePage: FC<GamePageProps> = ({
           console.log('Game users', userData);
           
         }
-        if (typeof gameData.data === 'string') {
+        if (typeof gameData === 'string') {
           setErrorPage(true);
         } else {
           gameInit(gameData);
