@@ -32,6 +32,8 @@ interface HomePageProps {
 // }
 
 const HomePage = ({ rooms }: HomePageProps) => {
+  console.log('Home Page rooms', rooms);
+  
   return (
     <div>
       <InitPage rooms={rooms} />

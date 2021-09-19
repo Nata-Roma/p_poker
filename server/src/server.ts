@@ -58,6 +58,9 @@ app.get('/users/:room', (req, res) => {
 
 app.post('/rooms', (req, res) => {
   const { data } = req.body;
+
+  console.log('ROOMS from server', data);
+  
   roomContoller.createRoom(data);
   res.status(201).json('created');
 });
