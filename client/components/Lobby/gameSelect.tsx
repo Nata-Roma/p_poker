@@ -63,7 +63,7 @@ export const GameSelect: FC<GameSelectProps> = ({
         <MenuItem value="">
           <em>None</em>
         </MenuItem>
-        {options &&
+        {options && options.length &&
           options.map((item) => {
             return (
               <MenuItem value={item} key={item}>

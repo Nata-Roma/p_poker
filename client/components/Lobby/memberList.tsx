@@ -33,7 +33,7 @@ export const MemberList: FC<MemberListProps> = ({ users, onKickUser }) => {
         </Typography>
       ) : null}
       <Grid container spacing={2} className={classes.root}>
-        {users &&
+        {users && users.length &&
           users.map(
             (user) =>
               !user.dealer &&

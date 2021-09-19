@@ -14,7 +14,7 @@ export const ChatMessages: FC<ChatMessagesProps> = ({ messages }) => {
 
   return (
     <>
-      {messages &&
+      {messages && messages.length &&
         messages.map((message) => (
           <Grid item key={nanoid()}>
             <ChatMessage message={message} />

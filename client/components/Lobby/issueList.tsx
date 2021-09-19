@@ -74,7 +74,7 @@ const IssueList: FC<IssueListProps> = ({
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              {issues &&
+              {issues && issues.length &&
                 issues.map((issue) => (
                   <MenuItem value={issue.issueName} key={issue.issueName}>
                     {issue.issueName}
