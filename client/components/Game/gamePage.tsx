@@ -16,6 +16,7 @@ import { ScoreList } from './scoreList';
 import { ObserverList } from './observerList';
 import { GameCard } from 'components/Cards/gameCard';
 import { apiGetLobbyUsers, apiStartGame } from 'services/apiServices';
+import { ErrorPopup } from 'components/Error/errorPopup';
 
 interface GamePageProps {
   gameData: IApiStartGame;
@@ -45,6 +46,7 @@ export const GamePage: FC<GamePageProps> = ({
   const [ voting, setVoting ] = useState(false);
   const [ result, setResult ] = useState(false);
   const [ timeStarted, setTimeStarted ] = useState<number>();
+  const [errorPage, setErrorPage] = useState(false);
 
   const onUserJoinLeave = (users: Array<IUser>) => {
     setUsers(users);
@@ -171,25 +173,67 @@ export const GamePage: FC<GamePageProps> = ({
     setVoting(message.voting)
   };
 
-  const getGameInfo = async () => {
-    const userData = await apiGetLobbyUsers(lobby);
-    const gameData = await apiStartGame(lobby);
+  const gameInit = (gameData: IApiStartGame) => {
+    setGameIssues(gameData.issues);
+    setActiveIssueName(gameData.issues[0].issue.issueName);
+    setSprintTitle(gameData.sprintName);
+    if (gameData.timer.isTimer) {
+      setTimer(gameData.timer);
+    }
 
-    console.log('Start');
-    console.log('user status', userData.status);
-    console.log(userData);
-    
-    console.log('game status', gameData.status);
-    console.log(gameData);
-    
-    if(userData.status === 200 && gameData.status === 200) {
-      if( typeof userData.data === 'string' ) {
-        router.push('/');
-      } else {
-        initData(userData.data, gameData.data)
-      };
+    const seq = gameData.card.sequence;
+    const currentSeq = sequences.find((item) => item.name === seq);
+    if (currentSeq) {
+      setChosenSeq(
+        Array.from(
+          { length: gameData.card.cardNumber },
+          (_, i) => currentSeq.sequence[i],
+        ),
+      );
+    }
+
+    const deck = gameData.card.cardDeck;
+    const currentDeck = cardDecks.find((item) => item.name === deck);
+    if (currentDeck) {
+      setChosenDeck(
+        Array.from(
+          { length: gameData.card.cardNumber },
+          (_, i) => currentDeck.deck[i],
+        ),
+      );
+      setCardPot(currentDeck.deck[currentDeck.deck.length - 1]);
     }
   };
+
+  const onGameInfoRequest = async () => {
+
+    try {
+      const user = await apiGetLobbyUsers(lobby);
+      const userData = await user.data;
+
+      const game = await apiStartGame(lobby);
+      const gameData = await game.data;
+
+      if (userData.status === 200 && gameData.status === 200) {
+        if (typeof userData.data === 'string') {
+          setErrorPage(true);
+        } else {
+          setUsers(userData);
+          const dealer = userData.find((user) => user.dealer);
+          setDealer(dealer);
+        }
+        if (typeof gameData.data === 'string') {
+          setErrorPage(true);
+        } else {
+          gameInit(gameData);
+        }
+      }
+    } catch {
+      setErrorPage(true)
+    }
+
+
+  }
 
 
   useEffect(() => {
@@ -206,12 +250,20 @@ export const GamePage: FC<GamePageProps> = ({
       return true;
     });
 
-    if (errorStatus === 'no users' || errorStatus === 'no room' || !errorStatus) {
-      getGameInfo();
-      // router.push('/');
-    } 
+    // if (errorStatus === 'no users' || errorStatus === 'no room' || !errorStatus) {
+    //   getGameInfo();
+    //   // router.push('/');
+    // } 
     // else {
       // initData(userData, gameData);
+
+      setUsers(userData);
+      const dealer = userData && userData.find((user) => user.dealer);
+      setDealer(dealer);
+      gameInit(gameData);
+  
+      onGameInfoRequest();
+
       state.socket.on('userJoined', (message) => {
         onUserJoinLeave(message);
       });
@@ -352,6 +404,13 @@ export const GamePage: FC<GamePageProps> = ({
         )}
         {users && <ObserverList users={users} />}
       </Grid>
+      {errorPage && (
+        <ErrorPopup
+          isOpen={true}
+          message={'No Room found'}
+          onClosePopup={router.push('/404')}
+        />
+      )}
     </Grid>
   );
 };
