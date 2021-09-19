@@ -20,7 +20,7 @@ import { IDialogUsers, IRoomCreateData, IRoomData, IRoomInfo } from 'utils/inter
 import { UserDialog } from './Dialog/userDialog';
 import pokerImage from '../../public/poker-cards_green.png';
 import appStorage from 'utils/storage';
-import { apiCreateRoom } from 'services/apiServices';
+import { apiCreateRoom, apiGetRooms } from 'services/apiServices';
 
 interface MakeChoiceProps {
   rooms: Array<IRoomInfo>;
@@ -140,6 +140,12 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     setUserData((prev) => ({ ...prev, avatar: data }));
   };
 
+  const getRoomsinfo = async () => {
+    const res = await apiGetRooms();
+    console.log('Rooms from server', res.data);
+    
+  }
+
   useEffect(
     () => {
       if (role === roles.observer) {
@@ -169,8 +175,11 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     // state.socket.disconnect().connect();
 
     state.socket.on('roomList', (message) => {
+      console.log('roomList', message);
+      
       onRoomList(message);
     });
+    
 
     return () => {
       state.socket.off('roomList', (message) => {
