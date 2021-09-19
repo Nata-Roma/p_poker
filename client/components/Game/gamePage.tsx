@@ -135,7 +135,11 @@ export const GamePage: FC<GamePageProps> = ({
   };
 
   const gameInit = (gameData: IApiStartGame) => {
+    console.log('game data', gameData);
+    
     if (gameData && typeof gameData !== 'string') {
+      console.log('issues', gameData.issues);
+      
       setGameIssues(gameData.issues);
       setActiveIssueName(gameData.issues[0].issue.issueName);
       setSprintTitle(gameData.sprintName);
