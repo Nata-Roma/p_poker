@@ -124,7 +124,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       lobbyInfoClient = data;
     })
 
-    if (lobbyInfo.error === 'no room' || lobbyInfoClient.error === 'no room') {
+    if (lobbyInfo.error === 'no room' && lobbyInfoClient.error === 'no room') {
       console.log('no rooms');
       <ErrorPopup
         isOpen={true}
@@ -133,7 +133,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       />;
       // router.push('/404');
     } else {
-      if (lobbyInfo.error === 'no users' || lobbyInfoClient.error === 'no users') {
+      if (lobbyInfo.error === 'no users' && lobbyInfoClient.error === 'no users') {
         console.log('no users');
         console.log('dealer', state.dealer);
         
