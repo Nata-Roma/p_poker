@@ -161,6 +161,9 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     window.onbeforeunload = () => {
       console.log('HHHHHHH');
     };
+
+    getRoomsinfo();
+    
     dispatch(setRoom('', ''));
     dispatch(setUserId(''));
     dispatch(setDealer(false));

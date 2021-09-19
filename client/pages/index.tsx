@@ -44,6 +44,9 @@ const HomePage = ({ rooms }: HomePageProps) => {
 export const getServerSideProps = async () => {
   try {
     const res = await apiGetRooms();
+    console.log('SSR rooms', res.data);
+    
+
     if( res.status === 200) {
       return {
         props: {
