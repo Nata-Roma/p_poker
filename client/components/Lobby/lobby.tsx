@@ -42,6 +42,8 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   const [ issues, setIssues ] = useState<Array<string>>();
 
   const onUserJoinLeave = (users: Array<IUser>) => {
+    console.log('User joined', users);
+    
     setUsers(users);
   };
 
