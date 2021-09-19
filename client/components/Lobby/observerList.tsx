@@ -1,9 +1,9 @@
-import { Grid, Typography } from "@material-ui/core";
-import useStylesMemberList from "@styles/memberList.style";
-import { UserCard } from "components/Cards/userCard";
-import { FC } from "react";
-import { roles } from "utils/configs";
-import { IUser } from "utils/interfaces";
+import { Grid, Typography } from '@material-ui/core';
+import useStylesMemberList from '@styles/memberList.style';
+import { UserCard } from 'components/Cards/userCard';
+import { FC, useEffect, useState } from 'react';
+import { roles } from 'utils/configs';
+import { IUser } from 'utils/interfaces';
 
 export interface ObserverListProps {
   users: Array<IUser>;
@@ -11,13 +11,21 @@ export interface ObserverListProps {
 }
 
 export const ObserverList: FC<ObserverListProps> = ({ users, onKickUser }) => {
-
+  const [ isObserver, setIsObserver ] = useState(false);
   const classes = useStylesMemberList();
-  const isObserver = users.some((user) => user.userRole === roles.observer);
+
+  useEffect(
+    () => {
+      if (users.length) {
+        setIsObserver(users.some((user) => user.userRole === roles.observer));
+      }
+    },
+    [ users ],
+  );
   return (
     <div className={classes.container}>
       {isObserver ? (
-        <Typography variant="h5" gutterBottom className={classes.title}>
+        <Typography variant='h5' gutterBottom className={classes.title}>
           Observers:
         </Typography>
       ) : null}
@@ -28,9 +36,13 @@ export const ObserverList: FC<ObserverListProps> = ({ users, onKickUser }) => {
               !user.dealer &&
               user.userRole === roles.observer && (
                 <Grid item key={user.username}>
-                  <UserCard user={user} observer={true} onKickUser={onKickUser}/>
+                  <UserCard
+                    user={user}
+                    observer={true}
+                    onKickUser={onKickUser}
+                  />
                 </Grid>
-              )
+              ),
           )}
       </Grid>
     </div>
