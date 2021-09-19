@@ -99,11 +99,25 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
     const users = await apiGetLobbyUsers(lobby);
     const chat = await apiGetLobbyChats(lobby);
 
-    return {
-      users: users.data,
-      chat: chat.data,
-      error: 'no errors',
-    };
+    if(users.status === 200 && chat.status === 200) {
+      if( typeof users.data === 'string' ) {
+        return {
+              users: [],
+              chat: [],
+              error: 'no users'
+            }
+      }
+      return {
+            users: users.data,
+            chat: chat.data,
+            error: 'no errors'
+          }
+    }
+    // return {
+    //   users: users.data,
+    //   chat: chat.data,
+    //   error: 'no errors',
+    // };
   };
 
   useEffect(() => {
