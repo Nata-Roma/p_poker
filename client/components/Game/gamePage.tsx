@@ -174,7 +174,6 @@ export const GamePage: FC<GamePageProps> = ({
   };
 
   const gameInit = (gameData: IApiStartGame) => {
-    console.log('Game data', gameData);
     
     if (gameData && typeof gameData !== 'string') {
       setGameIssues(gameData.issues);
@@ -210,35 +209,20 @@ export const GamePage: FC<GamePageProps> = ({
   };
 
   const onGameInfoRequest = async () => {
-    console.log('enter to client server props');
-    
     try {
-      console.log('try');
-      
       const user = await apiGetLobbyUsers(lobby);
       const userData = await user.data;
 
       const game = await apiStartGame(lobby);
       const gameData = await game.data;
 
-      console.log('userData in try', userData);
-
-      console.log('gameData in try', gameData);
-      
-      
-
       if (user.status === 200 && game.status === 200) {
-        console.log('status users', userData.status);
-        console.log('status game', gameData.status);
-        
         if (typeof userData === 'string') {
           setErrorPage(true);
         } else {
           setUsers(userData);
           const dealer = userData.find((user) => user.dealer);
           setDealer(dealer);
-          console.log('Game users', userData);
-          
         }
         if (typeof gameData === 'string') {
           setErrorPage(true);
@@ -247,11 +231,8 @@ export const GamePage: FC<GamePageProps> = ({
         }
       }
     } catch {
-      console.log('mistake on server fetch');
       setErrorPage(true)
     }
-
-
   }
 
 
@@ -268,24 +249,13 @@ export const GamePage: FC<GamePageProps> = ({
       }
       return true;
     });
-
-    // if (errorStatus === 'no users' || errorStatus === 'no room' || !errorStatus) {
-    //   getGameInfo();
-    //   // router.push('/');
-    // } 
-    // else {
-    // initData(userData, gameData);
-
     setUsers(userData);
     if(userData) {
       const dealer = userData && userData.find((user) => user.dealer);
       setDealer(dealer);
     }
-    
     gameInit(gameData);
-    console.log('after props game init' );
     
-
     onGameInfoRequest();
 
     state.socket.on('userJoined', (message) => {
