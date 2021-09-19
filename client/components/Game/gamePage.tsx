@@ -15,6 +15,7 @@ import { GamePlayer } from './gamePlayer';
 import { ScoreList } from './scoreList';
 import { ObserverList } from './observerList';
 import { GameCard } from 'components/Cards/gameCard';
+import { apiGetLobbyUsers, apiStartGame } from 'services/apiServices';
 
 interface GamePageProps {
   gameData: IApiStartGame;
@@ -102,7 +103,7 @@ export const GamePage: FC<GamePageProps> = ({
     
   };
 
-  const initData = async () => {
+  const initData = async (userData:Array<IUser>, gameData: IApiStartGame) => {
     if (userData) {
       setUsers(userData);
     }
@@ -170,6 +171,20 @@ export const GamePage: FC<GamePageProps> = ({
     setVoting(message.voting)
   };
 
+  const getGameInfo = async () => {
+    const userData = await apiGetLobbyUsers(lobby);
+    const gameData = await apiStartGame(lobby);
+
+    if(userData.status === 200 && gameData.status === 200) {
+      if( typeof userData.data === 'string' ) {
+        router.push('/');
+      } else {
+        initData(userData.data, gameData.data)
+      };
+    }
+  };
+
+
   useEffect(() => {
     router.beforePopState(({url, as}) => {
       console.log('beforePopState');
@@ -184,10 +199,12 @@ export const GamePage: FC<GamePageProps> = ({
       return true;
     });
 
-    if (errorStatus === 'no users' || errorStatus === 'no room') {
-      router.push('/');
-    } else {
-      initData();
+    if (errorStatus === 'no users' || errorStatus === 'no room' || !errorStatus) {
+      getGameInfo();
+      // router.push('/');
+    } 
+    // else {
+      // initData(userData, gameData);
       state.socket.on('userJoined', (message) => {
         onUserJoinLeave(message);
       });
@@ -207,7 +224,7 @@ export const GamePage: FC<GamePageProps> = ({
       state.socket.on('activeIssueChanged', (message) => {
         changeActiveIssue(message);
       });
-    }
+    // }
 
     return () => {
       state.socket.off('userJoined', (message) => {

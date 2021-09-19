@@ -43,7 +43,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
 
   const onUserJoinLeave = (users: Array<IUser>) => {
     console.log('User joined', users);
-    
+
     setUsers(users);
   };
 
@@ -65,7 +65,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
 
   const onLobbyReconnect = (message: { user: IUser; room: IRoomInfo }) => {
     console.log('lobby reconnect');
-    
+
     dispatch(setRoom(message.room.roomId, message.room.roomName));
     dispatch(setUserId(message.user.id));
     dispatch(setUsername(message.user.username));
@@ -99,19 +99,19 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
     const users = await apiGetLobbyUsers(lobby);
     const chat = await apiGetLobbyChats(lobby);
 
-    if(users.status === 200 && chat.status === 200) {
-      if( typeof users.data === 'string' ) {
+    if (users.status === 200 && chat.status === 200) {
+      if (typeof users.data === 'string') {
         return {
-              users: [],
-              chat: [],
-              error: 'no users'
-            }
+          users: [],
+          chat: [],
+          error: 'no users',
+        };
       }
       return {
-            users: users.data,
-            chat: chat.data,
-            error: 'no errors'
-          }
+        users: users.data,
+        chat: chat.data,
+        error: 'no errors',
+      };
     }
   };
 
@@ -135,8 +135,10 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       console.log('Lobby DATA', data);
       const lobbyInfoClient = data;
 
-
-      if (lobbyInfo.error === 'no room' && lobbyInfoClient.error === 'no room') {
+      if (
+        lobbyInfo.error === 'no room' &&
+        lobbyInfoClient.error === 'no room'
+      ) {
         console.log('no rooms');
         <ErrorPopup
           isOpen={true}
@@ -151,7 +153,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
         ) {
           console.log('no users');
           console.log('dealer', state.dealer);
-  
+
           if (!state.dealer) {
             <ErrorPopup
               isOpen={true}
@@ -160,21 +162,21 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
             />;
           }
         }
-  
+
         if (lobbyInfo.chat.length) {
           setChatMessages(lobbyInfo.chat);
         }
         if (lobbyInfo.users) {
           setUsers(lobbyInfo.users);
         }
-  
+
         if (lobbyInfoClient.chat.length) {
           setChatMessages(lobbyInfoClient.chat);
         }
         if (lobbyInfoClient.users) {
           setUsers(lobbyInfoClient.users);
         }
-  
+
         if (!state.username) {
           state.socket.emit('userRoomReconnect', {
             roomId: lobby,
@@ -195,10 +197,8 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
           onLobbyEntrance(state.roomId, state.roomName);
         }
       }
-  
     });
 
-    
     state.socket.on('userJoined', (message) => {
       onUserJoinLeave(message);
     });

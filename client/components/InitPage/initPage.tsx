@@ -27,8 +27,6 @@ interface MakeChoiceProps {
 }
 
 export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
-  console.log('Init Page rooms', rooms);
-
   const classes = useStyleHomePage();
   const router = useRouter();
   const [ roomList, setRoomList ] = useState<Array<IRoomInfo>>(rooms);
