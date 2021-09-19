@@ -42,16 +42,11 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   const [issues, setIssues] = useState<Array<string>>();
   const [errorPage, setErrorPage] = useState(false);
 
-
   const onUserJoinLeave = (users: Array<IUser>) => {
-    console.log('User joined', users);
-
     setUsers(users);
   };
 
   const onLobbyEntrance = (roomId: string, roomName: string) => {
-    console.log('create user and join room');
-
     const message = userCreate(
       roomId,
       roomName,
@@ -66,8 +61,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   };
 
   const onLobbyReconnect = (message: { user: IUser; room: IRoomInfo }) => {
-    console.log('lobby reconnect');
-
     dispatch(setRoom(message.room.roomId, message.room.roomName));
     dispatch(setUserId(message.user.id));
     dispatch(setUsername(message.user.username));
@@ -93,9 +86,9 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   };
 
   const onIssuesChange = (issues: Array<IGameIssue>) => {
-    const newIssues = issues.map((issue) => issue.issueName);
+    const newIssues = issues.map(issue => issue.issueName);
     setIssues(newIssues);
-  };
+  }
 
   const onLobbyInfoRequest = async (room: string | Array<string>) => {
     try {
@@ -220,6 +213,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       setSprintName('');
       setIssues([]);
     };
+    // }
   }, []);
 
   return (
@@ -229,14 +223,19 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       <Grid container style={{ height: '100%' }}>
         {state.dealer && users && <LobbyDealer users={users} issues={issues} />}
         {!state.dealer &&
-          users && (
-            <LobbyUser users={users} sprintName={sprintName} issues={issues} />
-          )}
+          users && <LobbyUser users={users} sprintName={sprintName} issues={issues} />}
         <Grid item xs={12} md={3} sm={5} className={classes.chatPartContainer}>
           {chatMessages && <Chat chatMessages={chatMessages} />}
           {!chatMessages && <Chat chatMessages={chatMessages} />}
         </Grid>
       </Grid>
+      {errorPage && (
+        <ErrorPopup
+          isOpen={true}
+          message={'No Room found'}
+          onClosePopup={router.push('/404')}
+        />
+      )}
     </div>
   );
 };

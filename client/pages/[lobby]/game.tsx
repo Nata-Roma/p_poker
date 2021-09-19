@@ -24,7 +24,7 @@ export const getServerSideProps = async (context) => {
         return {
           props: {
             userData: [],
-            gameData: null,
+            gameData: [],
             errorStatus: 'no users'
           }
         }
@@ -39,23 +39,15 @@ export const getServerSideProps = async (context) => {
     }
   } catch {
     return {
-      // notFound: true,
-      // props: {hasError: true}
       // redirect: {
       //   destination: '/404',
       // permanent: false,
       // },
       props: {
         userData: [],
-        gameData: null,
+        gameData: [],
         errorStatus: 'no room'
       },
-
-      // props: {
-      //   userData: [],
-      //   gameData: [],
-      //   errorStatus: 'no room'
-      // }
     }
   }
 };

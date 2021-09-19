@@ -11,16 +11,18 @@ export interface ObserverListProps {
 }
 
 export const ObserverList: FC<ObserverListProps> = ({ users, onKickUser }) => {
-  const [ isObserver, setIsObserver ] = useState(false);
+  const [isObserver, setIsObserver] = useState(false);
   const classes = useStylesMemberList();
 
   useEffect(
     () => {
-      if (users.length) {
-        setIsObserver(users.some((user) => user.userRole === roles.observer));
-      }
+      setIsObserver(
+        users
+          .filter((user) => !user.dealer)
+          .some((user) => user.userRole === roles.observer),
+      );
     },
-    [ users ],
+    [users],
   );
   return (
     <div className={classes.container}>

@@ -13,12 +13,10 @@ interface MemberListProps {
 
 export const MemberList: FC<MemberListProps> = ({ users, onKickUser }) => {
   const classes = useStylesMemberList();
-  const [ isMember, setIsMember ] = useState(false);
+  const [isMember, setIsMember] = useState(false);
 
   useEffect(
     () => {
-      console.log('memberList users', users);
-
       if (users.length) {
         setIsMember(
           users
@@ -27,13 +25,13 @@ export const MemberList: FC<MemberListProps> = ({ users, onKickUser }) => {
         );
       }
     },
-    [ users ],
+    [users],
   );
 
   return (
     <div className={classes.container}>
       {isMember ? (
-        <Typography variant='h5' gutterBottom className={classes.title}>
+        <Typography variant="h5" gutterBottom className={classes.title}>
           Members:
         </Typography>
       ) : null}
@@ -52,7 +50,8 @@ export const MemberList: FC<MemberListProps> = ({ users, onKickUser }) => {
                 </Grid>
               ),
           )
-        ) : null}
+        ) : null
+        }
       </Grid>
     </div>
   );
