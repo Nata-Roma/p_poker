@@ -210,13 +210,22 @@ export const GamePage: FC<GamePageProps> = ({
   };
 
   const onGameInfoRequest = async () => {
-
+    console.log('enter to client server props');
+    
     try {
+      console.log('try');
+      
       const user = await apiGetLobbyUsers(lobby);
       const userData = await user.data;
 
       const game = await apiStartGame(lobby);
       const gameData = await game.data;
+
+      console.log('userData', userData);
+
+      console.log('gameData', gameData);
+      
+      
 
       if (userData.status === 200 && gameData.status === 200) {
         console.log('status users', userData.status);
