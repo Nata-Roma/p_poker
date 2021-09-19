@@ -46,10 +46,10 @@ export const ChangeScoreGamePopup: FC<ChangeScoreGamePopupProps> = ({
             Amend Issue Score
           </DialogTitle>
           <Typography variant="h6" color="primary">
-            Issue name: {issue.issue.issueName}
+            Issue name: {issue && issue.issue.issueName}
           </Typography>
           <Typography variant="h6" color="primary">
-            Current issue score: {issue.totalScore}
+            Current issue score: {issue && issue.totalScore}
           </Typography>
           <DialogContent className={classes.marginBtm}>
             <TextField
