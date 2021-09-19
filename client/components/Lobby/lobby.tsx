@@ -46,6 +46,8 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   };
 
   const onLobbyEntrance = (roomId: string, roomName: string) => {
+    console.log('create user and join room');
+    
     const message = userCreate(
       roomId,
       roomName,
@@ -123,6 +125,7 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
     })
 
     if (lobbyInfo.error === 'no room' || lobbyInfoClient.error === 'no room') {
+      console.log('no rooms');
       <ErrorPopup
         isOpen={true}
         message={'No Room found'}
@@ -131,8 +134,11 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       // router.push('/404');
     } else {
       if (lobbyInfo.error === 'no users' || lobbyInfoClient.error === 'no users') {
+        console.log('no users');
+        console.log('dealer', state.dealer);
+        
         if (!state.dealer) {
-          console.log('no users');
+          
           <ErrorPopup
             isOpen={true}
             message={'No Room found'}
