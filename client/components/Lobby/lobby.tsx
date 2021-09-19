@@ -113,11 +113,6 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
             error: 'no errors'
           }
     }
-    // return {
-    //   users: users.data,
-    //   chat: chat.data,
-    //   error: 'no errors',
-    // };
   };
 
   useEffect(() => {

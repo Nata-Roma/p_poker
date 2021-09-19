@@ -143,7 +143,11 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   const getRoomsinfo = async () => {
     const res = await apiGetRooms();
     console.log('Rooms from server', res.data);
-    
+    if( res.status === 200) {
+      setRoomList(res.data);
+    } else {
+      setRoomList([]);
+    }
   }
 
   useEffect(
@@ -162,7 +166,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       console.log('HHHHHHH');
     };
 
-    getRoomsinfo();
+    
     
     dispatch(setRoom('', ''));
     dispatch(setUserId(''));
@@ -176,10 +180,8 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       state.socket.auth.userId = session;
     }
     // state.socket.disconnect().connect();
-
+    getRoomsinfo();
     state.socket.on('roomList', (message) => {
-      console.log('roomList', message);
-      
       onRoomList(message);
     });
     
