@@ -174,6 +174,8 @@ export const GamePage: FC<GamePageProps> = ({
   };
 
   const gameInit = (gameData: IApiStartGame) => {
+    console.log('Game data', gameData);
+    
     if (gameData && typeof gameData !== 'string') {
       setGameIssues(gameData.issues);
       setActiveIssueName(gameData.issues[0].issue.issueName);
@@ -223,6 +225,8 @@ export const GamePage: FC<GamePageProps> = ({
           setUsers(userData);
           const dealer = userData.find((user) => user.dealer);
           setDealer(dealer);
+          console.log('Game users', userData);
+          
         }
         if (typeof gameData.data === 'string') {
           setErrorPage(true);
