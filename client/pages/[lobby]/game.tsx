@@ -41,10 +41,10 @@ export const getServerSideProps = async (context) => {
     return {
       // notFound: true,
       // props: {hasError: true}
-      redirect: {
-        destination: '/404',
-      permanent: false,
-      },
+      // redirect: {
+      //   destination: '/404',
+      // permanent: false,
+      // },
       props:{},
 
       // props: {

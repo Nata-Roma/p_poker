@@ -35,14 +35,11 @@ app.get('/rooms', (req, res) => {
 
 app.get('/chats/:room', (req, res) => {
   const room = req.params.room;
-  console.log('ROOM request for chat', room);
   const chat = roomContoller.getRoomChat(room);
   return res.status(200).json(chat);
 });
 
 app.get('/users/:room', (req, res) => {
-  console.log('USERS request');
-
   const roomId = req.params.room;
   const room = roomContoller.getRoomId(roomId);
   if (room) {
@@ -68,9 +65,15 @@ app.post('/rooms', (req, res) => {
 app.get('/gamestart/:room', (req, res) => {
   const roomId = req.params.room;
   const room = roomContoller.getRoomId(roomId);
+  console.log('GAME start in room: ', roomId);
+  
   if (room) {
     const gameInitData = roomContoller.getGameInitData(room);
+    console.log('Game entering to room', room);
+    
     if (gameInitData) {
+      console.log('gameInitData', gameInitData);
+      
       res.status(200).json(gameInitData);
     } else res.status(200).json('No gameInitData');
   } else res.status(404).json('No room found');

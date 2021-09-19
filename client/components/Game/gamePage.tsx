@@ -175,6 +175,13 @@ export const GamePage: FC<GamePageProps> = ({
     const userData = await apiGetLobbyUsers(lobby);
     const gameData = await apiStartGame(lobby);
 
+    console.log('Start');
+    console.log('user status', userData.status);
+    console.log(userData);
+    
+    console.log('game status', gameData.status);
+    console.log(gameData);
+    
     if(userData.status === 200 && gameData.status === 200) {
       if( typeof userData.data === 'string' ) {
         router.push('/');
