@@ -62,6 +62,8 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
   };
 
   const onLobbyReconnect = (message: { user: IUser; room: IRoomInfo }) => {
+    console.log('lobby reconnect');
+    
     dispatch(setRoom(message.room.roomId, message.room.roomName));
     dispatch(setUserId(message.user.id));
     dispatch(setUsername(message.user.username));

@@ -13,7 +13,7 @@ interface MemberListProps {
 
 export const MemberList: FC<MemberListProps> = ({ users, onKickUser }) => {
   const classes = useStylesMemberList();
-  const isMember = users
+  const isMember = users && users
     .filter((user) => !user.dealer)
     .some((user) => user.userRole === roles.member);
 
