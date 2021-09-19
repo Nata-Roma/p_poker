@@ -34,8 +34,6 @@ export const apiGetRooms = async () => {
     method: 'GET',
     url: `${BASE_URL}/rooms`,
   });
-
-  console.log('ROOMS from server', rooms);
   
   return rooms;
 };

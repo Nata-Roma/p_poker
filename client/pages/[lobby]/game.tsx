@@ -9,7 +9,7 @@ interface GameProps {
   errorStatus: string
 }
 
-const Game: FC<GameProps> = ({gameData, userData, errorStatus}) => {
+const Game: FC<GameProps> = ({ gameData, userData, errorStatus }) => {
   return <GamePage gameData={gameData} userData={userData} errorStatus={errorStatus} />;
 };
 
@@ -19,12 +19,12 @@ export const getServerSideProps = async (context) => {
   try {
     const userData = await apiGetLobbyUsers(lobby);
     const gameData = await apiStartGame(lobby);
-    if(userData.status === 200 && gameData.status === 200) {
-      if( typeof userData.data === 'string' ) {
+    if (userData.status === 200 && gameData.status === 200) {
+      if (typeof userData.data === 'string') {
         return {
           props: {
             userData: [],
-            gameData: [],
+            gameData: null,
             errorStatus: 'no users'
           }
         }
@@ -45,7 +45,11 @@ export const getServerSideProps = async (context) => {
       //   destination: '/404',
       // permanent: false,
       // },
-      props:{},
+      props: {
+        userData: [],
+        gameData: null,
+        errorStatus: 'no room'
+      },
 
       // props: {
       //   userData: [],

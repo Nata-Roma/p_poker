@@ -29,10 +29,10 @@ interface MakeChoiceProps {
 export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
   const classes = useStyleHomePage();
   const router = useRouter();
-  const [ roomList, setRoomList ] = useState<Array<IRoomInfo>>(rooms);
-  const [ openCreate, setOpenCreate ] = useState(false);
-  const [ openConnect, setOpenConnect ] = useState(false);
-  const [ userData, setUserData ] = useState({
+  const [roomList, setRoomList] = useState<Array<IRoomInfo>>(rooms);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openConnect, setOpenConnect] = useState(false);
+  const [userData, setUserData] = useState({
     ...userInitData,
     username: {
       ...userInitData.username,
@@ -41,9 +41,9 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       ...userInitData.userSurname,
     },
   });
-  const [ role, setRole ] = useState(roles.member);
-  const [ roomInfo, setRoomInfo ] = useState<IRoomCreateData>(roomInitData);
-  const [ loading, setLoading ] = useState(false);
+  const [role, setRole] = useState(roles.member);
+  const [roomInfo, setRoomInfo] = useState<IRoomCreateData>(roomInitData);
+  const [loading, setLoading] = useState(false);
   const { state, dispatch } = useContext(AppContext);
 
   const onRoomList = (rooms: Array<IRoomInfo>) => {
@@ -69,7 +69,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       roomInfo.statusData
     ) {
       const id = nanoid();
-      setRoomInfo((prev) => ({...prev, room: { ...prev.room, roomId: id}}))
+      setRoomInfo((prev) => ({ ...prev, room: { ...prev.room, roomId: id } }))
       dispatch(setRoom(id, roomInfo.room.roomName));
 
       const config = {
@@ -142,8 +142,8 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     try {
       const res = await apiGetRooms();
       const data = await res.data;
-      if( res.status === 200) {
-        if(typeof data === 'string') {
+      if (res.status === 200) {
+        if (typeof data === 'string') {
           setRoomList([]);
         } else {
           setRoomList(data);
@@ -162,7 +162,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
         dispatch(setUserRole(role));
       }
     },
-    [ role ],
+    [role],
   );
 
   useEffect(() => {
@@ -181,13 +181,11 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       const session = appStorage.getSession();
       state.socket.auth.userId = session;
     }
-    // state.socket.disconnect().connect();
     onRoomRequest();
-    
+
     state.socket.on('roomList', (message) => {
       onRoomList(message);
     });
-    
 
     return () => {
       state.socket.off('roomList', (message) => {
