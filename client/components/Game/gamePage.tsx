@@ -238,6 +238,7 @@ export const GamePage: FC<GamePageProps> = ({
         }
       }
     } catch {
+      console.log('mistake on server fetch');
       setErrorPage(true)
     }
 
@@ -267,9 +268,14 @@ export const GamePage: FC<GamePageProps> = ({
     // initData(userData, gameData);
 
     setUsers(userData);
-    const dealer = userData && userData.find((user) => user.dealer);
-    setDealer(dealer);
+    if(userData) {
+      const dealer = userData && userData.find((user) => user.dealer);
+      setDealer(dealer);
+    }
+    
     gameInit(gameData);
+    console.log('after props game init' );
+    
 
     onGameInfoRequest();
 
