@@ -30,7 +30,7 @@ export const ObserverList: FC<ObserverListProps> = ({ users, onKickUser }) => {
         </Typography>
       ) : null}
       <Grid container spacing={2} className={classes.root}>
-        {users && users.length &&
+        {isObserver ? (
           users.map(
             (user) =>
               !user.dealer &&
@@ -43,7 +43,8 @@ export const ObserverList: FC<ObserverListProps> = ({ users, onKickUser }) => {
                   />
                 </Grid>
               ),
-          )}
+          )
+        ) : null}
       </Grid>
     </div>
   );
