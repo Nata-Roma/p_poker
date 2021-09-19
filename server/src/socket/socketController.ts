@@ -36,11 +36,6 @@ const socketServer = (httpServer) => {
           roomContoller.joinUserToRoom(room.roomId, user);
           const rooms = roomContoller.getRoomsInfo();
           const users = roomContoller.getRoomUsers(room.roomId);
-
-          console.log('user joined ro room');
-          console.log(rooms);
-          console.log(users);
-          
           socket.broadcast.emit('roomList', rooms);
           io.in(room.roomId).emit('userJoined', users);
         }
@@ -86,6 +81,8 @@ const socketServer = (httpServer) => {
     });
 
     socket.on('startGame', (message: { roomId: string }) => {
+      console.log('start game socket');
+      
       socket.to(message.roomId).emit('gameStarted');
     });
 

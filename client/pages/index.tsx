@@ -17,7 +17,16 @@ const HomePage = ({ rooms }: HomePageProps) => {
 export const getServerSideProps = async () => {
   try {
     const res = await apiGetRooms();
-    if( res.status === 200) {
+    const data = await res.data;
+
+    if (res.status === 200) {
+      if (typeof data === 'string') {
+        return {
+          props: {
+            rooms: []
+          }
+        }
+      }
       return {
         props: {
           rooms: res.data
@@ -25,12 +34,12 @@ export const getServerSideProps = async () => {
       }
     }
   } catch {
-      return {
-        props: {
-          rooms: []
-        }
+    return {
+      props: {
+        rooms: []
       }
     }
+  }
 };
 
 export default HomePage;

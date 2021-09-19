@@ -138,15 +138,21 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     setUserData((prev) => ({ ...prev, avatar: data }));
   };
 
-  const getRoomsinfo = async () => {
-    const res = await apiGetRooms();
-    console.log('Rooms from server', res.data);
-    if( res.status === 200) {
-      setRoomList(res.data);
-    } else {
+  const onRoomRequest = async () => {
+    try {
+      const res = await apiGetRooms();
+      const data = await res.data;
+      if( res.status === 200) {
+        if(typeof data === 'string') {
+          setRoomList([]);
+        } else {
+          setRoomList(data);
+        }
+      }
+    } catch {
       setRoomList([]);
     }
-  }
+  };
 
   useEffect(
     () => {
@@ -164,8 +170,6 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       console.log('HHHHHHH');
     };
 
-    
-    
     dispatch(setRoom('', ''));
     dispatch(setUserId(''));
     dispatch(setDealer(false));
@@ -178,7 +182,8 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       state.socket.auth.userId = session;
     }
     // state.socket.disconnect().connect();
-    getRoomsinfo();
+    onRoomRequest();
+    
     state.socket.on('roomList', (message) => {
       onRoomList(message);
     });
