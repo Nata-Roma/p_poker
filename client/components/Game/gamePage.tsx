@@ -221,13 +221,13 @@ export const GamePage: FC<GamePageProps> = ({
       const game = await apiStartGame(lobby);
       const gameData = await game.data;
 
-      console.log('userData', userData);
+      console.log('userData in try', userData);
 
-      console.log('gameData', gameData);
+      console.log('gameData in try', gameData);
       
       
 
-      if (userData.status === 200 && gameData.status === 200) {
+      if (user.status === 200 && game.status === 200) {
         console.log('status users', userData.status);
         console.log('status game', gameData.status);
         
