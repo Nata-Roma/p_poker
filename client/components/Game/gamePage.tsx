@@ -219,6 +219,9 @@ export const GamePage: FC<GamePageProps> = ({
       const gameData = await game.data;
 
       if (userData.status === 200 && gameData.status === 200) {
+        console.log('status users', userData.status);
+        console.log('status game', gameData.status);
+        
         if (typeof userData.data === 'string') {
           setErrorPage(true);
         } else {
