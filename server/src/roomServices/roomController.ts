@@ -9,6 +9,7 @@ import {
   IGameTimer,
   IKickUserVotes,
   IRoomInfo,
+  IGameStatus,
 } from '../models/interfaces';
 import Room from '../models/roomModel';
 
@@ -24,6 +25,13 @@ class Rooms {
 
   getRooms = (): Array<Room> => {
     return this.rooms;
+  };
+
+  getRoom = (roomId: string): IRoomInfo => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      return room.getRoom();
+    }
   };
 
   getRoomIds = (): Array<string> => {
@@ -216,6 +224,20 @@ class Rooms {
     const room = this.rooms.find((room) => room.getRoomId() === roomId);
     if (room) {
       return room.getKickUserVotesStatus();
+    }
+  };
+
+  getGameStatus = (roomId: string): IGameStatus => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      return room.getGameStatus();
+    }
+  };
+
+  addLatePlayer = (roomId: string, player: string): void => {
+    const room = this.rooms.find((room) => room.getRoomId() === roomId);
+    if (room) {
+      room.addLatePlayer(player);
     }
   };
 }

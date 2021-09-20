@@ -55,9 +55,6 @@ app.get('/users/:room', (req, res) => {
 
 app.post('/rooms', (req, res) => {
   const { data } = req.body;
-
-  console.log('ROOMS from server', data);
-  
   roomContoller.createRoom(data);
   res.status(201).json('created');
 });
@@ -65,15 +62,9 @@ app.post('/rooms', (req, res) => {
 app.get('/gamestart/:room', (req, res) => {
   const roomId = req.params.room;
   const room = roomContoller.getRoomId(roomId);
-  console.log('GAME start in room: ', roomId);
-  
   if (room) {
     const gameInitData = roomContoller.getGameInitData(room);
-    console.log('Game entering to room', room);
-    
     if (gameInitData) {
-      console.log('gameInitData', gameInitData);
-      
       res.status(200).json(gameInitData);
     } else res.status(200).json('No gameInitData');
   } else res.status(404).json('No room found');
@@ -81,7 +72,6 @@ app.get('/gamestart/:room', (req, res) => {
 
 app.post('/gamestart/:room', (req, res) => {
   const room = req.params.room;
-  console.log('START');
   roomContoller.gameInit(room, req.body);
   res.status(201).json('created');
 });
