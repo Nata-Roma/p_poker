@@ -15,7 +15,7 @@ const socketServer = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
       // origin: 'http://localhost:3000',
-      origin: 'https://p-poker.vercel.app/',
+      origin: 'https://p-poker.vercel.app',
       methods: ['GET', 'POST'],
       allowedHeaders: ['my-custom-header'],
       credentials: true,
@@ -82,7 +82,7 @@ const socketServer = (httpServer) => {
     });
 
     socket.on('startGame', (message: { roomId: string }) => {
-      socket.to(message.roomId).emit('gameStarted');
+      io.in(message.roomId).emit('gameStarted');
     });
 
     socket.on('gameCardChoice', (message: socketRoomPlayerChoiceInward) => {
