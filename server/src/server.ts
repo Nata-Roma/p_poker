@@ -3,13 +3,16 @@ import { createServer } from 'http';
 import cors from 'cors';
 import socketServer from './socket/socketController';
 import roomContoller from './roomServices/roomController';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
 app.use(cors());
 
 socketServer(httpServer);
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 
@@ -47,7 +50,6 @@ app.get('/users/:room', (req, res) => {
     if (users.length) {
       res.status(200).json(users);
     } else {
-      console.log('EMPTY ROOM');
       res.status(200).json('No users found');
     }
   } else res.status(404).json('No room found');
@@ -77,5 +79,5 @@ app.post('/gamestart/:room', (req, res) => {
 });
 
 httpServer.listen(PORT, () => {
-  console.log(`Server running on port http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

@@ -10,7 +10,7 @@ export const issueCreate = (
   state: IGameSettings,
   issue: IssueData,
 ): IGameSettings => {
-  const issues = [ ...state.issues ];
+  const issues = [...state.issues];
   issues.push({
     issueName: issue.issueName,
     priority: issue.priority,
@@ -82,9 +82,6 @@ export const timeChange = (
   }
 
   if (dimension === 'seconds') {
-    console.log(timeToMinutes(timer.time).toString());
-    console.log(secondsToTime(timerData));
-
     newTime =
       minutesToTime(timeToMinutes(timer.time).toString()) +
       secondsToTime(timerData);

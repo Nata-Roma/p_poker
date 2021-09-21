@@ -23,7 +23,6 @@ const NameGame: FC<NameGameProps> = ({ onSprintNameChange, issues }) => {
   };
 
   const onChangeConfirm = () => {
-    console.log('sprintName', sprintName);
     onSprintNameChange(sprintName);
     deactivateEditMode();
   };
