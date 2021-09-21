@@ -14,8 +14,7 @@ import roomContoller from '../roomServices/roomController';
 const socketServer = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
-      // origin: 'http://localhost:3000',
-      origin: 'https://p-poker.vercel.app',
+      origin: 'http://localhost:3000',
       methods: ['GET', 'POST'],
       allowedHeaders: ['my-custom-header'],
       credentials: true,
@@ -72,6 +71,7 @@ const socketServer = (httpServer) => {
           roomContoller.gameOver(roomId);
           io.in(roomId).emit('gameOver', 'The end');
         } else {
+          roomContoller.playerLeave(roomId, userId);
           roomContoller.leaveUserFromRoom(roomId, userId);
           users = roomContoller.getRoomUsers(roomId);
           socket.to(roomId).emit('userLeft', users);
@@ -200,7 +200,6 @@ const socketServer = (httpServer) => {
           socket.emit('joinToLobby', { room, userId });
         }
       }
-
     });
 
     socket.on('allowLatePlayerIntoGame', (message) => {

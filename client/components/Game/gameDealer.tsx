@@ -59,10 +59,12 @@ export const GameDealer: FC<GameDealerProps> = ({
   const [title, setTitle] = useState<string>();
   const [isOpen, setIsOpen] = useState(false);
   const [requestToJoin, setRequestToJoin] = useState(false);
+  const [lateMembers, setLateMembers] = useState<Array<ILatePlayer>>([]);
   const [lateMember, setLateMember] = useState<ILatePlayer>(null);
   const [isScoreOpen, setIsScoreOpen] = useState(false);
   const [isLeaveOpen, setIsLeaveOpen] = useState(false);
   const [autoJoin, setAutoJoin] = useState(false);
+  const [joined, setJoined] = useState(true);
 
   const btnHidden = clsx(
     timer && timer.isTimer ? classes.btnHidden : classes.mBottom,
@@ -109,24 +111,39 @@ export const GameDealer: FC<GameDealerProps> = ({
 
   const handleCloseDialog = () => {
     setRequestToJoin(false);
+    setLateMembers([]);
     setLateMember(null);
     setAutoJoin(false);
+    setJoined(true);
   };
 
-  const onAllow = () => {
+  const onAllow = (user: ILatePlayer) => {
     state.socket.emit('allowLatePlayerIntoGame', {
       roomId: lobby,
-      user: lateMember,
+      user,
     });
-    handleCloseDialog();
   };
 
-  const onRoomLeaveLateMember = () => {
+  const onAllowConfirm = (user: ILatePlayer) => {
+    state.socket.emit('allowLatePlayerIntoGame', {
+      roomId: lobby,
+      user,
+    });
+    setJoined(true);
+    setLateMembers((prev) =>
+      prev.filter((member) => member.userId !== user.userId),
+    );
+  };
+
+  const onRoomLeaveLateMember = (user: ILatePlayer) => {
     state.socket.emit('declineLateMember', {
       roomId: lobby,
-      userId: lateMember.userId,
+      userId: user.userId,
     });
-    handleCloseDialog();
+    setJoined(true);
+    setLateMembers((prev) =>
+      prev.filter((member) => member.userId !== user.userId),
+    );
   };
 
   const onLeaveRoomDealer = () => {
@@ -134,30 +151,51 @@ export const GameDealer: FC<GameDealerProps> = ({
   };
 
   const lateMemberToJoin = (data: ILatePlayerToJoin) => {
-    setLateMember({
-      userId: data.userId,
-      username: data.username,
-      userSurname: data.userSurname,
-      userRole: data.userRole,
+    setLateMembers((prev) => {
+      const newLatePlayer = {
+        userId: data.userId,
+        username: data.username,
+        userSurname: data.userSurname,
+        userRole: data.userRole,
+      };
+      return [...prev, newLatePlayer];
     });
     setRequestToJoin(true);
   };
 
   const lateMemberAutoJoin = (data: ILatePlayerToJoin) => {
-    setLateMember({
-      userId: data.userId,
-      username: data.username,
-      userSurname: data.userSurname,
-      userRole: data.userRole,
+    setLateMembers((prev) => {
+      const newLatePlayer = {
+        userId: data.userId,
+        username: data.username,
+        userSurname: data.userSurname,
+        userRole: data.userRole,
+      };
+      return [...prev, newLatePlayer];
     });
     setAutoJoin(true);
   };
 
   useEffect(() => {
-    if (!voting && lateMember && autoJoin) {
-      onAllow();
+    if (!voting && lateMembers && lateMembers.length && autoJoin) {
+      lateMembers.forEach((member) => onAllow(member));
+      handleCloseDialog();
     }
-  }, [lateMember, autoJoin, voting]);
+  }, [lateMembers, autoJoin, voting]);
+
+  useEffect(() => {
+    console.log('voiting', voting);
+    console.log('requestToJoin', requestToJoin);
+    console.log('lateMembers.length', lateMembers.length);
+    console.log('joined', joined);
+
+    if (!voting && requestToJoin) {
+      if (lateMembers.length && joined) {
+        setJoined(false);
+        setLateMember(lateMembers[lateMembers.length - 1]);
+      } else if (!lateMembers.length) handleCloseDialog();
+    }
+  }, [requestToJoin, voting, joined]);
 
   useEffect(() => {
     const newTitle = gameIssues.map((item) => item.issue.issueName).join(', ');
@@ -192,7 +230,6 @@ export const GameDealer: FC<GameDealerProps> = ({
     };
   }, []);
 
-  
   return (
     <div>
       <Typography variant='h6' align='center' gutterBottom>
@@ -299,7 +336,7 @@ export const GameDealer: FC<GameDealerProps> = ({
         <LateMemberAccess
           requestToJoin={requestToJoin}
           lateMember={lateMember}
-          onAllow={onAllow}
+          onAllow={onAllowConfirm}
           onRoomLeaveLateMember={onRoomLeaveLateMember}
           classBtn={classes.btn}
         />
