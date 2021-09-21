@@ -62,6 +62,8 @@ export const GameDealer: FC<GameDealerProps> = ({
   const [lateMember, setLateMember] = useState<ILatePlayer>(null);
   const [isScoreOpen, setIsScoreOpen] = useState(false);
   const [isLeaveOpen, setIsLeaveOpen] = useState(false);
+  const [autoJoin, setAutoJoin] = useState(false);
+
   const btnHidden = clsx(
     timer && timer.isTimer ? classes.btnHidden : classes.mBottom,
   );
@@ -105,46 +107,10 @@ export const GameDealer: FC<GameDealerProps> = ({
     onChangeCloseIssue();
   };
 
-  const lateMemberToJoin = (data: ILatePlayerToJoin) => {
-    setLateMember({
-      userId: data.userId,
-      username: data.username,
-      userSurname: data.userSurname,
-      userRole: data.userRole,
-    });
-    setRequestToJoin(true);
-  };
-
-  useEffect(() => {
-    const newTitle = gameIssues.map((item) => item.issue.issueName).join(', ');
-    setTitle(newTitle);
-  }, [gameIssues]);
-
-  useEffect(() => {
-    state.socket.on('gameOver', (message) => {
-      gameFinish(message);
-    });
-
-    state.socket.on('lateMemberAskToJoin', (message) => {
-      setRequestToJoin(true);
-    });
-
-    state.socket.on('latePlayerAskToJoin', (message) => {
-      lateMemberToJoin(message);
-    });
-
-    return () => {
-      state.socket.off('gameOver', (message) => {
-        gameFinish(message);
-      });
-
-      state.socket.off('lateMemberAskToJoin', (message) => {});
-    };
-  }, []);
-
   const handleCloseDialog = () => {
     setRequestToJoin(false);
     setLateMember(null);
+    setAutoJoin(false);
   };
 
   const onAllow = () => {
@@ -167,6 +133,66 @@ export const GameDealer: FC<GameDealerProps> = ({
     setIsLeaveOpen(true);
   };
 
+  const lateMemberToJoin = (data: ILatePlayerToJoin) => {
+    setLateMember({
+      userId: data.userId,
+      username: data.username,
+      userSurname: data.userSurname,
+      userRole: data.userRole,
+    });
+    setRequestToJoin(true);
+  };
+
+  const lateMemberAutoJoin = (data: ILatePlayerToJoin) => {
+    setLateMember({
+      userId: data.userId,
+      username: data.username,
+      userSurname: data.userSurname,
+      userRole: data.userRole,
+    });
+    setAutoJoin(true);
+  };
+
+  useEffect(() => {
+    if (!voting && lateMember && autoJoin) {
+      onAllow();
+    }
+  }, [lateMember, autoJoin, voting]);
+
+  useEffect(() => {
+    const newTitle = gameIssues.map((item) => item.issue.issueName).join(', ');
+    setTitle(newTitle);
+  }, [gameIssues]);
+
+  useEffect(() => {
+    state.socket.on('gameOver', (message) => {
+      gameFinish(message);
+    });
+
+    state.socket.on('latePlayerAskToJoin', (message) => {
+      lateMemberToJoin(message);
+    });
+
+    state.socket.on('allowToAutoJoinGame', (message) => {
+      lateMemberAutoJoin(message);
+    });
+
+    return () => {
+      state.socket.off('gameOver', (message) => {
+        gameFinish(message);
+      });
+
+      state.socket.off('latePlayerAskToJoin', (message) => {
+        lateMemberToJoin(message);
+      });
+
+      state.socket.off('allowToAutoJoinGame', (message) => {
+        lateMemberAutoJoin(message);
+      });
+    };
+  }, []);
+
+  
   return (
     <div>
       <Typography variant='h6' align='center' gutterBottom>

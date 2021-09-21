@@ -173,11 +173,20 @@ const socketServer = (httpServer) => {
       const room = roomContoller.getRoom(roomId);
 
       if (gameStatus) {
-        if (gameStatus.isAutoJoin) {
+        if (gameStatus.isAutoJoin && !gameStatus.isVoting) {
           if (userRole === 'member') {
             roomContoller.addLatePlayer(roomId, userId);
           }
           socket.emit('allowToAutoJoin', { room, userId });
+        } else if (gameStatus.isAutoJoin && gameStatus.isVoting) {
+          socket.to(roomId).emit('allowToAutoJoinGame', {
+            room,
+            userId,
+            username,
+            userSurname,
+            userRole,
+          });
+          socket.emit('votingIsOn', userId);
         } else if (gameStatus.isStarted) {
           socket.to(roomId).emit('latePlayerAskToJoin', {
             room,
@@ -191,6 +200,7 @@ const socketServer = (httpServer) => {
           socket.emit('joinToLobby', { room, userId });
         }
       }
+
     });
 
     socket.on('allowLatePlayerIntoGame', (message) => {
