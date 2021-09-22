@@ -15,7 +15,6 @@ const socketServer = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
       origin: process.env.SOCKET_URL_CONNECTION,
-      // origin: 'http://localhost:3000',
       methods: ['GET', 'POST'],
       allowedHeaders: ['my-custom-header'],
       credentials: true,
