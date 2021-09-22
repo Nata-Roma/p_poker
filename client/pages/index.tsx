@@ -39,12 +39,12 @@ export const getServerSideProps = async () => {
     const fResData = await fRes.json()
     console.log('fResData', fResData);
 
-    const res = await apiGetRooms();
-    const data = await res.data;
+    // const res = await apiGetRooms();
+    // const data = await res.data;
 
     
-    if (res.status === 200) {
-      if (typeof data === 'string') {
+    if (fRes.status === 200) {
+      if (typeof fResData === 'string') {
         return {
           props: {
             rooms: [],
