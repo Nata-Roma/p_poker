@@ -33,7 +33,7 @@ export const getServerSideProps = async () => {
 
     
 
-    const fRes = await fetch('http://[::1]:4000/rooms');
+    const fRes = await fetch('http://localhost:4000/rooms');
     console.log('fRes', fRes);
 
     const fResData = await fRes.json()
