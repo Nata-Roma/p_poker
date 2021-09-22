@@ -16,6 +16,13 @@ const HomePage = ({ rooms }: HomePageProps) => {
 
 export const getServerSideProps = async () => {
   try {
+
+    const fRes = await fetch('http://localhost:4000/rooms');
+    console.log('fRes', fRes);
+
+    const fResData = await fRes.json()
+    console.log('fResData', fResData);
+
     const res = await apiGetRooms();
     const data = await res.data;
 
@@ -29,7 +36,7 @@ export const getServerSideProps = async () => {
       }
       return {
         props: {
-          rooms: res.data
+          rooms: fResData
         }
       }
     }
