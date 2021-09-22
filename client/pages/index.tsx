@@ -26,19 +26,6 @@ const HomePage = (props: HomePageProps) => {
 
 export const getServerSideProps = async () => {
 
-  const fake = {
-    "id": 100,
-    "title": "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-    "price": 109.95,
-    "description": "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
-    "category": "men's clothing",
-    "image": "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-    "rating": {
-      "rate": 3.9,
-      "count": 120
-    }
-  }
-
   const prod = await fetch('https://fakestoreapi.com/products');
   let products = await prod.json();
 
@@ -46,7 +33,7 @@ export const getServerSideProps = async () => {
 
     
 
-    const fRes = await fetch('http://localhost:4000/rooms');
+    const fRes = await fetch('http://[::1]:4000/rooms');
     console.log('fRes', fRes);
 
     const fResData = await fRes.json()

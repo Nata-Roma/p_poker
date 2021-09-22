@@ -18,15 +18,15 @@ const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send(`<h1>Hello from server</h1>`);
-});
+// app.get('/', (req, res) => {
+//   res.send(`<h1>Hello from server</h1>`);
+// });
 
-app.post('/', (req, res) => {
-  const data = req.body.data;
+// app.post('/', (req, res) => {
+//   const data = req.body.data;
 
-  res.status(201).json(data);
-});
+//   res.status(201).json(data);
+// });
 
 app.get('/rooms', (req, res) => {
   const rooms = roomContoller.getRoomsInfo();
