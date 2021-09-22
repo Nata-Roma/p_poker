@@ -29,7 +29,7 @@ export const getServerSideProps = async () => {
   const prod = await fetch('https://fakestoreapi.com/products');
   let products = await prod.json();
 
-  // try {
+  try {
 
     
 
@@ -41,14 +41,7 @@ export const getServerSideProps = async () => {
 
     // const res = await apiGetRooms();
     // const data = await res.data;
-    return {
-      props: {
-        rooms: [],
-        response: 'try',
-        prod: products[0]
-      }
-    }
-
+    
     
     if (fRes.status === 200) {
       if (typeof fResData === 'string') {
@@ -67,13 +60,12 @@ export const getServerSideProps = async () => {
           prod: products[0]
         }
       }
-    } else {
-
-  // } catch {
+    }
+  } catch {
     return {
       props: {
         rooms: [],
-        response: fResData,
+        response: 'fake',
         prod: products[0]
       }
     }
