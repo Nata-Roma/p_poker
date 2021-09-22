@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BASE_URL } from 'utils/apiConfig';
+// import { BASE_URL } from 'utils/apiConfig';
 import {
   IGameSettings,
   IRoomInfo,
