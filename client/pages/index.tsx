@@ -3,10 +3,16 @@ import { apiGetRooms } from 'services/apiServices';
 import { IRoomInfo } from 'utils/interfaces';
 
 interface HomePageProps {
-  rooms: Array<IRoomInfo>
+  rooms: Array<IRoomInfo>,
+  response: Array<IRoomInfo> | string
 }
 
-const HomePage = ({ rooms }: HomePageProps) => {
+const HomePage = (props: HomePageProps) => {
+  const {rooms, response} = props;
+  console.log('rooms', rooms);
+  console.log('response', response);
+  
+  
   return (
     <div>
       <InitPage rooms={rooms} />
@@ -30,20 +36,23 @@ export const getServerSideProps = async () => {
       if (typeof data === 'string') {
         return {
           props: {
-            rooms: []
+            rooms: [],
+            response: fResData
           }
         }
       }
       return {
         props: {
-          rooms: fResData
+          rooms: fResData,
+          response: fResData
         }
       }
     }
   } catch {
     return {
       props: {
-        rooms: []
+        rooms: [],
+        response: 'no rooms'
       }
     }
   }
