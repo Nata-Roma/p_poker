@@ -39,11 +39,12 @@ export const getServerSideProps = async () => {
     }
   }
 
+  const prod = await fetch('https://fakestoreapi.com/products');
+  let products = await prod.json();
 
   try {
 
-    const prod = await fetch('https://fakestoreapi.com/products');
-    let products = await prod.json();
+    
 
     const fRes = await fetch('http://localhost:4000/rooms');
     console.log('fRes', fRes);
@@ -78,7 +79,7 @@ export const getServerSideProps = async () => {
       props: {
         rooms: [],
         response: 'no rooms',
-        prod: fake
+        prod: products[0]
       }
     }
   }
