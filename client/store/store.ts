@@ -2,7 +2,7 @@ import { createContext } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { BASE_URL } from 'utils/apiConfig';
 
-const socketIo = io(BASE_URL, {
+const socketIo = io(process.env.NEXT_PUBLIC_SERVER_BASE_URL, {
   withCredentials: true,
   auth: {
     userId: '',
