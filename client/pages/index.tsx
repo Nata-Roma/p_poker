@@ -4,19 +4,9 @@ import { IRoomInfo } from 'utils/interfaces';
 
 interface HomePageProps {
   rooms: Array<IRoomInfo>,
-  response: Array<IRoomInfo> | string
-  prod: any
 }
 
-const HomePage = (props: HomePageProps) => {
-  const {rooms, response, prod} = props;
-  console.log('rooms', rooms);
-  console.log('response', response);
-  console.log('prod');
-  console.log(prod);
-  
-  
-  
+const HomePage = ({rooms}: HomePageProps) => {
   return (
     <div>
       <InitPage rooms={rooms} />
