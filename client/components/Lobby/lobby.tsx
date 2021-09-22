@@ -104,6 +104,11 @@ const Lobby: FC<LobbyProps> = ({ lobbyInfo }) => {
       const chat = await apiGetLobbyChats(room);
       const chatData = await chat.data;
 
+      console.log('users', users);
+      console.log('chat', chat);
+      
+      
+
       if (users.status === 200 && chat.status === 200) {
         if (typeof users.data === 'string') {
           setUsers([]);
