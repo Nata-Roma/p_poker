@@ -8,6 +8,7 @@ import {
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
 // axios.defaults.withCredentials = true;
 console.log('ENV', process.env.NEXT_PUBLIC_SERVER_BASE_URL);
+console.log('check vercel');
 
 
 export const apiGetLobbyUsers = async (room: string | Array<string>) => {
