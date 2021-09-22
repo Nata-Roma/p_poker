@@ -15,13 +15,14 @@ const socketServer = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
       origin: process.env.SOCKET_URL_CONNECTION,
-      // origin: 'https://p-poker.vercel.app',
       // origin: 'http://localhost:3000',
       methods: ['GET', 'POST'],
       allowedHeaders: ['my-custom-header'],
       credentials: true,
     },
   });
+  console.log('URL', process.env.SOCKET_URL_CONNECTION);
+  console.log('PORT', process.env.PORT);
 
   io.on('connection', (socket) => {
     console.log(`Connected to socket: ${socket.id}`);
@@ -72,6 +73,8 @@ const socketServer = (httpServer) => {
         if (userDealer && userDealer.dealer) {
           roomContoller.gameOver(roomId);
           io.in(roomId).emit('gameOver', 'The end');
+          const rooms = roomContoller.getRoomsInfo();
+          socket.broadcast.emit('roomList', rooms);
         } else {
           roomContoller.playerLeave(roomId, userId);
           roomContoller.leaveUserFromRoom(roomId, userId);
@@ -137,6 +140,8 @@ const socketServer = (httpServer) => {
       const { roomId } = message;
       roomContoller.gameOver(roomId);
       io.in(roomId).emit('gameOver', 'The end');
+      const rooms = roomContoller.getRoomsInfo();
+      socket.broadcast.emit('roomList', rooms);
     });
 
     socket.on('gameOverFinish', (message: { roomId: string }) => {
