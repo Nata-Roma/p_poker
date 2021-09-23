@@ -15,6 +15,7 @@ const socketServer = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
       origin: process.env.SOCKET_URL_CONNECTION,
+      // origin: 'http://localhost:3000',
       methods: ['GET', 'POST'],
       allowedHeaders: ['my-custom-header'],
       credentials: true,
@@ -64,6 +65,8 @@ const socketServer = (httpServer) => {
     });
 
     socket.on('leaveRoom', (message: socketRoomUserIdInward) => {
+      console.log('LEAVE ROOM');
+      
       const { roomId, userId } = message;
       const room = roomContoller.getRoomId(roomId);
       if (room) {
@@ -268,6 +271,12 @@ const socketServer = (httpServer) => {
       const { roomId, issues } = message;
       io.in(roomId).emit('issuesLobbyChanged', issues);
     });
+
+    socket.on('abandonedRoom', (roomId: string) => {
+      roomContoller.gameOver(roomId);
+      const rooms = roomContoller.getRoomsInfo();
+      socket.broadcast.emit('roomList', rooms);
+    })
   });
 };
 
