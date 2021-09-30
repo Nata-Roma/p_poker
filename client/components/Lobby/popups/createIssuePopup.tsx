@@ -78,7 +78,7 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate, issues }) 
   );
 
   return (
-    <div>
+    <div data-testid="create-issue-popup">
       <AddIcon color="primary" onClick={handleClickOpen} className={classes.btn}>
         Create new Issue
       </AddIcon>
@@ -113,7 +113,7 @@ const CreateIssuePopup: FC<CreateIssuePopupProps> = ({ onIssueCreate, issues }) 
             >
               <option value="low">Low</option>
               <option value="middle">Middle</option>
-              <option value="hight">Hight</option>
+              <option value="high">High</option>
             </NativeSelect>
             <FormHelperText>choose the priority of issue</FormHelperText>
           </FormControl>

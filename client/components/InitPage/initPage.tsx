@@ -16,7 +16,12 @@ import {
 } from 'store/actionCreators';
 import AppContext from 'store/store';
 import { roles, roomInitData, userInitData } from 'utils/configs';
-import { IDialogUsers, IRoomCreateData, IRoomData, IRoomInfo } from 'utils/interfaces';
+import {
+  IDialogUsers,
+  IRoomCreateData,
+  IRoomData,
+  IRoomInfo,
+} from 'utils/interfaces';
 import { UserDialog } from './Dialog/userDialog';
 import pokerImage from '../../public/poker-cards_green.png';
 import appStorage from 'utils/storage';
@@ -69,7 +74,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       roomInfo.statusData
     ) {
       const id = nanoid();
-      setRoomInfo((prev) => ({ ...prev, room: { ...prev.room, roomId: id } }))
+      setRoomInfo((prev) => ({ ...prev, room: { ...prev.room, roomId: id } }));
       dispatch(setRoom(id, roomInfo.room.roomName));
 
       const config = {
@@ -154,22 +159,18 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
     }
   };
 
-  useEffect(
-    () => {
-      if (role === roles.observer) {
-        dispatch(setUserRole(role));
-      } else {
-        dispatch(setUserRole(role));
-      }
-    },
-    [role],
-  );
+  useEffect(() => {
+    if (role === roles.observer) {
+      dispatch(setUserRole(role));
+    } else {
+      dispatch(setUserRole(role));
+    }
+  }, [role]);
 
   useEffect(() => {
     window.onbeforeunload = () => {
       console.log('HHHHHHH');
     };
-
     dispatch(setRoom('', ''));
     dispatch(setUserId(''));
     dispatch(setDealer(false));
@@ -181,6 +182,7 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       const session = appStorage.getSession();
       state.socket.auth.userId = session;
     }
+
     onRoomRequest();
 
     state.socket.on('roomList', (message) => {
@@ -200,42 +202,43 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
       <div className={classes.container}>
         <Grid
           container
-          justifyContent="center"
-          alignItems="center"
+          justifyContent='center'
+          alignItems='center'
           className={classes.titleWrapper}
         >
           <Grid item>
-            <Image src={pokerImage} />
+            <Image src={pokerImage} data-testid="poker-image" />
           </Grid>
           <Grid item>
-            <Typography variant="h3" align="center">
+            <Typography variant='h3' align='center'>
               Poker Planning
             </Typography>
           </Grid>
         </Grid>
 
-        <Typography variant="h4" align="center" className={classes.title}>
+        <Typography variant='h4' align='center' className={classes.title}>
           Start your planning:
         </Typography>
-        <Grid container justifyContent="center">
+        <Grid container justifyContent='center'>
           <Grid
             container
             item
-            alignItems="center"
-            justifyContent="center"
+            alignItems='center'
+            justifyContent='center'
             spacing={2}
             className={classes.choiceWrapper}
           >
             <Grid item className={classes.choiceContainer} />
             <Grid item>
               <Button
-                variant="contained"
-                color="primary"
+                variant='contained'
+                color='primary'
                 onClick={() => {
                   setOpenCreate(true);
                   dispatch(setDealer(true));
                 }}
                 className={classes.btn}
+                data-testid="start-new-game-btn"
               >
                 Start New game
               </Button>
@@ -244,10 +247,10 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
                 open={openCreate}
                 confirm={onCreateRoom}
                 onRoleChange={() =>
-                  setRole(
-                    (prev) =>
-                      prev === roles.observer ? roles.member : roles.observer,
-                  )}
+                  setRole((prev) =>
+                    prev === roles.observer ? roles.member : roles.observer,
+                  )
+                }
                 role={role}
                 loading={(status) => setLoading(status)}
                 changeUserData={changeUserData}
@@ -262,8 +265,8 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
           <Grid
             container
             item
-            alignItems="center"
-            justifyContent="center"
+            alignItems='center'
+            justifyContent='center'
             spacing={2}
             className={classes.choiceWrapper}
           >
@@ -275,12 +278,13 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
             </Grid>
             <Grid item>
               <Button
-                variant="contained"
-                color="primary"
+                variant='contained'
+                color='primary'
                 onClick={() => {
                   setOpenConnect(true);
                 }}
                 className={classes.btn}
+                data-testid="room-connect-btn"
               >
                 Connect to Room
               </Button>
@@ -289,10 +293,10 @@ export const InitPage: FC<MakeChoiceProps> = ({ rooms }) => {
                 open={openConnect}
                 confirm={onEnterRoom}
                 onRoleChange={() =>
-                  setRole(
-                    (prev) =>
-                      prev === roles.observer ? roles.member : roles.observer,
-                  )}
+                  setRole((prev) =>
+                    prev === roles.observer ? roles.member : roles.observer,
+                  )
+                }
                 role={role}
                 loading={(status) => setLoading(status)}
                 changeUserData={changeUserData}
