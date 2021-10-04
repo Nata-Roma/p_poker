@@ -27,7 +27,7 @@ export const StaticticsCard: FC<StatisticsCardProps> = ({ stat }) => {
       onClick={() => console.log(stat.choice)}
     >
       <div>
-        <Typography variant="h3" gutterBottom>{stat.choice === nonVoted ? '?' : `${stat.choice}`}</Typography>
+        <Typography variant="h3" gutterBottom>{stat.choice === +nonVoted ? '?' : `${stat.choice}`}</Typography>
         <Typography variant="h5">{`${stat.ratio}%`}</Typography>
       </div>
     </Button>

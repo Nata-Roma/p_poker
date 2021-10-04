@@ -37,7 +37,7 @@ export const GamePage: FC<GamePageProps> = ({
   const [gameIssues, setGameIssues] = useState<Array<IGamePageIssue>>();
   const [activeIssueName, setActiveIssueName] = useState<string>();
   const [chosenDeck, setChosenDeck] = useState<Array<string>>();
-  const [chosenSeq, setChosenSeq] = useState<Array<number>>();
+  const [chosenSeq, setChosenSeq] = useState<Array<string>>();
   const [cardPot, setCardPot] = useState('');
   const [activeCard, setActiveCard] = useState<string>('');
   const [dealer, setDealer] = useState<IUser>();
@@ -47,10 +47,9 @@ export const GamePage: FC<GamePageProps> = ({
   const [result, setResult] = useState(false);
   const [timeStarted, setTimeStarted] = useState<number>();
   const [errorPage, setErrorPage] = useState(false);
-
+  
   const onUserJoinLeave = (users: Array<IUser>) => {
     setUsers(users);
-    console.log('Lobby Dealer join/left user');
   };
 
   const onIssueClick = (issueName: string) => {
@@ -73,7 +72,6 @@ export const GamePage: FC<GamePageProps> = ({
   };
 
   const onTimerStop = () => {
-    console.log(('Timer Stop'));
     if (timer.isTimer) {
       setTimer({
         isTimer: true,
@@ -89,7 +87,7 @@ export const GamePage: FC<GamePageProps> = ({
     setResult(true);
   }
 
-  const onGameCardClick = (cardName: string, cardNumber: number) => {
+  const onGameCardClick = (cardName: string, cardNumber: string) => {
     if (voting) {
       setActiveCard(cardName);
       state.socket.emit('gameCardChoice', {
@@ -101,7 +99,6 @@ export const GamePage: FC<GamePageProps> = ({
         },
       });
     }
-
   };
 
   const calculateIssueScore = () => {
@@ -134,12 +131,9 @@ export const GamePage: FC<GamePageProps> = ({
     setVoting(message.voting)
   };
 
+  
   const gameInit = (gameData: IApiStartGame) => {
-    console.log('game data', gameData);
-    
     if (gameData && typeof gameData !== 'string') {
-      console.log('issues', gameData.issues);
-      
       setGameIssues(gameData.issues);
       setActiveIssueName(gameData.issues[0].issue.issueName);
       setSprintTitle(gameData.sprintName);
@@ -149,14 +143,19 @@ export const GamePage: FC<GamePageProps> = ({
 
       const seq = gameData.card.sequence;
       const currentSeq = sequences.find((item) => item.name === seq);
+  
+      if (gameData.customSequence.length !== 0 && currentSeq.name === 'Custom sequence') {
+        currentSeq.sequence = gameData.customSequence;
+      }
       if (currentSeq) {
         setChosenSeq(
           Array.from(
             { length: gameData.card.cardNumber },
             (_, i) => currentSeq.sequence[i],
           ),
-        );
+        );       
       }
+    
 
       const deck = gameData.card.cardDeck;
       const currentDeck = cardDecks.find((item) => item.name === deck);
@@ -219,6 +218,8 @@ export const GamePage: FC<GamePageProps> = ({
       const dealer = userData && userData.find((user) => user.dealer);
       setDealer(dealer);
     }
+
+     
     gameInit(gameData);
 
     onGameInfoRequest();
@@ -242,9 +243,11 @@ export const GamePage: FC<GamePageProps> = ({
     state.socket.on('activeIssueChanged', (message) => {
       changeActiveIssue(message);
     });
-    // }
-
+    
+ 
+  
     return () => {
+
       state.socket.off('userJoined', (message) => {
         onUserJoinLeave(message);
       });
@@ -273,6 +276,7 @@ export const GamePage: FC<GamePageProps> = ({
       setResult(false);
       setActiveIssueName('');
       setActiveCard('');
+ 
     };
   }, []);
 
@@ -315,8 +319,9 @@ export const GamePage: FC<GamePageProps> = ({
               timer={timer}
               timeStarted={timeStarted}
               onTimerStop={() => { }}
+              voting={voting}   
             />
-          )}
+          )}            
         <Grid container item>
           {state.userRole === roles.member &&
             chosenDeck &&

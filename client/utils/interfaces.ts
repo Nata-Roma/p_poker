@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface IUser {
   username: string;
   userSurname: string;
@@ -86,11 +88,12 @@ export interface IGameSettings {
   card: IGameCard;
   isAutoJoin: boolean;
   isStarted: boolean;
+  customSequence?: Array<string>;
 }
 
 export interface IGameCardOption {
   name: string;
-  sequence: Array<number>;
+  sequence: Array<string>;
 }
 
 export interface IGamePagePlayer {
@@ -117,6 +120,7 @@ export interface IApiStartGame {
   issues: Array<IGamePageIssue>;
   players: IGamePagePlayer;
   timer: IGameTimer;
+  customSequence?: Array<string>;
 }
 
 export interface CreateIssuePopupProps {
@@ -190,7 +194,7 @@ export interface IIssueResultConverted {
   Priority: string;
   Description: string;
   Score: number;
-  Ratio: number;
+  Voted: string;
 }
 
 export interface ILatePlayer {
@@ -202,4 +206,11 @@ export interface ILatePlayer {
 
 export interface ILatePlayerToJoin extends ILatePlayer {
   roomId: string;
+}
+
+export interface CreateSequencePopupProps {
+  openSequenceCreate: boolean;
+  setOpenSequenceCreate: Dispatch<SetStateAction<boolean>>;
+  sequence: Array<string>;
+  setSequence: Dispatch<SetStateAction<Array<string>>>;
 }
