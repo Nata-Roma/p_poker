@@ -26,6 +26,7 @@ class Game {
   private isAutoJoin: boolean;
   private isStarted: boolean;
   private isVoting: boolean;
+  private customSequence?: Array<string> = [];
 
   constructor(roomId: string) {
     this.id = roomId;
@@ -60,6 +61,7 @@ class Game {
     this.isAutoJoin = props.client.isAutoJoin;
     this.isStarted = props.client.isStarted;
     this.isVoting = props.client.isVoting;
+    this.customSequence = props.client.customSequence;
   };
 
   getGameId = (): string => {
@@ -75,6 +77,7 @@ class Game {
       isAutoJoin: this.isAutoJoin,
       isStarted: this.isStarted,
       isVoting: this.isVoting,
+      customSequence: this.customSequence,
     };
     return gameData;
   };
