@@ -8,56 +8,57 @@ interface GameProps {
   userData: Array<IUser>
   errorStatus: string
 }
-
-const Game: FC<GameProps> = ({ gameData, userData, errorStatus }) => {
-  return <GamePage gameData={gameData} userData={userData} errorStatus={errorStatus} />;
+// const Game: FC<GameProps> = ({ gameData, userData, errorStatus }) => {
+const Game: FC<GameProps> = () => {
+  // return <GamePage gameData={gameData} userData={userData} errorStatus={errorStatus} />;
+  return <GamePage />;
 };
 
-export const getServerSideProps = async (context) => {
-  const { lobby } = context.params;
+// export const getServerSideProps = async (context) => {
+//   const { lobby } = context.params;
 
-  // try {
-    const userData = await apiGetLobbyUsers(lobby);
-    const gameData = await apiStartGame(lobby);
-    if (userData.status === 200 && gameData.status === 200) {
-      if (typeof userData.data === 'string') {
-        return {
-          props: {
-            userData: [],
-            gameData: null,
-            errorStatus: 'no users'
-          }
-        }
-      }
-      return {
-        props: {
-          userData: userData.data,
-          gameData: gameData.data,
-          errorStatus: 'no errors'
-        }
-      }
-    } else {
-      return {
-        props: {
-          userData: [],
-          gameData: null,
-          errorStatus: 'no room'
-        },  
-      }
-    }
-  // } catch {
-    // return {
-  //     // redirect: {
-      //   destination: '/404',
-      // permanent: false,
-      // },
-  //     props: {
-  //       userData: [],
-  //       gameData: null,
-  //       errorStatus: 'no room'
-  //     },
-  //   }
-  // }
-};
+//   // try {
+//     const userData = await apiGetLobbyUsers(lobby);
+//     const gameData = await apiStartGame(lobby);
+//     if (userData.status === 200 && gameData.status === 200) {
+//       if (typeof userData.data === 'string') {
+//         return {
+//           props: {
+//             userData: [],
+//             gameData: null,
+//             errorStatus: 'no users'
+//           }
+//         }
+//       }
+//       return {
+//         props: {
+//           userData: userData.data,
+//           gameData: gameData.data,
+//           errorStatus: 'no errors'
+//         }
+//       }
+//     } else {
+//       return {
+//         props: {
+//           userData: [],
+//           gameData: null,
+//           errorStatus: 'no room'
+//         },  
+//       }
+//     }
+//   // } catch {
+//     // return {
+//   //     // redirect: {
+//       //   destination: '/404',
+//       // permanent: false,
+//       // },
+//   //     props: {
+//   //       userData: [],
+//   //       gameData: null,
+//   //       errorStatus: 'no room'
+//   //     },
+//   //   }
+//   // }
+// };
 
 export default Game;

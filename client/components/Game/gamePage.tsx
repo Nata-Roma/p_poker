@@ -24,11 +24,13 @@ interface GamePageProps {
   errorStatus: string;
 }
 
-export const GamePage: FC<GamePageProps> = ({
-  gameData,
-  userData,
-  errorStatus,
-}) => {
+// export const GamePage: FC<GamePageProps> = ({
+//   gameData,
+//   userData,
+//   errorStatus,
+// }) => {
+  export const GamePage = ({
+  }) => {
   const classes = useStylesGame();
   const [users, setUsers] = useState<Array<IUser>>();
   const { state } = useContext(AppContext);
@@ -216,14 +218,14 @@ export const GamePage: FC<GamePageProps> = ({
       return true;
     });
 
-    setUsers(userData);
-    if (userData) {
-      const dealer = userData && userData.find((user) => user.dealer);
-      setDealer(dealer);
-    }
+    // setUsers(userData);
+    // if (userData) {
+    //   const dealer = userData && userData.find((user) => user.dealer);
+    //   setDealer(dealer);
+    // }
 
      
-    gameInit(gameData);
+    // gameInit(gameData);
 
     onGameInfoRequest();
 
