@@ -98,11 +98,11 @@ export interface IGameCardOption {
 
 export interface IGamePagePlayer {
   player: string | IUser;
-  choice: number;
+  choice: string;
 }
 
 export interface IGamePageIssueScore {
-  choice: number;
+  choice: string;
   ratio: number;
 }
 

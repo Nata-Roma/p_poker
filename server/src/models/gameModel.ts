@@ -140,6 +140,10 @@ class Game {
       });
       gameIssue.score = score;
       const totalScore = score.reduce((acc, item) => {
+        console.log('item.choice', item.choice);
+        console.log('nonVoted', nonVoted);
+        
+
         if (item.choice !== nonVoted) {
           return acc + +item.choice * item.ratio;
         }
