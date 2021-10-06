@@ -9,9 +9,10 @@ dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
-app.use(cors({
-  origin: process.env.SOCKET_URL_CONNECTION
-}));
+// app.use(cors({
+//   origin: process.env.SOCKET_URL_CONNECTION
+// }));
+app.use(cors());
 
 socketServer(httpServer);
 // const PORT = process.env.PORT || 4000;
@@ -21,7 +22,6 @@ app.use(express.json());
 
 app.get('/rooms', (req, res) => {
   const rooms = roomContoller.getRoomsInfo();
-  console.log('ROOMS', rooms);
   if (rooms.length) {
     res.status(200).json(rooms);
   } else {

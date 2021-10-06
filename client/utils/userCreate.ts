@@ -11,7 +11,6 @@ export const userCreate = (
   dealer: boolean,
 ): IUserCreate => {
   if (typeof roomId === 'string') {
-    console.log('create user function');
     
     return {
       room: {

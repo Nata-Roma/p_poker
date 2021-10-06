@@ -47,7 +47,6 @@ export const GamePlayer: FC<GameDealerProps> = ({
   };
 
   const gameFinish = (message: string) => {
-    console.log('gameOver', message);
     state.socket.emit('gameOverFinish', { roomId: lobby });
     router.push('/');
   };

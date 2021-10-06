@@ -173,7 +173,7 @@ export const GamePage: FC<GamePageProps> = ({
 
   const onGameInfoRequest = async () => {
 
-    try {
+    // try {
       const user = await apiGetLobbyUsers(lobby);
       const userData = await user.data;
 
@@ -194,14 +194,13 @@ export const GamePage: FC<GamePageProps> = ({
           gameInit(gameData);
         }
       }
-    } catch {
-      setErrorPage(true)
-    }
+    // } catch {
+    //   setErrorPage(true)
+    // }
   }
 
   useEffect(() => {
     router.beforePopState(({ url, as }) => {
-      console.log('beforePopState');
       state.socket.emit('leaveRoom', {
         roomId: lobby,
         userId: state.userId,
