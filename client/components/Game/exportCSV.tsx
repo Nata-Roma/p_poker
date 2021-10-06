@@ -4,6 +4,7 @@ import * as xlxs from "xlsx";
 import { Button } from "@material-ui/core";
 import { nanoid } from "nanoid";
 import { IExportCSV, IIssueResultConverted } from "utils/interfaces";
+import { nonVoted } from "utils/configs";
 
 const fileType =
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -15,7 +16,7 @@ const ExportCSV: FC<IExportCSV> = ({ issues }) => {
     Priority: item.issue.priority,
     Description: item.issue.issueDescription,
     Score: item.totalScore,
-    Voted: item.score[0] ? `Choice ${item.score[0].choice} - Ratio ${item.score[0].ratio}` : '',
+    Voted: item.score[0] ? `Choice ${item.score[0].choice === nonVoted || item.score[0].choice === '' ? '?' : item.score[0].choice} - Ratio ${item.score[0].ratio}` : '',
 }));
 
   const exportToCSV = (issuesData: IIssueResultConverted[], nameFile: string): void => {
