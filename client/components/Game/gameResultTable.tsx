@@ -44,8 +44,8 @@ const GameResultTable: FC<IGameResultsTableProps> = ({ issues }) => {
                 {item.score.map((score) => (
                   <Typography sx={{ p: 1 }} key={nanoid()}>{`Choice ${
                     score.choice === nonVoted || score.choice === ''
-                      ? score.choice
-                      : '?'
+                      ? '?'
+                      : score.choice
                   } - Ratio ${score.ratio}`}</Typography>
                 ))}
               </TableCell>
