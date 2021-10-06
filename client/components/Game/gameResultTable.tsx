@@ -9,23 +9,23 @@ import Paper from '@mui/material/Paper';
 import { IGamePageIssue } from 'utils/interfaces';
 import { nanoid } from 'nanoid';
 import Typography from '@mui/material/Typography';
+import { nonVoted } from 'utils/configs';
 
 interface IGameResultsTableProps {
   issues: IGamePageIssue[];
 }
 
 const GameResultTable: FC<IGameResultsTableProps> = ({ issues }) => {
-
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+      <Table sx={{ minWidth: 650 }} size='small' aria-label='a dense table'>
         <TableHead>
           <TableRow>
-            <TableCell align="center">Issue name</TableCell>
-            <TableCell align="center">Priority&nbsp;</TableCell>
-            <TableCell align="center">Description&nbsp;</TableCell>
-            <TableCell align="center">Score&nbsp;</TableCell>
-            <TableCell align="center">Voted&nbsp;</TableCell>
+            <TableCell align='center'>Issue name</TableCell>
+            <TableCell align='center'>Priority&nbsp;</TableCell>
+            <TableCell align='center'>Description&nbsp;</TableCell>
+            <TableCell align='center'>Score&nbsp;</TableCell>
+            <TableCell align='center'>Voted&nbsp;</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -34,15 +34,20 @@ const GameResultTable: FC<IGameResultsTableProps> = ({ issues }) => {
               key={item.issue.issueName}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell align="center">{item.issue.issueName}</TableCell>
-              <TableCell align="center">{item.issue.priority}</TableCell>
-              <TableCell align="center">{item.issue.issueDescription}</TableCell>
-              <TableCell align="center">{item.totalScore}</TableCell>
-              <TableCell align="center">
-              {item.score.map((score) => (
-                <Typography sx={{ p: 1 }} key={nanoid()}>{`Choice ${score.choice} - Ratio ${score.ratio}`}</Typography>
-                )
-              )}         
+              <TableCell align='center'>{item.issue.issueName}</TableCell>
+              <TableCell align='center'>{item.issue.priority}</TableCell>
+              <TableCell align='center'>
+                {item.issue.issueDescription}
+              </TableCell>
+              <TableCell align='center'>{item.totalScore}</TableCell>
+              <TableCell align='center'>
+                {item.score.map((score) => (
+                  <Typography sx={{ p: 1 }} key={nanoid()}>{`Choice ${
+                    score.choice === nonVoted || score.choice === ''
+                      ? score.choice
+                      : '?'
+                  } - Ratio ${score.ratio}`}</Typography>
+                ))}
               </TableCell>
             </TableRow>
           ))}
@@ -50,6 +55,6 @@ const GameResultTable: FC<IGameResultsTableProps> = ({ issues }) => {
       </Table>
     </TableContainer>
   );
-}
+};
 
 export default GameResultTable;
