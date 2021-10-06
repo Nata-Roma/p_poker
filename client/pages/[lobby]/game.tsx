@@ -16,7 +16,7 @@ const Game: FC<GameProps> = ({ gameData, userData, errorStatus }) => {
 export const getServerSideProps = async (context) => {
   const { lobby } = context.params;
 
-  try {
+  // try {
     const userData = await apiGetLobbyUsers(lobby);
     const gameData = await apiStartGame(lobby);
     if (userData.status === 200 && gameData.status === 200) {
@@ -36,20 +36,28 @@ export const getServerSideProps = async (context) => {
           errorStatus: 'no errors'
         }
       }
+    } else {
+      return {
+        props: {
+          userData: [],
+          gameData: null,
+          errorStatus: 'no room'
+        },  
+      }
     }
-  } catch {
-    return {
-      // redirect: {
+  // } catch {
+    // return {
+  //     // redirect: {
       //   destination: '/404',
       // permanent: false,
       // },
-      props: {
-        userData: [],
-        gameData: null,
-        errorStatus: 'no room'
-      },
-    }
-  }
+  //     props: {
+  //       userData: [],
+  //       gameData: null,
+  //       errorStatus: 'no room'
+  //     },
+  //   }
+  // }
 };
 
 export default Game;

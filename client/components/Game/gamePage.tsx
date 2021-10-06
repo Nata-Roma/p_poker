@@ -195,6 +195,8 @@ export const GamePage: FC<GamePageProps> = ({
         } else {
           gameInit(gameData);
         }
+      } else {
+        setErrorPage(true);
       }
     // } catch {
     //   setErrorPage(true)

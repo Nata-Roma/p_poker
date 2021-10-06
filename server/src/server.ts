@@ -57,8 +57,12 @@ app.post('/rooms', (req, res) => {
 app.get('/gamestart/:room', (req, res) => {
   const roomId = req.params.room;
   const room = roomContoller.getRoomId(roomId);
+  console.log('roomId', room);
+  
   if (room) {
     const gameInitData = roomContoller.getGameInitData(room);
+    console.log('gameInitData', gameInitData);
+    
     if (gameInitData) {
       res.status(200).json(gameInitData);
     } else res.status(200).json('No gameInitData');
