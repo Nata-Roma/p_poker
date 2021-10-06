@@ -10,7 +10,7 @@ import {
   IGameStatus,
 } from './interfaces';
 
-export const nonVoted = 999;
+export const nonVoted = '999';
 
 interface GameInitProps {
   playerIds: Array<string>;
