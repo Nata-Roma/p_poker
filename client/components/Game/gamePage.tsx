@@ -182,8 +182,6 @@ interface GamePageProps {
       const game = await apiStartGame(lobby);
       const gameData = await game.data;
 
-      console.log(user.status, game.status);
-      
       if (user.status === 200 && game.status === 200) {
         if (typeof userData === 'string') {
           setErrorPage(true);
