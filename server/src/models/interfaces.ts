@@ -39,7 +39,7 @@ export interface IGameCard {
 
 export interface IGamePlayer {
   player: string | IUserData;
-  choice: number;
+  choice: string;
 }
 
 export interface IGameIssueScore  {
@@ -50,7 +50,7 @@ export interface IGameIssueScore  {
 export interface IPlayerChoice {
   issue: string;
   playerId: string;
-  playerChoice: number;
+  playerChoice: string;
 }
 
 export interface IGameIssue {

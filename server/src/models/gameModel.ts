@@ -39,7 +39,7 @@ class Game {
         if (player) {
           const newPlayer = {
             player: player,
-            choice: 0,
+            choice: '',
           };
           players.push(newPlayer);
         }
@@ -89,7 +89,7 @@ class Game {
       issue.score = [];
       issue.players = issue.players.map((player) => ({
         player: player.player,
-        choice: 0,
+        choice: '',
       }));
     }
   };
@@ -141,7 +141,7 @@ class Game {
       gameIssue.score = score;
       const totalScore = score.reduce((acc, item) => {
         if (item.choice !== nonVoted) {
-          return acc + item.choice * item.ratio;
+          return acc + +item.choice * item.ratio;
         }
         return acc;
       }, 0);
@@ -206,7 +206,7 @@ class Game {
       if (player) {
         const newPlayer = {
           player: player,
-          choice: 0,
+          choice: '',
         };
         players.push(newPlayer);
       }
@@ -243,7 +243,7 @@ class Game {
     if (!playerFound) {
       const newPlayer = {
         player: player,
-        choice: 0,
+        choice: '',
       };
       this.issues.forEach((issue) => issue.players.push(newPlayer));
     }
